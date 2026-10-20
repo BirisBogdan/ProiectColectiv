@@ -1,0 +1,2 @@
+-- Local + dev seed data (faculties, buildings, FMI rooms, dorms, laundry machines, demo users).
+-- Applied by `supabase db reset`. Empty until the first migrations land (TODO-10, TODO-16, TODO-40).

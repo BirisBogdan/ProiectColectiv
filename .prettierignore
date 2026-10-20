@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+.next/
+supabase/
+TODO.md
+CLAUDE.md
+docs/

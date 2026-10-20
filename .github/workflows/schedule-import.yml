@@ -1,0 +1,25 @@
+name: Timetable import
+
+# Manual only until the FMI adapter exists (TODO-17). Then enable the cron below.
+on:
+  workflow_dispatch:
+    inputs:
+      faculty:
+        description: Faculty adapter
+        default: fmi
+  # schedule:
+  #   - cron: "0 4 * * *"
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scripts/schedule-import
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python -m schedule_import --faculty ${{ inputs.faculty || 'fmi' }} --dry-run
