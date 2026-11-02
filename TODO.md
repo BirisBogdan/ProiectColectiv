@@ -18,7 +18,7 @@
 |---|---|---|---|---|
 | TODO-01 | `[DONE]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | Bogdan |
 | TODO-02 | `[ ]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | — |
-| TODO-03 | `[~]` | Backend | Motorul de stare: e sala liberă acum? | Alexia |
+| TODO-03 | `[DONE]` | Backend | Motorul de stare: e sala liberă acum? | Alexia |
 | TODO-04 | `[ ]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | — |
 | TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
 | TODO-06 | `[ ]` | Frontend | Pagina `/rooms`: lista de săli | — |
