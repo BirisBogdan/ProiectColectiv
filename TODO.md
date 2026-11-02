@@ -20,7 +20,7 @@
 | TODO-02 | `[ ]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | — |
 | TODO-03 | `[ ]` | Backend | Motorul de stare: e sala liberă acum? | — |
 | TODO-04 | `[ ]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | — |
-| TODO-05 | `[~]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
+| TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
 | TODO-06 | `[ ]` | Frontend | Pagina `/rooms`: lista de săli | — |
 | TODO-07 | `[ ]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | — |
 | TODO-08 | `[ ]` | Frontend | Bara de filtre și checklist-ul de QA | — |
