@@ -18,7 +18,7 @@
 |---|---|---|---|---|
 | TODO-01 | `[DONE]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | Bogdan |
 | TODO-02 | `[ ]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | — |
-| TODO-03 | `[ ]` | Backend | Motorul de stare: e sala liberă acum? | — |
+| TODO-03 | `[~]` | Backend | Motorul de stare: e sala liberă acum? | Alexia |
 | TODO-04 | `[ ]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | — |
 | TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
 | TODO-06 | `[ ]` | Frontend | Pagina `/rooms`: lista de săli | — |
@@ -253,9 +253,9 @@ TODO-01 pe `main` (tipuri, `rooms`, `buildings`, `scheduleEntries`, stub-ul `com
 - [ ] Testele trec; lint și typecheck verzi.
 - [ ] PR revizuit de cine are TODO-06 (consumă endpointul, deci verifică și forma răspunsului).
 
-### TODO-03 `[ ]` Motorul de stare: e sala liberă acum?
+### TODO-03 `[~]` Motorul de stare: e sala liberă acum?
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be3-status`
+**Asignat:** Alexia · **Val:** 2 · **Branch:** `feat/srf-be3-status`
 
 #### De ce
 E inima aplicației. Acum e o funcție TypeScript; mai târziu devine funcția SQL `room_status` din Postgres, cu aceleași cazuri de test. De aceea testele contează mai mult decât codul.
