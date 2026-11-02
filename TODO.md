@@ -19,7 +19,7 @@
 | TODO-01 | `[DONE]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | Bogdan |
 | TODO-02 | `[ ]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | — |
 | TODO-03 | `[DONE]` | Backend | Motorul de stare: e sala liberă acum? | Alexia |
-| TODO-04 | `[ ]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | — |
+| TODO-04 | `[DONE]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | Diana |
 | TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
 | TODO-06 | `[ ]` | Frontend | Pagina `/rooms`: lista de săli | — |
 | TODO-07 | `[ ]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | — |
@@ -292,7 +292,7 @@ TODO-01 pe `main` (tipuri, `bucharestNow`, stub-ul din `status.ts`). Înlocuieș
 
 ### TODO-04 `[ ]` Orarul hardcodat și `GET /api/rooms/[id]`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be4-room-detail`
+**Asignat:** Diana · **Val:** 2 · **Branch:** `feat/srf-be4-room-detail`
 
 #### De ce
 Fără orar toate sălile sunt libere tot timpul și nu vedem nimic interesant. Datele tale țin locul importerului real, iar endpointul de detaliu alimentează pagina sălii (TODO-07).
