@@ -2,9 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Status: mostly a plan.** Only the first sprint's skeleton exists: `apps/web/` (Next.js + TypeScript + Tailwind, Vitest), the pnpm workspace and the `web` CI job. `supabase/`, `scripts/schedule-import/`, `.github/scripts/`, `.claude/skills/`, Playwright and the PWA files described below are **not in the repo yet**; they return with their backlog items. Every path, command and rule for them is the *intended* shape. When something lands, make this file true or change it; never leave a claim here that the code contradicts. `TODO.md` is the current sprint and `TODO-backlog.md` is the full backlog and the project's memory; read them before starting any piece of work.
+> **Status: mostly a plan.** Only the first sprint's skeleton exists: `apps/web/` (Next.js + TypeScript + Tailwind, Vitest), the pnpm workspace and the `web` CI job. `supabase/`, `scripts/schedule-import/`, `.github/scripts/`, `.claude/skills/`, Playwright and the PWA files described below are **not in the repo yet**; they return with their backlog items. Every path, command and rule for them is the *intended* shape. When something lands, make this file true or change it; never leave a claim here that the code contradicts. `TODO.md` is the current sprint; read it before starting any piece of work.
 >
-> **IDs:** every `TODO-NN` and `OQ-N` in this file refers to `TODO-backlog.md`. `TODO.md` numbers its sprint items separately and calls backlog items "backlog #NN".
+> **IDs:** every `TODO-NN` and `OQ-N` in this file refers to the full backlog, not to `TODO.md`, whose sprint items are numbered separately. The backlog is out of the repo for now; read it with `git show d7acbd8:TODO-backlog.md`.
 
 UBB Campus is a PWA for Babeș-Bolyai students with a shared core (account, profile, notifications, search, admin) and three modules:
 
@@ -155,7 +155,7 @@ python -m schedule_import --faculty fmi --dry-run     # print rows, write nothin
   - Never delete or cross out an item; mark it `[DONE]` and keep the text.
   - IDs are permanent; never renumber or reuse. New items go at the end of their section with the next free ID.
   - Anything found open during other work goes into TODO.md, with why it was not done and what deciding it needs. Reporting it in chat is not recording it.
-  - Changing an item is two edits: the heading and its Index row (plus the Still open list).
+  - Changing an item is two edits: the heading and its Index row.
 
 ## 6. Known gaps
 

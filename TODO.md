@@ -1,6 +1,6 @@
 # TODO — UBB Campus
 
-**Sprintul curent: StudyRoom Finder, onboarding.** Fișierul conține doar cele 8 taskuri ale sprintului, ca să ne obișnuim cu workflow-ul. Backlog-ul complet (53 de itemi, întrebări deschise) e păstrat neschimbat în `TODO-backlog.md`. Când un item de aici trimite la el, scrie „backlog #NN”, ca să nu se confunde cu ID-urile de mai jos.
+**Sprintul curent: StudyRoom Finder, onboarding.** Fișierul conține doar cele 8 taskuri ale sprintului, ca să ne obișnuim cu workflow-ul.
 
 ## Cum folosim fișierul
 
@@ -35,7 +35,7 @@ Scopul acestui sprint **nu** este produsul final, ci să ne obișnuim cu workflo
 - pagina `/rooms/[id]`: detaliul unei săli cu orarul de azi;
 - un backend **hardcodat**: route handlers Next.js (`apps/web/app/api/...`) care citesc date din fișiere TypeScript. Fără Supabase, fără Docker, fără login.
 
-Supabase, importul real de orar, auth și RLS vin după acest sprint (backlog #08, backlog #16, backlog #17, backlog #19, backlog #20 din `TODO-backlog.md`). Tipurile și endpointurile de aici sunt gândite astfel încât să putem înlocui datele hardcodate cu Supabase fără să schimbăm frontendul.
+Supabase, importul real de orar, auth și RLS vin după acest sprint. Tipurile și endpointurile de aici sunt gândite astfel încât să putem înlocui datele hardcodate cu Supabase fără să schimbăm frontendul.
 
 ### Fișiere și regula anti-conflicte
 
@@ -144,7 +144,7 @@ Review-ul îl face cineva din cealaltă jumătate (backend revizuiește frontend
 - Cod, identificatori, commit-uri în engleză; textele din UI în română.
 - Ora se calculează în `Europe/Bucharest`, nu în fusul orar al serverului (Vercel rulează în UTC).
 - O sală despre care nu știm nimic e `unknown`, niciodată `free` (CLAUDE.md §6).
-- Datele sunt **demo**, nu orarul real FMI. Orarul real vine prin importer (backlog #17).
+- Datele sunt **demo**, nu orarul real FMI. Orarul real vine prin importer, după acest sprint.
 
 ---
 
@@ -152,7 +152,7 @@ Review-ul îl face cineva din cealaltă jumătate (backend revizuiește frontend
 
 ### TODO-01 `[ ]` Fundația: tipuri, date hardcodate și `GET /api/buildings`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 1, intră primul pe `main` · **Branch:** `feat/srf-be1-foundation` · **Legat de:** backlog #16, backlog #53
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 1, intră primul pe `main` · **Branch:** `feat/srf-be1-foundation`
 
 #### De ce
 Toți ceilalți importă tipurile și datele tale. Cu cât intră mai repede pe `main`, cu atât lucrează ceilalți mai liniștiți. Ține PR-ul mic.
@@ -207,7 +207,7 @@ Toți ceilalți importă tipurile și datele tale. Cu cât intră mai repede pe 
 
 ### TODO-02 `[ ]` `GET /api/rooms`: lista sălilor cu filtre
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be2-rooms-list` · **Legat de:** backlog #20
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be2-rooms-list`
 
 #### De ce
 E endpointul pe care stă pagina principală (TODO-06) și filtrele (TODO-08). Acum citește din fișiere TS; mai târziu va citi din view-ul Supabase `rooms_with_status`, dar răspunsul rămâne la fel.
@@ -253,7 +253,7 @@ TODO-01 pe `main` (tipuri, `rooms`, `buildings`, `scheduleEntries`, stub-ul `com
 
 ### TODO-03 `[ ]` Motorul de stare: e sala liberă acum?
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be3-status` · **Legat de:** backlog #19
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be3-status`
 
 #### De ce
 E inima aplicației. Acum e o funcție TypeScript; mai târziu devine funcția SQL `room_status` din Postgres, cu aceleași cazuri de test. De aceea testele contează mai mult decât codul.
@@ -290,10 +290,10 @@ TODO-01 pe `main` (tipuri, `bucharestNow`, stub-ul din `status.ts`). Înlocuieș
 
 ### TODO-04 `[ ]` Orarul hardcodat și `GET /api/rooms/[id]`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be4-room-detail` · **Legat de:** backlog #17, backlog #19
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be4-room-detail`
 
 #### De ce
-Fără orar toate sălile sunt libere tot timpul și nu vedem nimic interesant. Datele tale țin locul importerului real (backlog #17), iar endpointul de detaliu alimentează pagina sălii (TODO-07).
+Fără orar toate sălile sunt libere tot timpul și nu vedem nimic interesant. Datele tale țin locul importerului real, iar endpointul de detaliu alimentează pagina sălii (TODO-07).
 
 #### Depinde de
 TODO-01 pe `main`. Folosește `computeStatus` (stub până intră TODO-03; nu-l modifica).
@@ -305,7 +305,7 @@ TODO-01 pe `main`. Folosește `computeStatus` (stub până intră TODO-03; nu-l 
    - o sală cu pauze;
    - o sală fără nicio oră;
    - materii de anul 1-2 (ex. „Structuri de date și algoritmi”, „Baze de date”, „Sisteme de operare”), formații ca „Seminar 211” sau „Curs anul 2”.
-   Pune un comentariu sus: `// Demo data, not the real FMI timetable. Replaced by the importer (backlog #17).`
+   Pune un comentariu sus: `// Demo data, not the real FMI timetable. Replaced by the importer later.`
 
 2. **`apps/web/features/rooms/server/get-room.ts`**: `getRoomDetail(id: string, now: Date): RoomDetail | null`
    - `null` dacă sala nu există;
@@ -327,13 +327,13 @@ TODO-01 pe `main`. Folosește `computeStatus` (stub până intră TODO-03; nu-l 
 
 ### TODO-05 `[ ]` Layout, navigare, pagina de start și `StatusBadge`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 1, intră primul pe `main` alături de TODO-01 · **Branch:** `feat/srf-fe1-shell` · **Legat de:** backlog #14 (doar ca pregătire)
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 1, intră primul pe `main` alături de TODO-01 · **Branch:** `feat/srf-fe1-shell`
 
 #### De ce
 Toate paginile stau în layout-ul tău, iar TODO-06 și TODO-07 folosesc `StatusBadge`. Ține PR-ul mic ca să intre repede.
 
 #### Depinde de
-Doar de scaffold (backlog #01). Pentru tipul `RoomStatus` poți porni din branch-ul celui care face TODO-01 sau scrii temporar `type RoomStatus = "free" | "occupied" | "unknown"` și treci pe import din `@/features/rooms/types` după ce TODO-01 e pe main.
+Doar de scaffold. Pentru tipul `RoomStatus` poți porni din branch-ul celui care face TODO-01 sau scrii temporar `type RoomStatus = "free" | "occupied" | "unknown"` și treci pe import din `@/features/rooms/types` după ce TODO-01 e pe main.
 
 #### Ce ai de făcut
 
@@ -358,7 +358,7 @@ Doar de scaffold (backlog #01). Pentru tipul `RoomStatus` poți porni din branch
 
 ### TODO-06 `[ ]` Pagina `/rooms`: lista de săli
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe2-rooms-page` · **Legat de:** backlog #20
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe2-rooms-page`
 
 #### De ce
 E ecranul principal: studentul deschide aplicația și vede imediat ce săli sunt libere.
@@ -390,7 +390,7 @@ TODO-05 (`StatusBadge`, layout) și TODO-01 (tipuri) pe `main`. Endpointul `GET 
 
 ### TODO-07 `[ ]` Pagina `/rooms/[id]`: detaliul unei săli
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe3-room-detail` · **Legat de:** backlog #20, backlog #21 (pregătire)
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe3-room-detail`
 
 #### De ce
 Când studentul alege o sală vrea să știe cât timp e liberă și ce ore are azi. Aici va apărea mai târziu și butonul de favorite și check-in (tot ale tale).
@@ -420,7 +420,7 @@ TODO-05 (`StatusBadge`, `not-found`) și TODO-01 (tipuri) pe `main`. Endpointul 
 
 ### TODO-08 `[ ]` Bara de filtre și checklist-ul de QA
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe4-filters` · **Legat de:** backlog #20
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe4-filters`
 
 #### De ce
 Filtrele fac lista utilă („o sală liberă cu prize, pentru 30 de oameni”). Pentru că sunt salvate în URL, un link trimis unui coleg deschide aceeași căutare. Iar ca om de QA, tu verifici la final că totul merge cap-coadă.
