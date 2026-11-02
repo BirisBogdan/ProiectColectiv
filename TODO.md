@@ -20,7 +20,7 @@
 | TODO-02 | `[ ]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | — |
 | TODO-03 | `[ ]` | Backend | Motorul de stare: e sala liberă acum? | — |
 | TODO-04 | `[ ]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | — |
-| TODO-05 | `[ ]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | — |
+| TODO-05 | `[~]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
 | TODO-06 | `[ ]` | Frontend | Pagina `/rooms`: lista de săli | — |
 | TODO-07 | `[ ]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | — |
 | TODO-08 | `[ ]` | Frontend | Bara de filtre și checklist-ul de QA | — |
@@ -325,9 +325,9 @@ TODO-01 pe `main`. Folosește `computeStatus` (stub până intră TODO-03; nu-l 
 
 ## Frontend
 
-### TODO-05 `[ ]` Layout, navigare, pagina de start și `StatusBadge`
+### TODO-05 `[~]` Layout, navigare, pagina de start și `StatusBadge`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 1, intră primul pe `main` alături de TODO-01 · **Branch:** `feat/srf-fe1-shell`
+**Asignat:** Tudor · **Val:** 1, intră primul pe `main` alături de TODO-01 · **Branch:** `feat/srf-fe1-shell`
 
 #### De ce
 Toate paginile stau în layout-ul tău, iar TODO-06 și TODO-07 folosesc `StatusBadge`. Ține PR-ul mic ca să intre repede.
