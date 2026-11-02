@@ -16,7 +16,7 @@
 
 | ID | Status | Parte | Titlu | Asignat |
 |---|---|---|---|---|
-| TODO-01 | `[ ]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | — |
+| TODO-01 | `[~]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | Bogdan |
 | TODO-02 | `[ ]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | — |
 | TODO-03 | `[ ]` | Backend | Motorul de stare: e sala liberă acum? | — |
 | TODO-04 | `[ ]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | — |
@@ -150,9 +150,9 @@ Review-ul îl face cineva din cealaltă jumătate (backend revizuiește frontend
 
 ## Backend
 
-### TODO-01 `[ ]` Fundația: tipuri, date hardcodate și `GET /api/buildings`
+### TODO-01 `[~]` Fundația: tipuri, date hardcodate și `GET /api/buildings`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 1, intră primul pe `main` · **Branch:** `feat/srf-be1-foundation`
+**Asignat:** Bogdan · **Val:** 1, intră primul pe `main` · **Branch:** `feat/srf-be1-foundation`
 
 #### De ce
 Toți ceilalți importă tipurile și datele tale. Cu cât intră mai repede pe `main`, cu atât lucrează ceilalți mai liniștiți. Ține PR-ul mic.
