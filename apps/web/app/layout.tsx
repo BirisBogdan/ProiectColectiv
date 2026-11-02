@@ -1,14 +1,9 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "UBB Campus",
-  description: "StudyRoom Finder, Tutor / Skill-Swap and Dorm Manager for Babeș-Bolyai students.",
-  manifest: "/manifest.webmanifest",
-};
-
-export const viewport: Viewport = {
-  themeColor: "#0b3d91",
+  description: "StudyRoom Finder for Babeș-Bolyai students.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

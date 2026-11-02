@@ -2,7 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Status: planning draft.** No code exists yet. Every path, command and rule below is the *intended* shape of the repo, agreed before scaffolding (TODO-01). When the scaffold lands, make this file true or change it; never leave a claim here that the code contradicts. `TODO.md` is the backlog and the project's memory; read it before starting any piece of work.
+> **Status: mostly a plan.** Only the first sprint's skeleton exists: `apps/web/` (Next.js + TypeScript + Tailwind, Vitest), the pnpm workspace and the `web` CI job. `supabase/`, `scripts/schedule-import/`, `.github/scripts/`, `.claude/skills/`, Playwright and the PWA files described below are **not in the repo yet**; they return with their backlog items. Every path, command and rule for them is the *intended* shape. When something lands, make this file true or change it; never leave a claim here that the code contradicts. `TODO.md` is the current sprint and `TODO-backlog.md` is the full backlog and the project's memory; read them before starting any piece of work.
+>
+> **IDs:** every `TODO-NN` and `OQ-N` in this file refers to `TODO-backlog.md`. `TODO.md` numbers its sprint items separately and calls backlog items "backlog #NN".
 
 UBB Campus is a PWA for Babeș-Bolyai students with a shared core (account, profile, notifications, search, admin) and three modules:
 
@@ -63,7 +65,7 @@ Things that hold this up, all easy to undo by accident:
 
 ## 2. Commands
 
-Planned; confirm when TODO-01 lands. Package manager: pnpm (OQ-5).
+Package manager: pnpm (OQ-5). The whole-repo and web app commands work today, except `pnpm test:e2e`; the rest are planned.
 
 ```bash
 # whole repo
@@ -159,7 +161,7 @@ python -m schedule_import --faculty fmi --dry-run     # print rows, write nothin
 
 Deliberate or unresolved; do not assume these are safe.
 
-- **Nothing is built yet (TODO-01).** Every command above is a plan.
+- **Only the sprint skeleton exists.** The `supabase` and importer commands and `pnpm test:e2e` in §2 are a plan until their directories and config return.
 - **Data model is incomplete (TODO-53).** Blocks, content reports, consents, notification preferences, buildings, roles and announcements have no tables yet.
 - **Only FMI's timetable format is targeted (TODO-17, TODO-28).** FSEGA rooms will show as "unknown", not "free", until its adapter exists; never default an unknown room to free.
 - **Who the dorm administrator is, and their email, is unknown (OQ-3, TODO-44).**

@@ -9,8 +9,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest",
-    "test:run": "vitest run",
-    "test:e2e": "playwright test"
+    "test:run": "vitest run"
   },
   "dependencies": {
     "next": "16.4.2",
@@ -18,7 +17,6 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.64.1",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^24",
     "@types/react": "^19",

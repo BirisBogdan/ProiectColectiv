@@ -1,6 +1,5 @@
 pnpm-lock.yaml
 .next/
-supabase/
 TODO.md
+TODO-backlog.md
 CLAUDE.md
-docs/

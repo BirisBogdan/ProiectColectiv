@@ -1,25 +1,16 @@
 # UBB Campus
 
-A PWA for Babeș-Bolyai students with three modules on a shared core:
+A PWA for Babeș-Bolyai students. The current sprint builds a minimal **StudyRoom Finder**: which rooms are free right now, served by Next.js route handlers over hardcoded demo data.
 
-- **StudyRoom Finder**: which FMI rooms are free right now, from the faculty timetable plus check-ins.
-- **Tutor / Skill-Swap**: senior students help juniors on hard subjects.
-- **Dorm Manager**: laundry booking and maintenance reports for Hașdeu and Economica.
+- `TODO.md`: the 8 tasks of the current sprint and the team workflow.
+- `TODO-backlog.md`: the full backlog and open questions.
+- `CLAUDE.md`: how the repo is meant to work and why.
 
-Nothing is built yet. `CLAUDE.md` explains how the repo is meant to work and `TODO.md` is the backlog.
-
-## Layout
-
-| Dir                        | What                                           |
-| -------------------------- | ---------------------------------------------- |
-| `apps/web/`                | Next.js + TypeScript + Tailwind PWA            |
-| `supabase/`                | Postgres migrations, RLS, seed, Edge Functions |
-| `scripts/schedule-import/` | Python timetable importer                      |
-| `.github/workflows/`       | CI and the import job                          |
+Everything lives in `apps/web/` (Next.js + TypeScript + Tailwind). Supabase, the timetable importer and the PWA setup come after this sprint.
 
 ## Getting started
 
-Requirements: Node 22+, pnpm (via `corepack enable`), Python 3.12, and Docker for local Supabase.
+Requirements: Node 22+ and pnpm (via `corepack enable`).
 
 ```bash
 corepack enable
@@ -29,12 +20,3 @@ pnpm lint
 pnpm typecheck
 pnpm test:run
 ```
-
-Local database (needs Docker):
-
-```bash
-npx supabase start
-npx supabase db reset
-```
-
-Timetable importer: see `scripts/schedule-import/README.md`.

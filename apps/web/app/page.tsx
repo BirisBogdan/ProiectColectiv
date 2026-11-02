@@ -1,4 +1,4 @@
-// Placeholder until the first feature lands (TODO-01).
+// Placeholder until the start page lands (TODO-05).
 export default function Home() {
   return (
     <main className="flex flex-1 items-center justify-center p-8">

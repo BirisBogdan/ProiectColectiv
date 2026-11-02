@@ -11,7 +11,6 @@
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "test:run": "pnpm -r test:run",
-    "test:e2e": "pnpm --filter web test:e2e",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
