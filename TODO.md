@@ -17,7 +17,7 @@
 | ID | Status | Parte | Titlu | Asignat |
 |---|---|---|---|---|
 | TODO-01 | `[DONE]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | Bogdan |
-| TODO-02 | `[ ]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | — |
+| TODO-02 | `[DONE]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | Darius |
 | TODO-03 | `[DONE]` | Backend | Motorul de stare: e sala liberă acum? | Alexia |
 | TODO-04 | `[DONE]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | Diana |
 | TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
@@ -207,9 +207,9 @@ Toți ceilalți importă tipurile și datele tale. Cu cât intră mai repede pe 
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec.
 - [ ] PR revizuit de un coleg din cealaltă jumătate și intrat pe `main`; anunți pe grup că „TODO-01 e pe main”.
 
-### TODO-02 `[ ]` `GET /api/rooms`: lista sălilor cu filtre
+### TODO-02 `[DONE]` `GET /api/rooms`: lista sălilor cu filtre
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be2-rooms-list`
+**Asignat:** Darius · **Val:** 2 · **Branch:** `feat/srf-be2-rooms-list`
 
 #### De ce
 E endpointul pe care stă pagina principală (TODO-06) și filtrele (TODO-08). Acum citește din fișiere TS; mai târziu va citi din view-ul Supabase `rooms_with_status`, dar răspunsul rămâne la fel.
