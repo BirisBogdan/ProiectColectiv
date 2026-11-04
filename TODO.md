@@ -14,16 +14,16 @@
 
 ## Index
 
-| ID | Status | Parte | Titlu | Asignat |
-|---|---|---|---|---|
-| TODO-01 | `[DONE]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | Bogdan |
-| TODO-02 | `[DONE]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | Darius |
-| TODO-03 | `[DONE]` | Backend | Motorul de stare: e sala liberă acum? | Alexia |
-| TODO-04 | `[DONE]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | Diana |
-| TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
-| TODO-06 | `[DONE]` | Frontend | Pagina `/rooms`: lista de săli | MonsieurBili |
+| ID | Status | Parte | Titlu | Asignat        |
+|---|---|---|---|----------------|
+| TODO-01 | `[DONE]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | Bogdan         |
+| TODO-02 | `[DONE]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | Darius         |
+| TODO-03 | `[DONE]` | Backend | Motorul de stare: e sala liberă acum? | Alexia         |
+| TODO-04 | `[DONE]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | Diana          |
+| TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor          |
+| TODO-06 | `[DONE]` | Frontend | Pagina `/rooms`: lista de săli | Raul           |
 | TODO-07 | `[DONE]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | Bogdan Buruian |
-| TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan |
+| TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan         |
 
 ---
 
