@@ -1,6 +1,6 @@
 # TODO — UBB Campus
 
-**Sprintul curent: StudyRoom Finder.** Etapa 1 (onboarding, TODO-01..08) e gata; acum lucrăm la etapa a 2-a (TODO-09..16): 4 itemi de backend și 4 de frontend. Fișierul conține doar itemii sprintului.
+**Sprintul curent: StudyRoom Finder.** Etapa 1 (onboarding, TODO-01..08) e gata; acum lucrăm în paralel la etapa a 2-a (TODO-09..16) și etapa a 3-a (TODO-17..24), fiecare cu 4 itemi de backend și 4 de frontend. Fișierul conține doar itemii sprintului.
 
 ## Cum folosim fișierul
 
@@ -32,6 +32,14 @@
 | TODO-14 | `[ ]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | _(liber)_      |
 | TODO-15 | `[ ]` | Frontend | Pagina `/rooms/plan`: planul clădirii | _(liber)_      |
 | TODO-16 | `[ ]` | Frontend | Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a | _(liber)_      |
+| TODO-17 | `[ ]` | Backend | Supabase local: prima migrație, RLS și seed pentru săli | _(liber)_      |
+| TODO-18 | `[ ]` | Backend | `room_schedule` și funcția SQL `room_status` | _(liber)_      |
+| TODO-19 | `[ ]` | Backend | Săptămâni pare/impare și perioada de cursuri | _(liber)_      |
+| TODO-20 | `[ ]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | _(liber)_      |
+| TODO-21 | `[ ]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | _(liber)_      |
+| TODO-22 | `[ ]` | Frontend | Bazele traducerilor RO / EN | _(liber)_      |
+| TODO-23 | `[ ]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | _(liber)_      |
+| TODO-24 | `[ ]` | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
 
 ---
 
@@ -234,6 +242,49 @@ Endpointuri noi:
 - **Importerul nu descarcă singur și nu scrie nicăieri.** Ce trebuie: răspunsul la OQ-8 (de unde luăm orarul și dacă avem voie să-l descărcăm automat).
 - **Planul e o schemă demo, nu planul real.** Ce trebuie: răspunsul la OQ-6 (cine desenează planurile) și lista reală de săli (backlog #16).
 - **Locuri libere și dotări la check-in** (backlog #22) nu intră acum, ca să ținem itemii mici. Ce trebuie: să validăm mai întâi check-in-ul simplu.
+
+---
+
+## Etapa a 3-a (TODO-17..24)
+
+Se lucrează în același timp cu etapa a 2-a, așa că itemii ating, pe cât posibil, alte fișiere. Pregătim ce urmează: **baza de date** (doar local), **orarul corect pe săptămâni**, **vederea pe toată săptămâna**, **traducerile**, **instalarea pe telefon** și **testele end-to-end**. Workflow-ul și regulile sunt aceleași, iar în `apps/web/` citește întâi `AGENTS.md`: versiunea noastră de Next.js are diferențe față de ce găsești de obicei pe net.
+
+### Fișiere și regula anti-conflicte
+
+| TODO | Parte | Fișiere proprii |
+|---|---|---|
+| TODO-17 | Backend | `supabase/` (config, prima migrație, `seed.sql`, teste), `apps/web/lib/supabase/database.types.ts` |
+| TODO-18 | Backend | Migrația și testele proprii din `supabase/`; după TODO-17 regenerează `database.types.ts` și completează `seed.sql` |
+| TODO-19 | Backend | `apps/web/features/rooms/data/calendar.ts`, `data/schedule.ts`, `server/calendar.ts`, `server/status.ts`, `server/get-room.ts` |
+| TODO-20 | Backend | `apps/web/features/rooms/server/get-week.ts`, `apps/web/app/api/rooms/[id]/week/` |
+| TODO-21 | Frontend | `apps/web/app/(app)/rooms/[id]/week/`, `apps/web/features/rooms/components/RoomWeek.tsx` |
+| TODO-22 | Frontend | `apps/web/lib/i18n/`, `apps/web/components/ui/LanguageSwitcher.tsx`, `components/ui/StatusBadge.tsx`, `app/page.tsx`, `app/(app)/rooms/not-found.tsx` |
+| TODO-23 | Frontend | `apps/web/public/`, `apps/web/app/layout.tsx`, `apps/web/next.config.ts`, `apps/web/components/RegisterServiceWorker.tsx` |
+| TODO-24 | Frontend | `apps/web/tests/e2e/`, `apps/web/playwright.config.ts`, `package.json` și `apps/web/package.json`, `pnpm-lock.yaml` |
+
+**Excepții planificate, toate de o linie sau două:**
+
+- **TODO-19** adaugă un câmp opțional în `ScheduleEntry` din `types.ts`, după ce TODO-09 e pe `main`.
+- **TODO-21** adaugă un link în `app/(app)/rooms/[id]/page.tsx`, după ce TODO-13 e pe `main`.
+- **`.github/workflows/ci.yml`:** TODO-12 și TODO-24 adaugă fiecare câte un job separat. Dacă apare conflict, păstrați ambele joburi.
+- **`CLAUDE.md`:** TODO-12, 17, 23 și 24 actualizează nota de status și §2. Dacă apare conflict, păstrați ambele modificări.
+
+### Dependențe și ordinea de merge
+
+| TODO | Poate porni | Trebuie să aștepte |
+|---|---|---|
+| TODO-17, 20, 22, 23, 24 | imediat | nimic |
+| TODO-18 | după TODO-17 | TODO-17 pe `main`; între timp poți scrie SQL-ul și testele pe branch-ul lui |
+| TODO-19 | imediat | TODO-09 pe `main` înainte de PR, pentru rebase pe `types.ts` și `get-room.ts` |
+| TODO-21 | imediat, pe un mock | TODO-20 pentru endpoint și TODO-13 pentru linkul din pagina sălii |
+
+### Ce rămâne deschis după etapa asta
+
+- **Aplicația tot din fișierele TypeScript citește.** Supabase există doar local. Ce trebuie: proiectele `dev` și `prod`, login (backlog #04, #08) și o decizie despre momentul trecerii.
+- **Corecțiile de admin nu au tabel încă** (backlog #18). Ce trebuie: răspunsul la OQ-4 (cine sunt adminii).
+- **Testele pgTAP rulează doar local**, pentru că în CI ar cere Docker și timp de configurare. Ce trebuie: să le adăugăm în CI când există proiectul `dev`.
+- **Doar câteva texte sunt traduse.** Restul componentelor trec pe `lib/i18n` după ce se termină etapa a 2-a, ca să evităm conflictele. Vezi TODO-22.
+- **Sărbătorile și sesiunea arată `unknown`, pe baza unui calendar demo.** TODO-19 alege varianta asta pentru că o sală necunoscută nu e niciodată `free`. Ce trebuie: calendarul oficial al anului universitar.
 
 ---
 
@@ -559,6 +610,144 @@ Nimic. **Nu descărca automat** paginile: dacă avem voie și de unde, e OQ-8, �
 - [ ] Niciun apel de rețea în cod și nicio dependență față de `apps/web`.
 - [ ] În PR: lista codurilor de săli găsite și ce a fost ciudat în format (o să ne trebuiască pentru OQ-8 și backlog #16). PR revizuit de un coleg din cealaltă jumătate.
 
+### TODO-17 `[ ]` Supabase local: prima migrație, RLS și seed pentru săli
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be9-supabase-catalog`
+
+#### De ce
+Datele hardcodate au o limită. Facem primul pas spre baza de date doar local, fără conturi și fără să schimbăm aplicația, și stabilim de la început regula cea mai importantă a proiectului: fiecare tabel are RLS și un test care o dovedește (CLAUDE.md §3.2).
+
+#### Depinde de
+Nimic din etapa a 2-a. Ai nevoie de **Docker Desktop** pe laptop, deci ia itemul doar dacă îl poți instala. Rulezi CLI-ul cu `pnpm dlx supabase`, fără să-l adaugi în `package.json`.
+
+#### Ce ai de făcut
+
+1. `supabase init` în rădăcina repo-ului și `supabase migration new rooms_catalog`.
+
+2. **Migrația** creează `faculties`, `buildings` și `rooms`, cu nume `snake_case` și aceleași date ca tipurile din `types.ts`:
+   - `rooms`: `id text primary key`, `building_id` cu foreign key, `code text unique not null`, `floor int`, `capacity int check (capacity > 0)`, `has_outlets boolean`, `has_projector boolean`;
+   - **RLS activat pe toate trei, în aceeași migrație**;
+   - politici de `select` doar pentru rolul `authenticated`. Nu există politici de scriere, deci niciun client nu poate modifica datele.
+
+3. **`supabase/seed.sql`**: copiază facultățile, clădirile și sălile din `features/rooms/data/`, cu un comentariu că sunt date demo.
+
+4. **Teste pgTAP** în `supabase/tests/rooms_catalog.test.sql`: `anon` nu poate citi și nu poate scrie, `authenticated` poate citi, dar nu poate scrie, iar `capacity = 0` e respins.
+
+5. Generează `apps/web/lib/supabase/database.types.ts` și fă-l commit (CLAUDE.md §1). Aplicația încă nu îl folosește.
+
+6. Actualizează `CLAUDE.md`, ca să spună ce există acum din `supabase/`, și notează în README pașii de pornire pe Windows.
+
+#### Gata când
+- [ ] `supabase db reset` aplică migrația și seed-ul fără erori, de la zero.
+- [ ] `supabase test db` trece.
+- [ ] Niciun fișier din `features/` nu e schimbat, iar `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec.
+- [ ] Un coleg a rulat pașii din README pe laptopul lui. PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-18 `[ ]` `room_schedule` și funcția SQL `room_status`
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be10-room-status-sql`
+
+#### De ce
+Când trecem pe Supabase, regula „e sala liberă?” trebuie să dea același răspuns ca în TypeScript. O mutăm acum, cu aceleași cazuri de test ca în `status.test.ts`, și vedem devreme dacă modelul de date rezistă (backlog #19).
+
+#### Depinde de
+TODO-17 și Docker Desktop.
+
+#### Ce ai de făcut
+
+1. **Migrație nouă** pentru `room_schedule`: `room_id`, `day smallint check (day between 1 and 7)`, `start_time time`, `end_time time`, `check (start_time < end_time)`, `subject`, `group_name`, `parity text default 'all' check (parity in ('all', 'odd', 'even'))`. RLS și politici ca la TODO-17. Coloana se numește `group_name` pentru că `group` e cuvânt rezervat în SQL.
+
+2. **Funcția** `room_status(p_room_id text, p_at timestamptz)`, care întoarce `status` și `until`:
+   - ziua și ora se calculează cu `p_at at time zone 'Europe/Bucharest'`;
+   - aceleași reguli ca `computeStatus`, inclusiv orele lipite, iar `end_time` e exclusiv;
+   - o sală inexistentă → `unknown`;
+   - `parity` încă nu se folosește. Scrie asta într-un comentariu în funcție și în PR, pentru că tot în etapa următoare se conectează cu TODO-19.
+
+3. **`seed.sql`**: adaugă 5-10 rânduri demo, suficiente pentru cazurile de test.
+
+4. **Teste pgTAP** în `supabase/tests/room_status.test.sql`: fiecare caz din `apps/web/tests/unit/status.test.ts`, inclusiv fusul orar, cu datele inserate în test, plus RLS pentru `room_schedule` ca la TODO-17.
+
+5. Regenerează `database.types.ts`.
+
+#### Gata când
+- [ ] `supabase db reset` și `supabase test db` trec.
+- [ ] În PR, un tabel cu fiecare caz din `status.test.ts` și testul SQL care îi corespunde.
+- [ ] PR revizuit de cine a făcut TODO-17 sau de un coleg din cealaltă jumătate.
+
+### TODO-19 `[ ]` Săptămâni pare/impare și perioada de cursuri
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be11-week-parity`
+
+#### De ce
+Azi o oră care se ține din două în două săptămâni ar ocupa sala în fiecare săptămână, iar în vacanță toate sălile apar libere deși nu știm nimic despre ele. Ambele sunt răspunsuri greșite pe care studentul le-ar crede (CLAUDE.md §3.4).
+
+#### Depinde de
+TODO-09 pe `main` înainte de PR, ca să faci rebase pe `types.ts` și `get-room.ts`. Semnătura lui `computeStatus` **nu se schimbă**.
+
+#### Ce ai de făcut
+
+1. **`features/rooms/types.ts`** (excepția planificată): în `ScheduleEntry`, `weeks?: "odd" | "even"`. Lipsa câmpului înseamnă în fiecare săptămână.
+
+2. **`features/rooms/data/calendar.ts`**: perioadele de cursuri, ca `"YYYY-MM-DD"`, cu un comentariu că sunt demo, nu calendarul oficial:
+   ```ts
+   export const teachingPeriods = [
+     { start: "2026-09-28", end: "2026-12-20" },
+     { start: "2027-01-04", end: "2027-01-17" },
+   ];
+   ```
+
+3. **`features/rooms/server/calendar.ts`**: funcții pure:
+   ```ts
+   export function teachingWeek(now: Date): number | null // 1, 2, ...; null în afara perioadelor
+   export function entriesToday(roomId: string, entries: ScheduleEntry[], now: Date): ScheduleEntry[]
+   ```
+   - data se calculează în `Europe/Bucharest`, nu în UTC;
+   - săptămânile încep lunea, se numără din prima perioadă și continuă după vacanță;
+   - `entriesToday` filtrează după sală, zi și paritate, apoi sortează după `start`.
+
+4. **`server/status.ts`**: în afara perioadelor → `{ status: "unknown", until: null }`; altfel folosește `entriesToday`.
+
+5. **`server/get-room.ts`**: `today` vine din `entriesToday`. **`data/schedule.ts`**: marchează câteva ore cu `weeks`.
+
+6. **Teste** `tests/unit/calendar.test.ts`: prima și ultima zi din perioadă, vacanța, numărarea peste vacanță, granița de zi între UTC și România, ora impară într-o săptămână pară, intrările fără `weeks`. Testele existente trebuie să treacă neschimbate, cu o singură excepție: cazul de oră de vară din `status.test.ts` folosește `2026-06-15`, care iese din perioade, așa că îl muți pe `2026-10-05T10:30:00Z` (tot luni, tot 13:30 în România).
+
+#### Gata când
+- [ ] Un test demonstrează că aceeași oră ocupă sala într-o săptămână și o lasă liberă în următoarea.
+- [ ] În 24 decembrie 2026 toate sălile sunt `unknown`, iar filtrul „Doar libere acum” nu le arată.
+- [ ] Lint, typecheck, teste verzi; PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-20 `[ ]` `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be12-room-week`
+
+#### De ce
+Studentul nu caută doar o sală acum, ci și una pentru mâine sau joi după-amiază. Endpointul dă TODO-21 tot ce îi trebuie, inclusiv intervalele libere gata calculate.
+
+#### Depinde de
+Nimic. Ține tipurile în fișierul tău, nu în `types.ts`.
+
+#### Ce ai de făcut
+
+1. **`features/rooms/server/get-week.ts`**:
+   ```ts
+   export interface FreeSlot { start: string; end: string }
+   export interface RoomWeekDay { day: ScheduleEntry["day"]; entries: ScheduleEntry[]; freeSlots: FreeSlot[] }
+   export interface RoomWeek { roomId: string; code: string; buildingName: string; days: RoomWeekDay[] } // mereu 7 zile
+   export function freeSlots(entries: ScheduleEntry[]): FreeSlot[]
+   export function getRoomWeek(id: string): RoomWeek | null
+   ```
+   - `freeSlots` calculează golurile dintre 08:00 și 20:00, într-o singură zi. Orele lipite sau suprapuse se unesc.
+   - O oră doar din săptămânile pare sau impare (după TODO-19) contează ca ocupată: mai bine pierdem un interval decât să trimitem pe cineva într-o sală plină. Scrie asta într-un comentariu.
+
+2. **`app/api/rooms/[id]/week/route.ts`**: `GET`, cu `RoomWeek` sau `404 { "error": "Room not found" }`, ca la `app/api/rooms/[id]/route.ts`.
+
+3. **Teste** `tests/unit/get-week.test.ts`: zi goală → 08:00-20:00; ore lipite; ore suprapuse; oră la marginea zilei (08:00 sau 20:00), fără interval gol; ore în afara ferestrei; sală inexistentă; mereu 7 zile; intrările doar ale sălii cerute, sortate.
+
+#### Gata când
+- [ ] `curl localhost:3000/api/rooms/c-512/week` întoarce 7 zile, cu orele și intervalele libere corecte.
+- [ ] `curl -i localhost:3000/api/rooms/nu-exista/week` întoarce 404.
+- [ ] Lint, typecheck, teste verzi; PR revizuit de cine are TODO-21.
+
 ---
 
 ## Frontend
@@ -828,3 +1017,135 @@ TODO-10 pentru filtrare; poți scrie componenta și înainte, pentru că ea doar
 - [ ] Refresh pe `/rooms?minFreeHours=2` păstrează opțiunea aleasă.
 - [ ] Checklist-ul e actualizat și rulat o dată, cu rezultatele în PR sau într-un issue.
 - [ ] Lint, typecheck, teste verzi; PR revizuit de cine are TODO-10.
+
+### TODO-21 `[ ]` Pagina `/rooms/[id]/week`: orarul pe săptămână
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe9-room-week`
+
+#### De ce
+Pagina sălii arată doar ziua de azi. De aici studentul își poate planifica săptămâna: vede când are sala ore și când e liberă.
+
+#### Depinde de
+TODO-20 pentru endpoint: până intră, lucrezi cu un mock `RoomWeek`, iar tipul îl copiezi temporar. TODO-13 pentru linkul din pagina sălii.
+
+#### Ce ai de făcut
+
+1. **`features/rooms/components/RoomWeek.tsx`**: `RoomWeek({ week, today }: { week: RoomWeek; today: number })`
+   - câte un bloc pe zi, de la „Luni” la „Duminică”, pe o coloană. Fără tabel lat, ca să meargă pe telefon;
+   - sâmbăta și duminica apar doar dacă au ore;
+   - în fiecare zi, orele (`10:00–12:00 · Baze de date · Seminar 211`) și intervalele libere (`Liberă 12:00–14:00`), în ordinea orei;
+   - ziua de azi e evidențiată și are textul „Azi”, nu doar altă culoare;
+   - dacă `weeks` există (după TODO-19), afișezi „săpt. impară” sau „săpt. pară”. Cine intră al doilea dintre TODO-19 și TODO-21 adaugă eticheta.
+
+2. **`app/(app)/rooms/[id]/week/page.tsx`** (`"use client"`):
+   - `fetch` la `/api/rooms/{id}/week`, cu stările de încărcare, eroare cu „Reîncearcă” și sală inexistentă (refolosește `not-found.tsx`), ca în `rooms/[id]/page.tsx`;
+   - link „← Înapoi la sală”;
+   - ziua de azi vine din `bucharestNow(new Date()).day`;
+   - textul „Date demonstrative, nu orarul real.”
+
+3. **Excepția planificată:** în `app/(app)/rooms/[id]/page.tsx`, un link „Vezi toată săptămâna” sub `RoomSchedule`.
+
+4. **Teste** `tests/unit/room-week.test.tsx`, cu `renderToStaticMarkup`: ordinea zilelor, weekend-ul ascuns când e gol și vizibil când are ore, „Azi” pe ziua corectă, orele și intervalele libere.
+
+#### Gata când
+- [ ] Din pagina sălii ajungi la săptămâna ei și înapoi.
+- [ ] `/rooms/nu-exista/week` arată „Sala nu există”, nu o eroare.
+- [ ] Fără scroll orizontal la 375px; screenshot-uri în PR. Niciun mock rămas; lint, typecheck, teste verzi; PR revizuit de cine are TODO-20.
+
+### TODO-22 `[ ]` Bazele traducerilor RO / EN
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe10-i18n`
+
+#### De ce
+Aplicația trebuie să fie în română și engleză, cu româna implicită (CLAUDE.md §5). Cu cât amânăm, cu atât sunt mai multe texte de mutat. Construim mecanismul și îl dovedim pe câteva fișiere pe care nu le atinge nimeni acum; restul se mută după etapa a 2-a.
+
+#### Depinde de
+Nimic. **Nu muta textele din alte componente**, ca să nu intri în conflict cu etapa a 2-a. Fără biblioteci noi.
+
+#### Ce ai de făcut
+
+1. **`lib/i18n/messages.ts`**: `export const messages = { ro: {...}, en: {...} }`, cu tipuri stricte, astfel încât o cheie lipsă dintr-o limbă să fie eroare la `typecheck`. Mesajele cu valori sunt funcții, de exemplu `freeUntil: (time: string) => ...`.
+
+2. **`lib/i18n/use-locale.ts`**: `useLocale()` și `setLocale()`, cu limba păstrată în `localStorage` (`ubb.locale`), citite prin `useSyncExternalStore`. Pe server limba e mereu `ro`, ca să nu apară erori de hidratare. O valoare necunoscută înseamnă `ro`. Când se schimbă limba, actualizează și `document.documentElement.lang`.
+
+3. **`components/ui/LanguageSwitcher.tsx`**: butoane „RO” și „EN”, cu `aria-pressed`.
+
+4. **Folosește traducerile în:** `components/ui/StatusBadge.tsx`, `app/page.tsx` (cu `LanguageSwitcher` pe pagină) și `app/(app)/rooms/not-found.tsx`.
+   Textele românești rămân identice, ca testele existente să treacă neschimbate.
+
+5. **Teste** `tests/unit/i18n.test.ts`: ambele limbi au aceleași chei, valoarea necunoscută din `localStorage` devine `ro`, mesajele cu ore sunt corecte în ambele limbi.
+
+6. Notează în PR lista componentelor rămase de mutat și adaug-o ca item nou în `TODO.md`.
+
+#### Gata când
+- [ ] Pe `/`, „EN” traduce pagina, iar după refresh limba rămâne aleasă.
+- [ ] În engleză, `StatusBadge` din `/rooms` e tradus, iar restul paginii rămâne în română până la mutarea textelor.
+- [ ] În consolă nu apar erori de hidratare. Lint, typecheck, teste verzi; PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-23 `[ ]` Aplicație instalabilă: manifest, iconițe și pagină offline
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe11-pwa`
+
+#### De ce
+Studenții o vor folosi de pe telefon, pe hol, între ore. Dacă o pot pune pe ecranul principal, o și deschid (CLAUDE.md §1). Partea delicată e să nu arătăm niciodată o stare veche de sală ca și cum ar fi actuală.
+
+#### Depinde de
+Nimic. Citește întâi ghidul pentru PWA din `apps/web/node_modules/next/dist/docs/`.
+
+#### Ce ai de făcut
+
+1. **`public/manifest.webmanifest`**: nume, `start_url: "/rooms"`, `display: "standalone"`, culori, iconițe. **`public/icons/`**: 192×192, 512×512 și o variantă `maskable`, cu un design simplu făcut de voi.
+
+2. **`app/layout.tsx`**: legătura către manifest și metadatele pentru telefon, prin `metadata` și `viewport`.
+
+3. **`public/offline.html`**: pagină simplă: „Nu ai conexiune. Starea sălilor nu poate fi verificată acum.”
+
+4. **`public/sw.js`**: un service worker minim:
+   - salvează în cache `offline.html` și iconițele;
+   - navigarea merge la rețea, iar `offline.html` apare doar dacă rețeaua pică;
+   - **`/api/*` nu se salvează niciodată în cache**, pentru că o stare veche e mai rea decât niciuna. Scrie regula într-un comentariu.
+
+5. **`components/RegisterServiceWorker.tsx`**: înregistrează `sw.js`, doar în producție. **`next.config.ts`**: `Cache-Control: no-cache` pentru `/sw.js`, ca actualizările să ajungă la utilizatori.
+
+6. Actualizează `CLAUDE.md`: fișierele PWA există acum.
+
+#### Gata când
+- [ ] Cu `pnpm build` și `pnpm --filter web start`, Chrome DevTools → Application arată manifestul valid și service worker-ul activ.
+- [ ] Aplicația se poate instala și se deschide pe `/rooms`.
+- [ ] În modul offline, o pagină arată mesajul din `offline.html`, iar în Network/Cache Storage nu apare niciun răspuns de la `/api/`.
+- [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build` trec; screenshot-uri în PR; PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-24 `[ ]` Teste end-to-end cu Playwright
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe12-playwright`
+
+#### De ce
+Testele unitare nu ne spun dacă paginile merg împreună, iar checklist-ul de QA se rulează de mână. Când intră mulți oameni pe `main` în același weekend, un test automat prinde repede ce s-a stricat.
+
+#### Depinde de
+Nimic. Ești **singurul din etapa asta care modifică `package.json` și `pnpm-lock.yaml`**. Dacă altcineva chiar are nevoie de o dependență, vorbiți pe grup.
+
+#### Ce ai de făcut
+
+1. Adaugă `@playwright/test` în `apps/web` și scripturile `test:e2e`, în `apps/web/package.json` și în `package.json` din rădăcină. `vitest.config.ts` caută deja doar în `tests/unit/`, deci nu trebuie schimbat.
+
+2. **`playwright.config.ts`**: doar Chromium, plus un profil de telefon, cu `webServer` care pornește aplicația singur.
+
+3. **`tests/e2e/rooms.spec.ts`**, pe parcursurile din `docs/qa/studyroom-onboarding.md`:
+   - `/` → butonul duce la `/rooms?freeOnly=1`;
+   - `/rooms` arată cele 9 săli;
+   - filtrul Prize → `?outlets=1` și sălile C510, C512, L001, Gamma, S12; Resetează le aduce pe toate înapoi; refresh-ul păstrează filtrele;
+   - card → detaliu → înapoi;
+   - `/rooms/nu-exista` arată „Sala nu există”;
+   - fără scroll orizontal la 375px.
+
+4. **Regula importantă:** nu verifica starea „liberă” sau „ocupată”, pentru că depinde de ora la care rulează testul, iar CI-ul ar pica aleatoriu. Stările sunt acoperite de testele unitare.
+
+5. **`.github/workflows/ci.yml`**: un job separat `e2e` care instalează Chromium și rulează testele, cu raportul salvat ca artefact când pică.
+
+6. Actualizează §2 din `CLAUDE.md`: `pnpm test:e2e` merge acum și nu are nevoie de Supabase.
+
+#### Gata când
+- [ ] `pnpm test:e2e` trece local, de cel puțin 3 ori la rând, și în CI.
+- [ ] Un test stricat intenționat face CI-ul roșu (dovada în PR, apoi scoți modificarea).
+- [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec; PR revizuit de un coleg din cealaltă jumătate.
