@@ -23,7 +23,7 @@
 | TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
 | TODO-06 | `[ ]` | Frontend | Pagina `/rooms`: lista de săli | — |
 | TODO-07 | `[DONE]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | Bogdan Buruian |
-| TODO-08 | `[ ]` | Frontend | Bara de filtre și checklist-ul de QA | — |
+| TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan |
 
 ---
 
@@ -420,9 +420,11 @@ TODO-05 (`StatusBadge`, `not-found`) și TODO-01 (tipuri) pe `main`. Endpointul 
 - [ ] O sală cu ore azi și una fără ore arată corect; screenshot-uri în PR, inclusiv pe telefon.
 - [ ] Niciun mock rămas. Lint și typecheck verzi; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-08 `[ ]` Bara de filtre și checklist-ul de QA
+### TODO-08 `[DONE]` Bara de filtre și checklist-ul de QA
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe4-filters`
+**Asignat:** Bogdan · **Val:** 2 · **Branch:** `feat/srf-fe4-filters`
+
+`RoomFilters` salvează filtrele în URL și checklist-ul de QA e în `docs/qa/studyroom-onboarding.md`. Rămân de făcut după TODO-06: integrarea în `page.tsx` și prima rulare a checklist-ului. PR: _(de completat linkul)_
 
 #### De ce
 Filtrele fac lista utilă („o sală liberă cu prize, pentru 30 de oameni”). Pentru că sunt salvate în URL, un link trimis unui coleg deschide aceeași căutare. Iar ca om de QA, tu verifici la final că totul merge cap-coadă.
