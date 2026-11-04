@@ -1,6 +1,6 @@
 # TODO — UBB Campus
 
-**Sprintul curent: StudyRoom Finder, onboarding.** Fișierul conține doar cele 8 taskuri ale sprintului, ca să ne obișnuim cu workflow-ul.
+**Sprintul curent: StudyRoom Finder.** Etapa 1 (onboarding, TODO-01..08) e gata; acum lucrăm la etapa a 2-a (TODO-09..16): 4 itemi de backend și 4 de frontend. Fișierul conține doar itemii sprintului.
 
 ## Cum folosim fișierul
 
@@ -24,6 +24,14 @@
 | TODO-06 | `[DONE]` | Frontend | Pagina `/rooms`: lista de săli | Raul           |
 | TODO-07 | `[DONE]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | Bogdan Buruian |
 | TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan         |
+| TODO-09 | `[ ]` | Backend | Check-in: contractul, stocarea și endpointurile | _(liber)_      |
+| TODO-10 | `[ ]` | Backend | Filtrul „liberă cel puțin N ore” | _(liber)_      |
+| TODO-11 | `[ ]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | _(liber)_      |
+| TODO-12 | `[ ]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | _(liber)_      |
+| TODO-13 | `[ ]` | Frontend | Butonul de check-in pe pagina sălii | _(liber)_      |
+| TODO-14 | `[ ]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | _(liber)_      |
+| TODO-15 | `[ ]` | Frontend | Pagina `/rooms/plan`: planul clădirii | _(liber)_      |
+| TODO-16 | `[ ]` | Frontend | Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a | _(liber)_      |
 
 ---
 
@@ -148,6 +156,87 @@ Review-ul îl face cineva din cealaltă jumătate (backend revizuiește frontend
 
 ---
 
+## Etapa a 2-a (TODO-09..16)
+
+Ducem StudyRoom Finder mai aproape de MVP: **check-in**, **plan al clădirii**, **filtrul „liberă cel puțin N ore”** și primul pas spre **orarul real**. Filtrele de prize și proiector există deja din etapa 1. Rămânem tot fără Supabase, fără Docker și fără login, iar workflow-ul, regulile scurte și regula „un om, un item” sunt cele de mai sus.
+
+**Atenție la numere:** itemii din acest fișier au numerotarea lor. TODO-16 de aici nu e același lucru cu TODO-16 din backlog; când ne referim la backlog scriem „backlog #22”, ca în cod.
+
+### Fișiere și regula anti-conflicte
+
+| TODO | Parte | Fișiere proprii (relativ la `apps/web/`) |
+|---|---|---|
+| TODO-09 | Backend | `features/rooms/types.ts`, `features/rooms/server/checkins.ts`, `app/api/rooms/[id]/checkins/`, `app/api/checkins/` |
+| TODO-10 | Backend | `features/rooms/server/list-rooms.ts`, `parse-filters.ts`, `free-for.ts` |
+| TODO-11 | Backend | `features/rooms/data/floor-plans.ts`, `features/rooms/server/get-plan.ts`, `app/api/buildings/[id]/plan/` |
+| TODO-12 | Backend | În afara `apps/web/`: `scripts/schedule-import/`, jobul `importer` din `.github/workflows/ci.yml`, `.gitignore`, nota de status din `CLAUDE.md` |
+| TODO-13 | Frontend | `features/rooms/components/CheckinButton.tsx`, `app/(app)/rooms/[id]/page.tsx` |
+| TODO-14 | Frontend | `features/rooms/components/CheckinSignal.tsx`, `RoomCard.tsx`, `RoomHeader.tsx`, `RoomList.tsx` |
+| TODO-15 | Frontend | `app/(app)/rooms/plan/page.tsx`, `features/rooms/components/FloorPlan.tsx`, `app/(app)/layout.tsx` |
+| TODO-16 | Frontend | `features/rooms/components/RoomFilters.tsx`, `docs/qa/studyroom-onboarding.md` |
+
+**O singură excepție planificată:** TODO-09 adaugă câte o linie în `get-room.ts` și `list-rooms.ts` și completează câmpul nou în fixture-urile din `room-detail.test.tsx` și `room-list.test.tsx`, pentru că altfel nu compilează. De aceea intră primul. Nimeni în afară de TODO-09 nu modifică `types.ts`. Niciun item din etapa asta nu are nevoie de dependențe noi în `apps/web`, deci `package.json` și lockfile-ul rămân neatinse.
+
+### Ordinea de merge
+
+1. **Valul 1:** doar TODO-09. Ține PR-ul mic; restul depind de tipurile lui. Anunți pe grup când e pe `main`.
+2. **Valul 2:** toți ceilalți, în orice ordine. Frontendul lucrează pe mock-uri până apar endpointurile. TODO-12 nu depinde de nimeni și poate porni imediat.
+
+Dependențe: TODO-13 și TODO-14 → TODO-09 · TODO-15 → TODO-11 · TODO-16 → TODO-10.
+
+### Completări la contract (le scrie TODO-09 în `types.ts`, exact așa)
+
+```ts
+export interface RoomWithStatus extends Room, StatusResult {
+  buildingName: string;
+  activeCheckins: number; // câte check-in-uri neexpirate are sala acum
+}
+
+export interface Checkin {
+  id: string;
+  roomId: string;
+  createdAt: string; // ISO 8601
+  expiresAt: string; // ISO 8601
+}
+
+export interface PlacedRoom extends RoomWithStatus {
+  row: number; // de la 1
+  col: number; // de la 1 la 3
+}
+
+export interface BuildingFloor {
+  floor: number;
+  rooms: PlacedRoom[];
+}
+
+export interface BuildingPlan {
+  building: Building;
+  floors: BuildingFloor[]; // sortate crescător după floor
+}
+```
+
+Endpointuri noi:
+
+| Endpoint | Răspuns | Owner |
+|---|---|---|
+| `POST /api/rooms/[id]/checkins` | `201` cu `Checkin`, sau `404 { "error": "Room not found" }` | TODO-09 |
+| `DELETE /api/checkins/[id]` | `204`, sau `404 { "error": "Check-in not found" }` | TODO-09 |
+| `GET /api/rooms?...&minFreeHours=2` | parametru nou pentru lista existentă | TODO-10 |
+| `GET /api/buildings/[id]/plan` | `BuildingPlan`, sau `404 { "error": "Building not found" }` | TODO-11 |
+
+**Regula care nu se schimbă (CLAUDE.md §4):** check-in-urile **nu** modifică `status`. O sală poate fi „liberă” după orar și să aibă 2 persoane înăuntru, iar UI-ul le arată pe amândouă. Nu le comasați într-o singură stare: tocmai dezacordul dintre ele e informația utilă.
+
+### Ce rămâne deschis după etapa asta
+
+- **Check-in-urile stau în memorie și sunt anonime.** Se pierd la restart, pe Vercel instanțele pot vedea numere diferite, iar oricine poate apăsa de mai multe ori. E acceptabil doar pentru demo. Ce trebuie: Supabase și login (backlog #08, #22).
+- **Supabase nu e început**, ca să nu blocăm echipa pe conturi și Docker. Ce trebuie: cele două proiecte (`dev`, `prod`), apoi schema și RLS (backlog #04, #52, #53). E pasul natural pentru etapa următoare.
+- **`computeStatus` nu știe de săptămâni pare/impare, semestru, sărbători.** Ce trebuie: datele reale din importer și o decizie despre ce arătăm când nu există orar (backlog #19).
+- **Importerul nu descarcă singur și nu scrie nicăieri.** Ce trebuie: răspunsul la OQ-8 (de unde luăm orarul și dacă avem voie să-l descărcăm automat).
+- **Planul e o schemă demo, nu planul real.** Ce trebuie: răspunsul la OQ-6 (cine desenează planurile) și lista reală de săli (backlog #16).
+- **Locuri libere și dotări la check-in** (backlog #22) nu intră acum, ca să ținem itemii mici. Ce trebuie: să validăm mai întâi check-in-ul simplu.
+
+---
+
 ## Backend
 
 ### TODO-01 `[DONE]` Fundația: tipuri, date hardcodate și `GET /api/buildings`
@@ -253,9 +342,11 @@ TODO-01 pe `main` (tipuri, `rooms`, `buildings`, `scheduleEntries`, stub-ul `com
 - [ ] Testele trec; lint și typecheck verzi.
 - [ ] PR revizuit de cine are TODO-06 (consumă endpointul, deci verifică și forma răspunsului).
 
-### TODO-03 `[~]` Motorul de stare: e sala liberă acum?
+### TODO-03 `[DONE]` Motorul de stare: e sala liberă acum?
 
 **Asignat:** Alexia · **Val:** 2 · **Branch:** `feat/srf-be3-status`
+
+`computeStatus` calculează starea sălii în ora României, inclusiv orele lipite, cu teste. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/4
 
 #### De ce
 E inima aplicației. Acum e o funcție TypeScript; mai târziu devine funcția SQL `room_status` din Postgres, cu aceleași cazuri de test. De aceea testele contează mai mult decât codul.
@@ -290,9 +381,11 @@ TODO-01 pe `main` (tipuri, `bucharestNow`, stub-ul din `status.ts`). Înlocuieș
 - [ ] Cu TODO-02 pe main, `/api/rooms` arată stări `free` / `occupied`, nu doar `unknown`.
 - [ ] Lint și typecheck verzi; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-04 `[ ]` Orarul hardcodat și `GET /api/rooms/[id]`
+### TODO-04 `[DONE]` Orarul hardcodat și `GET /api/rooms/[id]`
 
 **Asignat:** Diana · **Val:** 2 · **Branch:** `feat/srf-be4-room-detail`
+
+Orarul demo, `getRoomDetail` și `GET /api/rooms/[id]` sunt făcute, cu teste. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/5
 
 #### De ce
 Fără orar toate sălile sunt libere tot timpul și nu vedem nimic interesant. Datele tale țin locul importerului real, iar endpointul de detaliu alimentează pagina sălii (TODO-07).
@@ -323,13 +416,158 @@ TODO-01 pe `main`. Folosește `computeStatus` (stub până intră TODO-03; nu-l 
 - [ ] `curl -i localhost:3000/api/rooms/nu-exista` întoarce 404.
 - [ ] Testele trec; lint și typecheck verzi; PR revizuit de un coleg din cealaltă jumătate.
 
+### TODO-09 `[ ]` Check-in: contractul, stocarea și endpointurile
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 1, intră primul pe `main` · **Branch:** `feat/srf-be5-checkins`
+
+#### De ce
+Orarul spune ce ar trebui să se întâmple într-o sală; check-in-ul spune ce se întâmplă de fapt. E cerință de MVP (backlog #22). Fără login și fără bază de date îl facem cât mai simplu, dar cu forma pe care o va păstra și după Supabase.
+
+#### Depinde de
+Nimic. Ceilalți depind de tine pentru tipuri, așa că ține PR-ul mic.
+
+#### Ce ai de făcut
+
+1. **`apps/web/features/rooms/types.ts`**: adaugă exact completările din secțiunea „Completări la contract”.
+
+2. **`apps/web/features/rooms/server/checkins.ts`**: stocarea în memorie, cu `now` primit ca parametru ca să se poată testa expirarea:
+   ```ts
+   export const CHECKIN_TTL_MS = 2 * 60 * 60 * 1000; // 2 ore
+   export function addCheckin(roomId: string, now: Date): Checkin
+   export function removeCheckin(id: string, now: Date): boolean // false dacă nu există sau a expirat
+   export function countActiveCheckins(roomId: string, now: Date): number
+   export function resetCheckins(): void // doar pentru teste
+   ```
+   - Ține datele pe `globalThis`, nu într-o variabilă de modul: fiecare route handler poate fi împachetat separat și ar vedea altă copie. Scrie motivul într-un comentariu.
+   - Un check-in expirat nu se numără, indiferent dacă a fost sau nu șters. Curăță-le pe cele expirate la fiecare `addCheckin`, ca lista să nu crească la nesfârșit.
+   - `id` cu `crypto.randomUUID()`. Nu stoca nimic despre utilizator.
+   - Comentariu sus: stocare temporară pentru demo, se pierde la restart, o înlocuiește Supabase.
+
+3. **`apps/web/app/api/rooms/[id]/checkins/route.ts`**: `POST`, fără body, conform tabelului de endpointuri. Verifică sala în `rooms`.
+
+4. **`apps/web/app/api/checkins/[id]/route.ts`**: `DELETE`, conform tabelului. La `204` răspunsul nu are corp: `new NextResponse(null, { status: 204 })`.
+   Ambele rute au `export const dynamic = "force-dynamic"`, iar `params` e `Promise`, ca la `app/api/rooms/[id]/route.ts`.
+
+5. **Excepția planificată:** o linie `activeCheckins: countActiveCheckins(room.id, now)` în `get-room.ts` și una în `list-rooms.ts`, plus `activeCheckins: 0` în fixture-urile din `room-detail.test.tsx` și `room-list.test.tsx`. Nu schimba `status`, sortarea sau filtrele.
+
+6. **Teste** `apps/web/tests/unit/checkins.test.ts` (cu `resetCheckins()` în `beforeEach`): numărarea pe sală, două săli separate, expirarea exact la 2 ore (o oră și 59 de minute se numără, 2 ore nu), `removeCheckin` pe id inexistent și pe id expirat, rutele `POST` (201, 404) și `DELETE` (204, 404), și faptul că un check-in schimbă `activeCheckins`, dar nu și `status`.
+
+#### Gata când
+- [ ] `curl -X POST localhost:3000/api/rooms/c-510/checkins` întoarce 201, iar `curl localhost:3000/api/rooms/c-510` arată `activeCheckins: 1`.
+- [ ] `curl -i -X POST localhost:3000/api/rooms/nu-exista/checkins` întoarce 404.
+- [ ] Check-in-ul se vede și în `GET /api/rooms` (dovada că stocarea e comună pentru toate rutele).
+- [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec; PR revizuit de un coleg din cealaltă jumătate; anunți pe grup că „TODO-09 e pe main”.
+
+### TODO-10 `[ ]` Filtrul „liberă cel puțin N ore”
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be6-free-for`
+
+#### De ce
+„Liberă” nu ajută dacă sala se ocupă peste 10 minute. Filtrul e în lista de MVP (backlog #20) și e singurul care lipsește din etapa 1.
+
+#### Depinde de
+TODO-09 pe `main` (doar ca să eviți un rebase pe `list-rooms.ts`).
+
+#### Ce ai de făcut
+
+1. **`apps/web/features/rooms/server/free-for.ts`**: funcție pură:
+   ```ts
+   export function isFreeFor(result: StatusResult, minHours: number, now: Date): boolean
+   ```
+   - `occupied` și `unknown` → `false` (o sală necunoscută nu e niciodată considerată liberă);
+   - `free` cu `until: null` (fără alte ore azi) → `true`;
+   - `free` cu `until` → minutele dintre `bucharestNow(now).time` și `until` trebuie să fie cel puțin `minHours * 60`. Limita e inclusă: la 10:00, cu `until` 12:00, sala trece pentru 2 ore.
+
+2. **`list-rooms.ts`**: `minFreeHours?: number` în `RoomFilters`, aplicat cu `isFreeFor`. Sortarea rămâne aceeași.
+
+3. **`parse-filters.ts`**: `minFreeHours` după aceleași reguli ca `minCapacity`: număr finit și pozitiv, altfel ignorat.
+
+4. **Teste** `apps/web/tests/unit/free-for.test.ts`: toate cazurile de la pasul 1, inclusiv limita exactă și un minut sub limită, fusul orar (`now` dat în UTC), `parseFilters` cu `abc`, `0`, `-1`, și filtrul combinat cu `buildingId`. Controlează starea cu `vi.mock`, ca în `list-rooms.test.ts`, ca testul să nu depindă de ora la care rulează.
+
+#### Gata când
+- [ ] `curl "localhost:3000/api/rooms?minFreeHours=2"` nu întoarce nicio sală ocupată sau una care se ocupă în mai puțin de 2 ore.
+- [ ] `curl "localhost:3000/api/rooms?minFreeHours=abc"` întoarce toate sălile, nu eroare.
+- [ ] Testele trec; lint și typecheck verzi; PR revizuit de cine are TODO-16.
+
+### TODO-11 `[ ]` Planul clădirii: date și `GET /api/buildings/[id]/plan`
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be7-building-plan`
+
+#### De ce
+„Hartă sau plan al clădirii” e în MVP (backlog #21). Cine desenează planurile reale e încă o întrebare deschisă (OQ-6), așa că pornim de la o schemă pe grilă: fiecare sală are un rând și o coloană pe etajul ei. Dacă primim planuri reale, se schimbă datele și desenul, nu și stările.
+
+#### Depinde de
+TODO-09 pe `main` (tipurile `BuildingPlan`, `BuildingFloor`, `PlacedRoom`).
+
+#### Ce ai de făcut
+
+1. **`apps/web/features/rooms/data/floor-plans.ts`**: `export const roomPositions: Record<string, { row: number; col: number }>`, cu o poziție pentru fiecare sală din `rooms.ts`, pe maximum 3 coloane (ca să încapă pe telefon). Comentariu sus: `// Demo layout, not the real floor plan. See OQ-6.`
+
+2. **`apps/web/features/rooms/server/get-plan.ts`**: `getBuildingPlan(id: string, now: Date): BuildingPlan | null`
+   - `null` dacă nu există clădirea;
+   - refolosește `listRooms({ buildingId: id }, now)`, ca stările și check-in-urile să fie calculate într-un singur loc;
+   - grupează pe etaje, sortate crescător; în cadrul etajului, sălile sortate după `row`, apoi `col`.
+
+3. **`apps/web/app/api/buildings/[id]/plan/route.ts`**: `GET` cu `force-dynamic`, `BuildingPlan` sau 404 conform tabelului.
+
+4. **Teste** `apps/web/tests/unit/building-plan.test.ts`:
+   - test de date: fiecare sală are poziție, fiecare cheie din `roomPositions` e o sală existentă, `col` e între 1 și 3, două săli de pe același etaj nu au aceeași poziție;
+   - clădire inexistentă → `null`;
+   - clădirea conține doar sălile ei, iar etajele sunt sortate.
+
+#### Gata când
+- [ ] `curl localhost:3000/api/buildings/fmi-central/plan` întoarce etajele 0, 1 și 5, cu sălile și stările lor.
+- [ ] `curl -i localhost:3000/api/buildings/nu-exista/plan` întoarce 404.
+- [ ] Testele trec; lint și typecheck verzi; PR revizuit de cine are TODO-15.
+
+### TODO-12 `[ ]` Importerul de orar: parser FMI pe fișiere salvate
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2, poate porni imediat · **Branch:** `feat/srf-be8-importer-parser`
+
+#### De ce
+Orarul real e ce transformă demo-ul în produs, iar partea riscantă e formatul paginilor. O verificăm devreme, cu un program Python separat (CLAUDE.md §1 și §3.3), fără să atingem aplicația. Rezultatul ne spune și ce coduri de săli există de fapt, deci ajută la catalogul real (backlog #16).
+
+#### Depinde de
+Nimic. **Nu descărca automat** paginile: dacă avem voie și de unde, e OQ-8, încă deschisă. Salvezi manual din browser 2-3 pagini publice ale orarului FMI și le folosești ca fixture-uri.
+
+#### Ce ai de făcut
+
+1. **`scripts/schedule-import/`** (la rădăcina repo-ului), Python 3.12:
+   - `requirements.txt` cu `beautifulsoup4` și `pytest`;
+   - `schedule_import/models.py`: dataclass-ul `ScheduleRow` cu `room_code`, `day` (1-7), `start`, `end`, `subject`, `group`, `parity` (`"all"`, `"odd"`, `"even"`);
+   - `schedule_import/adapters/base.py`: interfața comună `fetch() -> raw` și `parse(raw) -> list[ScheduleRow]`;
+   - `schedule_import/adapters/fmi.py`: tot ce ține de formatul FMI stă **doar** aici, în codul comun nu intră nimic specific unei facultăți;
+   - `schedule_import/__main__.py`: `python -m schedule_import --faculty fmi --dry-run --from-file <fișier.html>`.
+
+2. **Comportament:**
+   - `parse` scoate orele mereu ca `"HH:MM"` cu două cifre (`8` → `"08:00"`), pentru că `computeStatus` le compară ca text;
+   - o pagină cu format necunoscut dă o eroare clară, nu o listă goală tăcută;
+   - fără `--from-file`, programul se oprește cu un mesaj care trimite la OQ-8;
+   - programul nu scrie nicăieri: rândurile ies ca JSON la stdout, iar la stderr un rezumat (câte rânduri, câte pe zi, lista codurilor de săli găsite).
+
+3. **Teste** `scripts/schedule-import/tests/test_fmi_parser.py`, pe fixture-urile din `tests/fixtures/`: numărul de rânduri, un rând verificat manual câmp cu câmp, paritatea, formatul orelor, pagina cu format necunoscut.
+
+4. **Infrastructură:**
+   - un job `importer` în `.github/workflows/ci.yml` care instalează dependențele și rulează `pytest`;
+   - `.venv/` și `__pycache__/` în `.gitignore`;
+   - `README.md` scurt în `scripts/schedule-import/` (cum rulezi, de unde sunt fixture-urile și când au fost salvate);
+   - actualizează `CLAUDE.md` (nota de status de sus și §2), ca să spună adevărul despre ce există acum.
+
+#### Gata când
+- [ ] Comanda de la pasul 1 pe un fixture real tipărește rânduri corecte, verificate manual pe câteva ore din orar.
+- [ ] `pytest` trece local și în CI.
+- [ ] Niciun apel de rețea în cod și nicio dependență față de `apps/web`.
+- [ ] În PR: lista codurilor de săli găsite și ce a fost ciudat în format (o să ne trebuiască pentru OQ-8 și backlog #16). PR revizuit de un coleg din cealaltă jumătate.
+
 ---
 
 ## Frontend
 
-### TODO-05 `[~]` Layout, navigare, pagina de start și `StatusBadge`
+### TODO-05 `[DONE]` Layout, navigare, pagina de start și `StatusBadge`
 
 **Asignat:** Tudor · **Val:** 1, intră primul pe `main` alături de TODO-01 · **Branch:** `feat/srf-fe1-shell`
+
+Layout-ul, pagina de start, `not-found` și `StatusBadge` sunt făcute. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/3
 
 #### De ce
 Toate paginile stau în layout-ul tău, iar TODO-06 și TODO-07 folosesc `StatusBadge`. Ține PR-ul mic ca să intre repede.
@@ -392,9 +630,11 @@ TODO-05 (`StatusBadge`, layout) și TODO-01 (tipuri) pe `main`. Endpointul `GET 
 - [ ] Cele 4 stări se pot vedea (eroarea, de ex. oprind temporar serverul sau schimbând URL-ul fetch-ului local); screenshot-uri în PR, inclusiv pe lățime de telefon.
 - [ ] Niciun mock rămas în cod. Lint și typecheck verzi; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-07 `[ ]` Pagina `/rooms/[id]`: detaliul unei săli
+### TODO-07 `[DONE]` Pagina `/rooms/[id]`: detaliul unei săli
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe3-room-detail`
+**Asignat:** Bogdan Buruian · **Val:** 2 · **Branch:** `feat/srf-fe3-room-detail`
+
+Pagina `/rooms/[id]` arată sala și orarul de azi și se reîmprospătează la 60 de secunde. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/6
 
 #### De ce
 Când studentul alege o sală vrea să știe cât timp e liberă și ce ore are azi. Aici va apărea mai târziu și butonul de favorite și check-in (tot ale tale).
@@ -460,3 +700,131 @@ TODO-01 (tipuri, `GET /api/buildings`) pe `main`. Nu depinde de TODO-06: compone
 - [ ] Refresh pe `/rooms?buildingId=fsega&minCapacity=50` păstrează filtrele afișate.
 - [ ] Checklist-ul de QA e în repo și l-ai rulat o dată, cu rezultatele în comentariul PR-ului sau într-un issue.
 - [ ] Lint și typecheck verzi; PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-13 `[ ]` Butonul de check-in pe pagina sălii
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe5-checkin-button`
+
+#### De ce
+Studentul spune „sunt aici” dintr-un singur gest, iar colegii văd asta imediat. E partea vizibilă din TODO-09.
+
+#### Depinde de
+TODO-09 pe `main` pentru tipuri. Dacă endpointurile întârzie, lucrează cu un `fetch` mock-uit și treci pe cel real înainte de PR.
+
+#### Ce ai de făcut
+
+1. **`apps/web/features/rooms/components/CheckinButton.tsx`** (`"use client"`): `CheckinButton({ roomId, onChange }: { roomId: string; onChange: () => void })`
+   - Pentru că nu avem login, ține check-in-ul curent în `localStorage` (cheia `ubb.checkin`, valoarea e `Checkin` ca JSON). Dacă `expiresAt` a trecut, e ca și cum n-ar exista. Citește `localStorage` doar în browser, nu la randarea pe server.
+   - **Fără check-in activ:** buton „Sunt aici” → `POST /api/rooms/{roomId}/checkins`.
+   - **Check-in activ în sala asta:** „Ești aici până la HH:MM” (ora României, cu `bucharestNow(new Date(expiresAt)).time`) și buton „Am plecat” → `DELETE /api/checkins/{id}`. Un 404 la `DELETE` înseamnă că serverul l-a uitat deja, deci îl ștergi și local, fără mesaj de eroare.
+   - **Check-in activ în altă sală:** „Ai deja check-in în altă sală” cu link spre ea, fără butonul „Sunt aici”.
+   - Butonul e dezactivat cât durează cererea; dacă eșuează: „Nu am putut salva check-in-ul.”
+   - După fiecare schimbare reușită, cheamă `onChange`.
+
+2. **`apps/web/app/(app)/rooms/[id]/page.tsx`**: pune `<CheckinButton />` sub `RoomHeader`, cu `onChange={() => setAttempt((value) => value + 1)}`, ca numărul de persoane să se reîncarce fără să apară din nou „Se încarcă”.
+
+3. **Teste** `apps/web/tests/unit/checkin-button.test.tsx`. Proiectul testează componentele cu `renderToStaticMarkup`, fără jsdom, și nu adăugăm dependențe noi. Scoate logica într-o funcție pură exportată (de ex. `checkinState(stored, roomId, now)` → `"none" | "here" | "elsewhere"`) și testeaz-o: fără valoare, JSON stricat, expirat, sala asta, altă sală.
+
+#### Gata când
+- [ ] „Sunt aici” → apare „Ești aici până la…”, iar numărul crește fără refresh (în pagină după TODO-14; până atunci verifici `activeCheckins` în `GET /api/rooms/{id}`).
+- [ ] Refresh pe pagină păstrează starea; „Am plecat” o scoate și numărul scade.
+- [ ] Pe altă sală apare „Ai deja check-in în altă sală”, cu link corect.
+- [ ] Screenshot-uri în PR, inclusiv pe telefon. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-09.
+
+### TODO-14 `[ ]` Semnalul „persoane aici” și lista care se actualizează singură
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe6-live-signal`
+
+#### De ce
+Asta face check-in-ul util: din listă vezi că o sală „liberă” are deja oameni în ea. În plus, azi lista rămâne neschimbată până dai refresh, deci o oră care se termină nu se vede (pagina sălii se reîmprospătează deja la 60 de secunde).
+
+#### Depinde de
+TODO-09 pe `main` (câmpul `activeCheckins`).
+
+#### Ce ai de făcut
+
+1. **`apps/web/features/rooms/components/CheckinSignal.tsx`**: `CheckinSignal({ count }: { count: number })`
+   - `0` → nu randează nimic;
+   - `1` → „1 persoană aici”; `2`-`19` → „N persoane aici”; de la 20 în sus → „20 de persoane aici”. Scoate textul într-o funcție pură exportată, `checkinLabel(count)`.
+
+2. **`RoomCard.tsx`** și **`RoomHeader.tsx`**: afișează `CheckinSignal` lângă `StatusBadge`, nu în locul lui, și **fără să schimbi culoarea sau textul stării** (regula din „Completări la contract”).
+
+3. **`RoomList.tsx`**: refă fetch-ul la fiecare 60 de secunde, cu `cache: "no-store"`:
+   - scheletul de încărcare apare doar la prima încărcare și când se schimbă filtrele, nu la reîmprospătare, ca lista să nu clipească;
+   - dacă o reîmprospătare eșuează, păstrează lista veche și arată un text mic: „Nu am putut actualiza lista.”; dispare la următoarea reușită;
+   - cleanup corect: `clearInterval` și `abort`, plus un răspuns vechi nu are voie să suprascrie unul nou (vezi cum face `rooms/[id]/page.tsx`).
+
+4. **Teste** `apps/web/tests/unit/checkin-signal.test.tsx`: `checkinLabel` pe 1, 2, 19, 20; `count={0}` nu randează nimic; `RoomCard` cu o sală `free` și `activeCheckins: 2` arată **și** „Liberă”, **și** „2 persoane aici”.
+
+#### Gata când
+- [ ] După un check-in dat cu `curl` (vezi TODO-09), lista arată semnalul în maximum 60 de secunde, fără refresh și fără să clipească.
+- [ ] Cu serverul oprit, lista deja afișată rămâne pe ecran, cu mesajul mic de eroare; revine singură după repornire.
+- [ ] Schimbarea filtrelor funcționează ca înainte. Screenshot-uri în PR; lint, typecheck, teste verzi; PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-15 `[ ]` Pagina `/rooms/plan`: planul clădirii
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe7-plan-page`
+
+#### De ce
+Când ești deja în clădire, e mai ușor să vezi pe etaje ce e liber decât să citești o listă. Acoperă cerința „plan al clădirii” din MVP, cu o schemă simplă.
+
+#### Depinde de
+TODO-11 pentru endpoint: până intră, lucrează cu un obiect mock `BuildingPlan` și treci pe `fetch` înainte de PR. TODO-09 pentru tipuri.
+
+#### Ce ai de făcut
+
+1. **`apps/web/features/rooms/components/FloorPlan.tsx`**: `FloorPlan({ plan }: { plan: BuildingPlan })`
+   - câte o secțiune pe etaj, cu titlul „Parter” sau „Etaj N”;
+   - fiecare etaj e o grilă CSS cu 3 coloane, iar sala stă la poziția ei (`style={{ gridRow: room.row, gridColumn: room.col }}`);
+   - fiecare sală e un link spre `/rooms/{id}`, cu codul, `StatusBadge` și `CheckinSignal` (din TODO-14; dacă nu e încă pe `main`, adaugă-l după ce intră);
+   - starea se înțelege din text, nu doar din culoare; fără scroll orizontal la 375px, textele lungi trec pe rândul următor.
+
+2. **`apps/web/app/(app)/rooms/plan/page.tsx`** (`"use client"`, cu `<Suspense>` pentru `useSearchParams`):
+   - select de clădire din `GET /api/buildings`, salvat în URL ca `?buildingId=` (implicit prima clădire);
+   - `fetch` la `GET /api/buildings/{id}/plan`, reîmprospătat la 60 de secunde;
+   - stările de încărcare, eroare cu „Reîncearcă” și clădire inexistentă, ca la TODO-06;
+   - un text vizibil: „Schemă orientativă, nu planul real al clădirii.”
+
+3. **`apps/web/app/(app)/layout.tsx`**: un link „Plan” spre `/rooms/plan`, lângă „Săli”.
+
+4. **Teste** `apps/web/tests/unit/floor-plan.test.tsx`, cu `renderToStaticMarkup`: etajele în ordine și cu titlul corect, parterul scris „Parter”, linkul spre sală, poziția din `style`, starea afișată.
+
+#### Gata când
+- [ ] `/rooms/plan` arată etajele primei clădiri; schimbarea clădirii actualizează URL-ul și planul, iar refresh-ul le păstrează.
+- [ ] Click pe o sală deschide pagina ei; `/rooms/plan?buildingId=nu-exista` arată un mesaj, nu o eroare.
+- [ ] Linkul „Plan” apare în header; screenshot-uri în PR, inclusiv la 375px.
+- [ ] Niciun mock rămas. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-11.
+
+### TODO-16 `[ ]` Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2, ultimul pe `main` pentru rularea QA · **Branch:** `feat/srf-fe8-free-for-filter`
+
+#### De ce
+Filtrul din TODO-10 are nevoie de un control în pagină. Iar ca la TODO-08, cineva verifică la final că toată etapa merge cap-coadă.
+
+#### Depinde de
+TODO-10 pentru filtrare; poți scrie componenta și înainte, pentru că ea doar scrie în URL. Rularea QA are nevoie de toți ceilalți itemi pe `main`.
+
+#### Ce ai de făcut
+
+1. **`apps/web/features/rooms/components/RoomFilters.tsx`**: un select **Liberă cel puțin** cu opțiunile „Oricât”, „1 oră”, „2 ore”, „3 ore” → `minFreeHours`:
+   - refolosește `setParam`; „Oricât” scoate parametrul din URL;
+   - o valoare din URL care nu e în listă (`minFreeHours=abc`) arată „Oricât”;
+   - „Resetează” îl șterge deja, verifică doar că e așa;
+   - pe telefon rămâne fără scroll orizontal.
+
+2. **`docs/qa/studyroom-onboarding.md`**: secțiuni noi, cu rezultatele așteptate:
+   - **Check-in:** „Sunt aici”, refresh, „Am plecat”, altă sală, numărul din listă și de pe pagina sălii; o sală liberă cu check-in rămâne „Liberă”;
+   - **Reîmprospătare:** lista se actualizează singură, serverul oprit nu golește lista;
+   - **Plan:** schimbarea clădirii, etajele, click pe sală, clădire inexistentă, 375px;
+   - **Filtrul nou:** singur și combinat, copiat în link, cu `minFreeHours=abc`.
+
+3. **Teste** în `apps/web/tests/unit/room-filters.test.tsx`: dacă alegerea opțiunii are logică proprie, scoate-o într-o funcție pură exportată, ca `validMinCapacity`, și testeaz-o.
+
+4. După ce toți ceilalți itemi sunt pe `main`, rulezi checklist-ul complet o dată. Ce e stricat devine item în `TODO.md` sau problemă pe GitHub, nu doar mesaj pe grup.
+
+#### Gata când
+- [ ] Alegerea „2 ore” schimbă URL-ul în `?minFreeHours=2`, iar lista se actualizează (după TODO-10).
+- [ ] Refresh pe `/rooms?minFreeHours=2` păstrează opțiunea aleasă.
+- [ ] Checklist-ul e actualizat și rulat o dată, cu rezultatele în PR sau într-un issue.
+- [ ] Lint, typecheck, teste verzi; PR revizuit de cine are TODO-10.
