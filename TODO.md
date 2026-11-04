@@ -21,7 +21,7 @@
 | TODO-03 | `[DONE]` | Backend | Motorul de stare: e sala liberă acum? | Alexia |
 | TODO-04 | `[DONE]` | Backend | Orarul hardcodat și `GET /api/rooms/[id]` | Diana |
 | TODO-05 | `[DONE]` | Frontend | Layout, navigare, pagina de start și `StatusBadge` | Tudor |
-| TODO-06 | `[ ]` | Frontend | Pagina `/rooms`: lista de săli | — |
+| TODO-06 | `[DONE]` | Frontend | Pagina `/rooms`: lista de săli | MonsieurBili |
 | TODO-07 | `[DONE]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | Bogdan Buruian |
 | TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan |
 
@@ -358,9 +358,11 @@ Doar de scaffold. Pentru tipul `RoomStatus` poți porni din branch-ul celui care
 - [ ] `StatusBadge` arată corect pentru toate cele 4 cazuri (pune un screenshot în PR, ex. randându-le temporar pe pagina de start, și scoate-le înainte de merge).
 - [ ] Lint și typecheck verzi; PR revizuit de un coleg din cealaltă jumătate; anunți pe grup că „TODO-05 e pe main”.
 
-### TODO-06 `[ ]` Pagina `/rooms`: lista de săli
+### TODO-06 `[DONE]` Pagina `/rooms`: lista de săli
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe2-rooms-page`
+**Asignat:** MonsieurBili · **Val:** 2 · **Branch:** `feat/srf-fe2-rooms-page`
+
+Implementată pagina `/rooms`, lista client-side și cardurile de sală; consumă `GET /api/rooms` și integrează filtrele din URL.
 
 #### De ce
 E ecranul principal: studentul deschide aplicația și vede imediat ce săli sunt libere.
