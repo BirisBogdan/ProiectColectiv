@@ -7,36 +7,94 @@ import type { RoomWithStatus } from "@/features/rooms/types";
 
 type LoadState = "loading" | "success" | "error";
 
+function isRoomList(value: unknown): value is RoomWithStatus[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (room: unknown) =>
+        typeof room === "object" &&
+        room !== null &&
+        "id" in room &&
+        typeof room.id === "string" &&
+        "buildingId" in room &&
+        typeof room.buildingId === "string" &&
+        "code" in room &&
+        typeof room.code === "string" &&
+        "buildingName" in room &&
+        typeof room.buildingName === "string" &&
+        "floor" in room &&
+        Number.isInteger(room.floor) &&
+        "capacity" in room &&
+        typeof room.capacity === "number" &&
+        Number.isFinite(room.capacity) &&
+        "hasOutlets" in room &&
+        typeof room.hasOutlets === "boolean" &&
+        "hasProjector" in room &&
+        typeof room.hasProjector === "boolean" &&
+        "status" in room &&
+        (room.status === "free" || room.status === "occupied" || room.status === "unknown") &&
+        "until" in room &&
+        (room.until === null || typeof room.until === "string"),
+    )
+  );
+}
+
 export function RoomList() {
   const searchParams = useSearchParams();
   const query = searchParams.toString();
   const [rooms, setRooms] = useState<RoomWithStatus[]>([]);
   const [state, setState] = useState<LoadState>("loading");
   const [retry, setRetry] = useState(0);
+  const [refreshFailed, setRefreshFailed] = useState(false);
 
   useEffect(() => {
-    const request = new AbortController();
+    let disposed = false;
+    let activeRequest: AbortController | null = null;
+    let hasLoaded = false;
 
-    async function loadRooms() {
-      setState("loading");
+    async function loadRooms(initial = false) {
+      if (initial) {
+        setState("loading");
+        setRefreshFailed(false);
+      }
+
+      // A slow response must not replace a newer refresh or survive a filter change.
+      activeRequest?.abort();
+      const request = new AbortController();
+      activeRequest = request;
+      const isActive = () => !disposed && !request.signal.aborted && activeRequest === request;
+
       try {
         const response = await fetch(`/api/rooms${query ? `?${query}` : ""}`, {
+          cache: "no-store",
           signal: request.signal,
         });
+        if (!isActive()) return;
         if (!response.ok) throw new Error("Unable to fetch rooms");
 
-        const loaded: RoomWithStatus[] = await response.json();
-        if (!request.signal.aborted) {
-          setRooms(loaded);
-          setState("success");
-        }
+        const loaded: unknown = await response.json();
+        if (!isActive()) return;
+        if (!isRoomList(loaded)) throw new Error("Invalid rooms response");
+
+        hasLoaded = true;
+        setRooms(loaded);
+        setState("success");
+        setRefreshFailed(false);
       } catch {
-        if (!request.signal.aborted) setState("error");
+        if (!isActive()) return;
+        if (hasLoaded) setRefreshFailed(true);
+        else setState("error");
       }
     }
 
-    void loadRooms();
-    return () => request.abort();
+    void loadRooms(true);
+    const interval = setInterval(() => void loadRooms(), 60_000);
+
+    return () => {
+      disposed = true;
+      clearInterval(interval);
+      activeRequest?.abort();
+    };
   }, [query, retry]);
 
   if (state === "loading") {
@@ -67,15 +125,22 @@ export function RoomList() {
     );
   }
 
-  if (rooms.length === 0) {
-    return <p>Nicio sală nu se potrivește filtrelor.</p>;
-  }
-
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      {rooms.map((room) => (
-        <RoomCard key={room.id} room={room} />
-      ))}
-    </div>
+    <>
+      {refreshFailed && (
+        <p role="status" className="text-sm text-red-700 dark:text-red-400">
+          Nu am putut actualiza lista.
+        </p>
+      )}
+      {rooms.length === 0 ? (
+        <p>Nicio sală nu se potrivește filtrelor.</p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {rooms.map((room) => (
+            <RoomCard key={room.id} room={room} />
+          ))}
+        </div>
+      )}
+    </>
   );
 }
