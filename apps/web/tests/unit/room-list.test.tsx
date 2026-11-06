@@ -19,6 +19,7 @@ const room: RoomWithStatus = {
   hasProjector: false,
   status: "free",
   until: "14:00",
+  activeCheckins: 0,
 };
 
 describe("RoomCard", () => {

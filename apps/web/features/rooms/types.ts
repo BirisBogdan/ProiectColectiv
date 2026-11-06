@@ -33,9 +33,32 @@ export interface StatusResult {
 
 export interface RoomWithStatus extends Room, StatusResult {
   buildingName: string;
+  activeCheckins: number; // câte check-in-uri neexpirate are sala acum
 }
 
 export interface RoomDetail {
   room: RoomWithStatus;
   today: ScheduleEntry[]; // sortate după start
+}
+
+export interface Checkin {
+  id: string;
+  roomId: string;
+  createdAt: string; // ISO 8601
+  expiresAt: string; // ISO 8601
+}
+
+export interface PlacedRoom extends RoomWithStatus {
+  row: number; // de la 1
+  col: number; // de la 1 la 3
+}
+
+export interface BuildingFloor {
+  floor: number;
+  rooms: PlacedRoom[];
+}
+
+export interface BuildingPlan {
+  building: Building;
+  floors: BuildingFloor[]; // sortate crescător după floor
 }

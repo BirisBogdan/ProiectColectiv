@@ -24,7 +24,7 @@
 | TODO-06 | `[DONE]` | Frontend | Pagina `/rooms`: lista de săli | Raul           |
 | TODO-07 | `[DONE]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | Bogdan Buruian |
 | TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan         |
-| TODO-09 | `[ ]` | Backend | Check-in: contractul, stocarea și endpointurile | _(liber)_      |
+| TODO-09 | `[DONE]` | Backend | Check-in: contractul, stocarea și endpointurile | Diana      |
 | TODO-10 | `[ ]` | Backend | Filtrul „liberă cel puțin N ore” | _(liber)_      |
 | TODO-11 | `[ ]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | _(liber)_      |
 | TODO-12 | `[ ]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | _(liber)_      |
@@ -467,9 +467,9 @@ TODO-01 pe `main`. Folosește `computeStatus` (stub până intră TODO-03; nu-l 
 - [ ] `curl -i localhost:3000/api/rooms/nu-exista` întoarce 404.
 - [ ] Testele trec; lint și typecheck verzi; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-09 `[ ]` Check-in: contractul, stocarea și endpointurile
+### TODO-09 `[DONE]` Check-in: contractul, stocarea și endpointurile
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 1, intră primul pe `main` · **Branch:** `feat/srf-be5-checkins`
+**Asignat:** Diana · **Val:** 1, intră primul pe `main` · **Branch:** `feat/srf-be5-checkins`
 
 #### De ce
 Orarul spune ce ar trebui să se întâmple într-o sală; check-in-ul spune ce se întâmplă de fapt. E cerință de MVP (backlog #22). Fără login și fără bază de date îl facem cât mai simplu, dar cu forma pe care o va păstra și după Supabase.
