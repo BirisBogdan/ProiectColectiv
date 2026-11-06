@@ -2,6 +2,7 @@ import { buildings } from "../data/buildings";
 import { rooms } from "../data/rooms";
 import { scheduleEntries } from "../data/schedule";
 import type { RoomStatus, RoomWithStatus } from "../types";
+import { countActiveCheckins } from "./checkins";
 import { computeStatus } from "./status";
 
 export interface RoomFilters {
@@ -34,6 +35,7 @@ export function listRooms(filters: RoomFilters, now: Date): RoomWithStatus[] {
         buildingName: buildingNames.get(room.buildingId) ?? "",
         status,
         until,
+        activeCheckins: countActiveCheckins(room.id, now),
       };
     })
     .filter((room) => {

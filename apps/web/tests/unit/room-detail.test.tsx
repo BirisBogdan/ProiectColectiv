@@ -20,6 +20,7 @@ const room: RoomWithStatus = {
   hasProjector: false,
   status: "occupied",
   until: "12:00",
+  activeCheckins: 0,
 };
 
 function entry(overrides: Partial<ScheduleEntry> = {}): ScheduleEntry {

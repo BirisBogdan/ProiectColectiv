@@ -2,6 +2,7 @@ import { buildings } from "../data/buildings";
 import { rooms } from "../data/rooms";
 import { scheduleEntries } from "../data/schedule";
 import type { RoomDetail } from "../types";
+import { countActiveCheckins } from "./checkins";
 import { computeStatus } from "./status";
 import { bucharestNow } from "./time";
 
@@ -22,6 +23,7 @@ export function getRoomDetail(id: string, now: Date): RoomDetail | null {
       ...room,
       buildingName: building?.name ?? "",
       ...computeStatus(room.id, scheduleEntries, now),
+      activeCheckins: countActiveCheckins(room.id, now),
     },
     today,
   };
