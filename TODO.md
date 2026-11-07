@@ -575,6 +575,8 @@ TODO-09 pe `main` (tipurile `BuildingPlan`, `BuildingFloor`, `PlacedRoom`).
 
 **Asignat:** Alexia · **Val:** 2, poate porni imediat · **Branch:** `feat/srf-be8-importer-parser`
 
+Parserul FMI citește pagini de orar salvate manual și scoate rândurile ca JSON, fără rețea, cu teste pe pagini reale și job de CI. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/12
+
 #### De ce
 Orarul real e ce transformă demo-ul în produs, iar partea riscantă e formatul paginilor. O verificăm devreme, cu un program Python separat (CLAUDE.md §1 și §3.3), fără să atingem aplicația. Rezultatul ne spune și ce coduri de săli există de fapt, deci ajută la catalogul real (backlog #16).
 
