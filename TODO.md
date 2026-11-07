@@ -27,7 +27,7 @@
 | TODO-09 | `[DONE]` | Backend | Check-in: contractul, stocarea și endpointurile | Diana      |
 | TODO-10 | `[ ]` | Backend | Filtrul „liberă cel puțin N ore” | _(liber)_      |
 | TODO-11 | `[ ]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | _(liber)_      |
-| TODO-12 | `[ ]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | _(liber)_      |
+| TODO-12 | `[~]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia      |
 | TODO-13 | `[ ]` | Frontend | Butonul de check-in pe pagina sălii | _(liber)_      |
 | TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian     |
 | TODO-15 | `[ ]` | Frontend | Pagina `/rooms/plan`: planul clădirii | _(liber)_      |
@@ -571,9 +571,9 @@ TODO-09 pe `main` (tipurile `BuildingPlan`, `BuildingFloor`, `PlacedRoom`).
 - [ ] `curl -i localhost:3000/api/buildings/nu-exista/plan` întoarce 404.
 - [ ] Testele trec; lint și typecheck verzi; PR revizuit de cine are TODO-15.
 
-### TODO-12 `[ ]` Importerul de orar: parser FMI pe fișiere salvate
+### TODO-12 `[~]` Importerul de orar: parser FMI pe fișiere salvate
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2, poate porni imediat · **Branch:** `feat/srf-be8-importer-parser`
+**Asignat:** Alexia · **Val:** 2, poate porni imediat · **Branch:** `feat/srf-be8-importer-parser`
 
 #### De ce
 Orarul real e ce transformă demo-ul în produs, iar partea riscantă e formatul paginilor. O verificăm devreme, cu un program Python separat (CLAUDE.md §1 și §3.3), fără să atingem aplicația. Rezultatul ne spune și ce coduri de săli există de fapt, deci ajută la catalogul real (backlog #16).

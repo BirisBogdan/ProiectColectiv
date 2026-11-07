@@ -29,3 +29,8 @@ desktop.ini
 .vscode/*
 !.vscode/extensions.json
 *.log
+
+# python (scripts/schedule-import)
+.venv/
+__pycache__/
+.pytest_cache/
