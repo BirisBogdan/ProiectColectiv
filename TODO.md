@@ -571,7 +571,7 @@ TODO-09 pe `main` (tipurile `BuildingPlan`, `BuildingFloor`, `PlacedRoom`).
 - [ ] `curl -i localhost:3000/api/buildings/nu-exista/plan` întoarce 404.
 - [ ] Testele trec; lint și typecheck verzi; PR revizuit de cine are TODO-15.
 
-### TODO-12 `[~]` Importerul de orar: parser FMI pe fișiere salvate
+### TODO-12 `[DONE]` Importerul de orar: parser FMI pe fișiere salvate
 
 **Asignat:** Alexia · **Val:** 2, poate porni imediat · **Branch:** `feat/srf-be8-importer-parser`
 
