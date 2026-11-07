@@ -27,7 +27,7 @@
 | TODO-09 | `[DONE]` | Backend | Check-in: contractul, stocarea și endpointurile | Diana      |
 | TODO-10 | `[ ]` | Backend | Filtrul „liberă cel puțin N ore” | _(liber)_      |
 | TODO-11 | `[ ]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | _(liber)_      |
-| TODO-12 | `[~]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia      |
+| TODO-12 | `[DONE]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia      |
 | TODO-13 | `[ ]` | Frontend | Butonul de check-in pe pagina sălii | _(liber)_      |
 | TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian     |
 | TODO-15 | `[ ]` | Frontend | Pagina `/rooms/plan`: planul clădirii | _(liber)_      |
