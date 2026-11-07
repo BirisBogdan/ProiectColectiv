@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Status: mostly a plan.** Only the first sprint's skeleton exists: `apps/web/` (Next.js + TypeScript + Tailwind, Vitest), the pnpm workspace and the `web` CI job. `supabase/`, `scripts/schedule-import/`, `.github/scripts/`, `.claude/skills/`, Playwright and the PWA files described below are **not in the repo yet**; they return with their backlog items. Every path, command and rule for them is the *intended* shape. When something lands, make this file true or change it; never leave a claim here that the code contradicts. `TODO.md` is the current sprint; read it before starting any piece of work.
+> **Status: mostly a plan.** Only the first sprint's skeleton exists: `apps/web/` (Next.js + TypeScript + Tailwind, Vitest), the pnpm workspace and the `web` CI job. `scripts/schedule-import/` now holds a first FMI parser (TODO-17): it reads timetable pages saved by hand with `--from-file`, makes no network calls and writes nowhere, and its `importer` CI job runs `pytest`. `supabase/`, `.github/scripts/`, `.claude/skills/`, Playwright and the PWA files described below are **not in the repo yet**; they return with their backlog items. Every path, command and rule for them is the *intended* shape. When something lands, make this file true or change it; never leave a claim here that the code contradicts. `TODO.md` is the current sprint; read it before starting any piece of work.
 >
 > **IDs:** every `TODO-NN` and `OQ-N` in this file refers to the full backlog, not to `TODO.md`, whose sprint items are numbered separately. The backlog is out of the repo for now; read it with `git show d7acbd8:TODO-backlog.md`.
 
@@ -89,7 +89,8 @@ supabase test db                     # pgTAP tests for RLS and constraints
 # timetable importer
 cd scripts/schedule-import
 python -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt
-python -m schedule_import --faculty fmi --dry-run     # print rows, write nothing
+python -m schedule_import --faculty fmi --dry-run --from-file tests/fixtures/C310.html   # print rows, write nothing
+python -m pytest
 ```
 
 ## 3. Subsystems that are easy to break
@@ -161,7 +162,7 @@ python -m schedule_import --faculty fmi --dry-run     # print rows, write nothin
 
 Deliberate or unresolved; do not assume these are safe.
 
-- **Only the sprint skeleton exists.** The `supabase` and importer commands and `pnpm test:e2e` in §2 are a plan until their directories and config return.
+- **Most of §2 is still a plan.** The `supabase` commands and `pnpm test:e2e` are a plan until their directories and config return. The importer runs only on pages saved by hand (`--from-file`): it does not fetch from the network (OQ-8) and does not write to a database yet.
 - **Data model is incomplete (TODO-53).** Blocks, content reports, consents, notification preferences, buildings, roles and announcements have no tables yet.
 - **Only FMI's timetable format is targeted (TODO-17, TODO-28).** FSEGA rooms will show as "unknown", not "free", until its adapter exists; never default an unknown room to free.
 - **Who the dorm administrator is, and their email, is unknown (OQ-3, TODO-44).**
