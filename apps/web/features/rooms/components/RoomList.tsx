@@ -7,7 +7,7 @@ import type { RoomWithStatus } from "@/features/rooms/types";
 
 type LoadState = "loading" | "success" | "error";
 
-function isRoomList(value: unknown): value is RoomWithStatus[] {
+export function isRoomList(value: unknown): value is RoomWithStatus[] {
   return (
     Array.isArray(value) &&
     value.every(
@@ -31,6 +31,10 @@ function isRoomList(value: unknown): value is RoomWithStatus[] {
         typeof room.hasOutlets === "boolean" &&
         "hasProjector" in room &&
         typeof room.hasProjector === "boolean" &&
+        "activeCheckins" in room &&
+        typeof room.activeCheckins === "number" &&
+        Number.isInteger(room.activeCheckins) &&
+        room.activeCheckins >= 0 &&
         "status" in room &&
         (room.status === "free" || room.status === "occupied" || room.status === "unknown") &&
         "until" in room &&

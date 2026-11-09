@@ -1,4 +1,5 @@
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { CheckinSignal } from "@/features/rooms/components/CheckinSignal";
 import type { RoomWithStatus } from "@/features/rooms/types";
 
 export function RoomHeader({ room }: { room: RoomWithStatus }) {
@@ -9,7 +10,10 @@ export function RoomHeader({ room }: { room: RoomWithStatus }) {
           <h1 className="break-words text-3xl font-bold">Sala {room.code}</h1>
           <p className="break-words text-gray-600 dark:text-gray-400">{room.buildingName}</p>
         </div>
-        <StatusBadge status={room.status} until={room.until} />
+        <div className="flex min-w-0 flex-col items-start gap-1">
+          <StatusBadge status={room.status} until={room.until} />
+          <CheckinSignal count={room.activeCheckins} />
+        </div>
       </div>
       <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div>
