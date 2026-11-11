@@ -28,7 +28,7 @@
 | TODO-10 | `[~]` | Backend | Filtrul „liberă cel puțin N ore” | Luca           |
 | TODO-11 | `[~]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | Luca           |
 | TODO-12 | `[DONE]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia      |
-| TODO-13 | `[ ]` | Frontend | Butonul de check-in pe pagina sălii | _(liber)_      |
+| TODO-13 | `[DONE]` | Frontend | Butonul de check-in pe pagina sălii | Tudor          |
 | TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian     |
 | TODO-15 | `[ ]` | Frontend | Pagina `/rooms/plan`: planul clădirii | _(liber)_      |
 | TODO-16 | `[ ]` | Frontend | Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a | _(liber)_      |
@@ -893,9 +893,11 @@ TODO-01 (tipuri, `GET /api/buildings`) pe `main`. Nu depinde de TODO-06: compone
 - [ ] Checklist-ul de QA e în repo și l-ai rulat o dată, cu rezultatele în comentariul PR-ului sau într-un issue.
 - [ ] Lint și typecheck verzi; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-13 `[ ]` Butonul de check-in pe pagina sălii
+### TODO-13 `[DONE]` Butonul de check-in pe pagina sălii
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe5-checkin-button`
+**Asignat:** Tudor · **Val:** 2 · **Branch:** `feat/srf-fe5-checkin-button`
+
+Gata în [PR #16](https://github.com/BirisBogdan/ProiectColectiv/pull/16): butonul „Sunt aici” / „Am plecat” pe pagina sălii, cu check-in-ul ținut în `localStorage`.
 
 #### De ce
 Studentul spune „sunt aici” dintr-un singur gest, iar colegii văd asta imediat. E partea vizibilă din TODO-09.
@@ -923,9 +925,11 @@ TODO-09 pe `main` pentru tipuri. Dacă endpointurile întârzie, lucrează cu un
 - [ ] Pe altă sală apare „Ai deja check-in în altă sală”, cu link corect.
 - [ ] Screenshot-uri în PR, inclusiv pe telefon. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-09.
 
-### TODO-14 `[ ]` Semnalul „persoane aici” și lista care se actualizează singură
+### TODO-14 `[DONE]` Semnalul „persoane aici” și lista care se actualizează singură
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe6-live-signal`
+**Asignat:** Bogdan Buruian · **Val:** 2 · **Branch:** `feat/srf-fe6-live-signal`
+
+Gata: `CheckinSignal` în listă și pe pagina sălii, plus lista reîmprospătată la 60 de secunde, în PR #10 și PR #14.
 
 #### De ce
 Asta face check-in-ul util: din listă vezi că o sală „liberă” are deja oameni în ea. În plus, azi lista rămâne neschimbată până dai refresh, deci o oră care se termină nu se vede (pagina sălii se reîmprospătează deja la 60 de secunde).

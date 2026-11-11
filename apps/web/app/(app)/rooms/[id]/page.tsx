@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import RoomNotFound from "@/app/(app)/rooms/not-found";
+import { CheckinButton } from "@/features/rooms/components/CheckinButton";
 import { RoomHeader } from "@/features/rooms/components/RoomHeader";
 import { RoomSchedule } from "@/features/rooms/components/RoomSchedule";
 import type { RoomDetail } from "@/features/rooms/types";
@@ -89,6 +90,7 @@ function RoomDetailContent({ id }: { id: string }) {
       {state.status === "ready" && (
         <>
           <RoomHeader room={state.detail.room} />
+          <CheckinButton roomId={id} onChange={() => setAttempt((value) => value + 1)} />
           <RoomSchedule entries={state.detail.today} now={state.now} />
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Informațiile se actualizează automat la fiecare 60 de secunde.
