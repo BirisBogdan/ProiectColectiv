@@ -24,6 +24,7 @@ export interface ScheduleEntry {
   end: string; // "HH:MM"
   subject: string; // ex. "Structuri de date și algoritmi"
   group: string; // ex. "Seminar 211"
+  weeks?: "odd" | "even"; // doar în săptămânile impare / pare; lipsa câmpului = în fiecare săptămână
 }
 
 export interface StatusResult {

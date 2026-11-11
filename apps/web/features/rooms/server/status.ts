@@ -1,4 +1,5 @@
 import type { ScheduleEntry, StatusResult } from "../types";
+import { entriesToday, teachingWeek } from "./calendar";
 import { bucharestNow } from "./time";
 
 /**
@@ -7,19 +8,21 @@ import { bucharestNow } from "./time";
  * Times are "HH:MM" with two digits, so comparing them as strings is the same as
  * comparing them as times ("09:00" < "10:00").
  *
- * Not covered yet (needs the real data): week parity (pară/impară), semester dates,
- * admin overrides, check-ins. See backlog #19.
+ * Outside the teaching periods (holidays, exam sessions) we know nothing about the room,
+ * so the status is "unknown", never "free". Classes that only run in odd or even weeks
+ * (`weeks`) are handled by `entriesToday`.
+ *
+ * Not covered yet (needs the real data): admin overrides, check-ins.
  */
 export function computeStatus(
   roomId: string,
   entries: ScheduleEntry[],
   now: Date,
 ): StatusResult {
-  const { day, time } = bucharestNow(now);
+  if (teachingWeek(now) === null) return { status: "unknown", until: null };
 
-  const today = entries
-    .filter((e) => e.roomId === roomId && e.day === day)
-    .sort((a, b) => a.start.localeCompare(b.start));
+  const { time } = bucharestNow(now);
+  const today = entriesToday(roomId, entries, now);
 
   // Occupied: some entry covers the current time (end is exclusive).
   const current = today.filter((e) => e.start <= time && time < e.end);
