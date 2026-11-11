@@ -37,7 +37,7 @@
 | TODO-19 | `[ ]` | Backend | Săptămâni pare/impare și perioada de cursuri | _(liber)_      |
 | TODO-20 | `[ ]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | _(liber)_      |
 | TODO-21 | `[ ]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | _(liber)_      |
-| TODO-22 | `[~]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
+| TODO-22 | `[DONE]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
 | TODO-23 | `[ ]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | _(liber)_      |
 | TODO-24 | `[ ]` | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
 | TODO-25 | `[ ]` | Frontend | Restul textelor pe `lib/i18n` | _(liber)_      |
@@ -1055,9 +1055,11 @@ TODO-20 pentru endpoint: până intră, lucrezi cu un mock `RoomWeek`, iar tipul
 - [ ] `/rooms/nu-exista/week` arată „Sala nu există”, nu o eroare.
 - [ ] Fără scroll orizontal la 375px; screenshot-uri în PR. Niciun mock rămas; lint, typecheck, teste verzi; PR revizuit de cine are TODO-20.
 
-### TODO-22 `[~]` Bazele traducerilor RO / EN
+### TODO-22 `[DONE]` Bazele traducerilor RO / EN
 
 **Asignat:** Tudor · **Branch:** `feat/srf-fe10-i18n`
+
+Gata în [PR #17](https://github.com/BirisBogdan/ProiectColectiv/pull/17): `lib/i18n` cu mesaje RO/EN tipate, `LanguageSwitcher` pe pagina de start și traducerea pentru `StatusBadge`, pagina de start și `not-found`. Restul textelor e în TODO-25.
 
 #### De ce
 Aplicația trebuie să fie în română și engleză, cu româna implicită (CLAUDE.md §5). Cu cât amânăm, cu atât sunt mai multe texte de mutat. Construim mecanismul și îl dovedim pe câteva fișiere pe care nu le atinge nimeni acum; restul se mută după etapa a 2-a.
