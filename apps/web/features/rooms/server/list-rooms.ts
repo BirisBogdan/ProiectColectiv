@@ -3,6 +3,7 @@ import { rooms } from "../data/rooms";
 import { scheduleEntries } from "../data/schedule";
 import type { RoomStatus, RoomWithStatus } from "../types";
 import { countActiveCheckins } from "./checkins";
+import { isFreeFor } from "./free-for";
 import { computeStatus } from "./status";
 
 export interface RoomFilters {
@@ -11,6 +12,7 @@ export interface RoomFilters {
   outlets?: boolean;
   projector?: boolean;
   freeOnly?: boolean;
+  minFreeHours?: number;
 }
 
 const STATUS_ORDER: Record<RoomStatus, number> = {
@@ -52,6 +54,9 @@ export function listRooms(filters: RoomFilters, now: Date): RoomWithStatus[] {
         return false;
       }
       if (filters.freeOnly && room.status !== "free") {
+        return false;
+      }
+      if (filters.minFreeHours !== undefined && !isFreeFor(room, filters.minFreeHours, now)) {
         return false;
       }
       return true;
