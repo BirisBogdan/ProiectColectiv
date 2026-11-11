@@ -1,0 +1,32 @@
+{
+  "name": "UBB Campus – StudyRoom Finder",
+  "short_name": "UBB Campus",
+  "description": "Găsește rapid o sală liberă în FMI pentru studiu, din orarul facultății și check-in-urile colegilor.",
+  "lang": "ro",
+  "id": "/rooms",
+  "start_url": "/rooms",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#1e40af",
+  "theme_color": "#1e40af",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
