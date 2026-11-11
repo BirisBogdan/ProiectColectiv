@@ -35,7 +35,7 @@
 | TODO-17 | `[ ]` | Backend | Supabase local: prima migrație, RLS și seed pentru săli | _(liber)_      |
 | TODO-18 | `[ ]` | Backend | `room_schedule` și funcția SQL `room_status` | _(liber)_      |
 | TODO-19 | `[ ]` | Backend | Săptămâni pare/impare și perioada de cursuri | _(liber)_      |
-| TODO-20 | `[ ]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | _(liber)_      |
+| TODO-20 | `[DONE]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | Diana     |
 | TODO-21 | `[ ]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | _(liber)_      |
 | TODO-22 | `[DONE]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
 | TODO-23 | `[ ]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | _(liber)_      |
@@ -719,9 +719,9 @@ TODO-09 pe `main` înainte de PR, ca să faci rebase pe `types.ts` și `get-room
 - [ ] În 24 decembrie 2026 toate sălile sunt `unknown`, iar filtrul „Doar libere acum” nu le arată.
 - [ ] Lint, typecheck, teste verzi; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-20 `[ ]` `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere
+### TODO-20 `[DONE]` `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be12-room-week`
+**Asignat:** Diana · **Branch:** `feat/srf-be12-room-week`
 
 #### De ce
 Studentul nu caută doar o sală acum, ci și una pentru mâine sau joi după-amiază. Endpointul dă TODO-21 tot ce îi trebuie, inclusiv intervalele libere gata calculate.
