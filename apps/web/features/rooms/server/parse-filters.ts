@@ -22,6 +22,14 @@ export function parseFilters(searchParams: URLSearchParams): RoomFilters {
     }
   }
 
+  const rawMinFreeHours = searchParams.get("minFreeHours")?.trim();
+  if (rawMinFreeHours) {
+    const minFreeHours = Number(rawMinFreeHours);
+    if (Number.isFinite(minFreeHours) && minFreeHours > 0) {
+      filters.minFreeHours = minFreeHours;
+    }
+  }
+
   if (searchParams.get("outlets") === "1") {
     filters.outlets = true;
   }

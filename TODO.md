@@ -25,8 +25,8 @@
 | TODO-07 | `[DONE]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | Bogdan Buruian |
 | TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan         |
 | TODO-09 | `[DONE]` | Backend | Check-in: contractul, stocarea și endpointurile | Diana      |
-| TODO-10 | `[ ]` | Backend | Filtrul „liberă cel puțin N ore” | _(liber)_      |
-| TODO-11 | `[ ]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | _(liber)_      |
+| TODO-10 | `[~]` | Backend | Filtrul „liberă cel puțin N ore” | Luca           |
+| TODO-11 | `[~]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | Luca           |
 | TODO-12 | `[DONE]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia      |
 | TODO-13 | `[ ]` | Frontend | Butonul de check-in pe pagina sălii | _(liber)_      |
 | TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian     |
@@ -509,9 +509,9 @@ Nimic. Ceilalți depind de tine pentru tipuri, așa că ține PR-ul mic.
 - [ ] Check-in-ul se vede și în `GET /api/rooms` (dovada că stocarea e comună pentru toate rutele).
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec; PR revizuit de un coleg din cealaltă jumătate; anunți pe grup că „TODO-09 e pe main”.
 
-### TODO-10 `[ ]` Filtrul „liberă cel puțin N ore”
+### TODO-10 `[~]` Filtrul „liberă cel puțin N ore”
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be6-free-for`
+**Asignat:** Luca · **Val:** 2 · **Branch:** `feat/srf-be6-be7-free-for-building-plan` (împreună cu TODO-11)
 
 #### De ce
 „Liberă” nu ajută dacă sala se ocupă peste 10 minute. Filtrul e în lista de MVP (backlog #20) și e singurul care lipsește din etapa 1.
@@ -540,9 +540,9 @@ TODO-09 pe `main` (doar ca să eviți un rebase pe `list-rooms.ts`).
 - [ ] `curl "localhost:3000/api/rooms?minFreeHours=abc"` întoarce toate sălile, nu eroare.
 - [ ] Testele trec; lint și typecheck verzi; PR revizuit de cine are TODO-16.
 
-### TODO-11 `[ ]` Planul clădirii: date și `GET /api/buildings/[id]/plan`
+### TODO-11 `[~]` Planul clădirii: date și `GET /api/buildings/[id]/plan`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-be7-building-plan`
+**Asignat:** Luca · **Val:** 2 · **Branch:** `feat/srf-be6-be7-free-for-building-plan` (împreună cu TODO-10)
 
 #### De ce
 „Hartă sau plan al clădirii” e în MVP (backlog #21). Cine desenează planurile reale e încă o întrebare deschisă (OQ-6), așa că pornim de la o schemă pe grilă: fiecare sală are un rând și o coloană pe etajul ei. Dacă primim planuri reale, se schimbă datele și desenul, nu și stările.
