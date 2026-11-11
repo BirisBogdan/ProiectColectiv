@@ -38,7 +38,7 @@
 | TODO-20 | `[DONE]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | Diana     |
 | TODO-21 | `[ ]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | _(liber)_      |
 | TODO-22 | `[DONE]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
-| TODO-23 | `[DONE]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | Bogdan Buruian |
+| TODO-23 | `[DONE]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | Buruian Bogdan |
 | TODO-24 | `[ ]` | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
 | TODO-25 | `[ ]` | Frontend | Restul textelor pe `lib/i18n` | _(liber)_      |
 
@@ -1093,9 +1093,11 @@ Nimic. **Nu muta textele din alte componente**, ca să nu intri în conflict cu 
 - [ ] În engleză, `StatusBadge` din `/rooms` e tradus, iar restul paginii rămâne în română până la mutarea textelor.
 - [ ] În consolă nu apar erori de hidratare. Lint, typecheck, teste verzi; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-23 `[~]` Aplicație instalabilă: manifest, iconițe și pagină offline
+### TODO-23 `[DONE]` Aplicație instalabilă: manifest, iconițe și pagină offline
 
 **Asignat:** Buruian Bogdan · **Branch:** `feat/srf-fe11-pwa`
+
+Manifest, iconițe, pagina offline și service worker-ul (fără cache pentru /api/*, înregistrat doar în producție) sunt făcute, cu teste. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/21
 
 #### De ce
 Studenții o vor folosi de pe telefon, pe hol, între ore. Dacă o pot pune pe ecranul principal, o și deschid (CLAUDE.md §1). Partea delicată e să nu arătăm niciodată o stare veche de sală ca și cum ar fi actuală.
