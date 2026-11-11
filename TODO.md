@@ -37,9 +37,10 @@
 | TODO-19 | `[ ]` | Backend | Săptămâni pare/impare și perioada de cursuri | _(liber)_      |
 | TODO-20 | `[ ]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | _(liber)_      |
 | TODO-21 | `[ ]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | _(liber)_      |
-| TODO-22 | `[ ]` | Frontend | Bazele traducerilor RO / EN | _(liber)_      |
+| TODO-22 | `[~]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
 | TODO-23 | `[ ]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | _(liber)_      |
 | TODO-24 | `[ ]` | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
+| TODO-25 | `[ ]` | Frontend | Restul textelor pe `lib/i18n` | _(liber)_      |
 
 ---
 
@@ -1054,9 +1055,9 @@ TODO-20 pentru endpoint: până intră, lucrezi cu un mock `RoomWeek`, iar tipul
 - [ ] `/rooms/nu-exista/week` arată „Sala nu există”, nu o eroare.
 - [ ] Fără scroll orizontal la 375px; screenshot-uri în PR. Niciun mock rămas; lint, typecheck, teste verzi; PR revizuit de cine are TODO-20.
 
-### TODO-22 `[ ]` Bazele traducerilor RO / EN
+### TODO-22 `[~]` Bazele traducerilor RO / EN
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe10-i18n`
+**Asignat:** Tudor · **Branch:** `feat/srf-fe10-i18n`
 
 #### De ce
 Aplicația trebuie să fie în română și engleză, cu româna implicită (CLAUDE.md §5). Cu cât amânăm, cu atât sunt mai multe texte de mutat. Construim mecanismul și îl dovedim pe câteva fișiere pe care nu le atinge nimeni acum; restul se mută după etapa a 2-a.
@@ -1151,3 +1152,29 @@ Nimic. Ești **singurul din etapa asta care modifică `package.json` și `pnpm-l
 - [ ] `pnpm test:e2e` trece local, de cel puțin 3 ori la rând, și în CI.
 - [ ] Un test stricat intenționat face CI-ul roșu (dovada în PR, apoi scoți modificarea).
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec; PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-25 `[ ]` Restul textelor pe `lib/i18n`
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe13-i18n-rest`
+
+#### De ce
+TODO-22 a construit mecanismul de traduceri și l-a folosit doar în `StatusBadge`, pe pagina de start și pe `not-found.tsx`, ca să nu intre în conflict cu etapa a 2-a. Până se mută și restul, în engleză aplicația e jumătate în română. A apărut ca item nou din TODO-22, pasul 6.
+
+#### Depinde de
+TODO-22 pe `main`. Ca să nu existe conflicte, pornește după ce itemii care ating aceleași fișiere sunt pe `main`: TODO-13, TODO-15, TODO-16 și TODO-21.
+
+#### Ce ai de făcut
+
+1. Mută pe `useMessages()` textele din (relativ la `apps/web/`):
+   - `app/(app)/layout.tsx` (header, linkul „Săli”, linkul „Plan” după TODO-15);
+   - `app/(app)/rooms/page.tsx`, `app/(app)/rooms/[id]/page.tsx`;
+   - `features/rooms/components/`: `RoomCard`, `RoomList`, `RoomFilters`, `RoomHeader`, `RoomSchedule`, `CheckinSignal` (inclusiv `checkinLabel`), `CheckinButton` (din TODO-13), `FloorPlan` (din TODO-15) și `RoomWeek` (din TODO-21), dacă există deja;
+   - `metadata` din `app/layout.tsx` rămâne în română: e randat pe server, unde limba e mereu `ro`.
+2. Pune `LanguageSwitcher` și în header-ul din `app/(app)/layout.tsx`, ca limba să se poată schimba de pe orice pagină.
+3. Textele românești rămân identice, ca testele existente să treacă neschimbate. Pentru funcțiile pure cu text (de ex. `checkinLabel`), primește mesajele ca parametru sau păstrează varianta română și adaugă una în engleză în `messages.ts`.
+4. Teste: în `tests/unit/i18n.test.ts`, verificarea că ambele limbi au aceleași chei acoperă automat cheile noi; adaugă cazuri pentru mesajele cu valori noi.
+
+#### Gata când
+- [ ] Cu „EN” ales, `/rooms`, `/rooms/{id}` și header-ul sunt în engleză; în română arată exact ca înainte.
+- [ ] Niciun text vizibil scris direct în componentele de mai sus (`grep` după diacritice în `app/` și `features/` găsește doar comentarii și `metadata`).
+- [ ] În consolă nu apar erori de hidratare. Lint, typecheck, teste verzi; PR revizuit de un coleg din cealaltă jumătate.
