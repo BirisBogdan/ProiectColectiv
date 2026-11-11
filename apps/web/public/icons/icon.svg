@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- UBB Campus app icon: an open-room door on a blue tile. Source for the PNGs in this folder. -->
+  <rect width="512" height="512" rx="112" fill="#1e40af"/>
+  <g fill="#ffffff">
+    <circle cx="256" cy="176" r="80"/>
+    <rect x="176" y="176" width="160" height="224"/>
+    <rect x="128" y="400" width="256" height="24" rx="12"/>
+  </g>
+  <circle cx="304" cy="296" r="14" fill="#1e40af"/>
+</svg>
