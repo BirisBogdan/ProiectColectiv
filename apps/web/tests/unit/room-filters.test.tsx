@@ -1,6 +1,11 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { RoomFilters, validMinCapacity, withParam } from "@/features/rooms/components/RoomFilters";
+import {
+  RoomFilters,
+  validMinCapacity,
+  validMinFreeHours,
+  withParam,
+} from "@/features/rooms/components/RoomFilters";
 
 const navigation = vi.hoisted(() => ({ query: "" }));
 
@@ -44,6 +49,16 @@ describe("validMinCapacity", () => {
   });
 });
 
+describe("validMinFreeHours", () => {
+  it.each(["1", "2", "3", " 2 "])("keeps the option %j", (raw) => {
+    expect(validMinFreeHours(raw)).toBe(raw.trim());
+  });
+
+  it.each(["", "abc", "0", "-1", "4", "1.5", "2.0", null])("falls back to Oricât for %j", (raw) => {
+    expect(validMinFreeHours(raw)).toBe("");
+  });
+});
+
 describe("RoomFilters", () => {
   beforeEach(() => {
     navigation.query = "";
@@ -80,5 +95,13 @@ describe("RoomFilters", () => {
 
   it("shows an empty capacity for a value the API ignores", () => {
     expect(renderAt("minCapacity=abc")).toMatch(/<input[^>]*type="number"[^>]*value=""/);
+  });
+
+  it("restores the free-for option from the URL", () => {
+    expect(renderAt("minFreeHours=2")).toMatch(/<option value="2" selected="">2 ore<\/option>/);
+  });
+
+  it.each(["minFreeHours=abc", "minFreeHours=5", ""])("shows Oricât for %j", (query) => {
+    expect(renderAt(query)).toMatch(/<option value="" selected="">Oricât<\/option>/);
   });
 });

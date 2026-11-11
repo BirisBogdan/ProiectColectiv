@@ -10,6 +10,13 @@ const FLAG_FILTERS = [
   { param: "projector", label: "Proiector" },
 ] as const;
 
+export const MIN_FREE_HOURS_OPTIONS = [
+  { value: "", label: "Oricât" },
+  { value: "1", label: "1 oră" },
+  { value: "2", label: "2 ore" },
+  { value: "3", label: "3 ore" },
+] as const;
+
 const FIELD_CLASS =
   "w-full min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-gray-700 dark:bg-gray-900";
 
@@ -26,6 +33,12 @@ export function validMinCapacity(raw: string | null): string {
   const value = raw?.trim() ?? "";
   const capacity = Number(value);
   return Number.isFinite(capacity) && capacity > 0 ? value : "";
+}
+
+/** Keeps a "free for at least" value only if it is one of the options, otherwise "" ("Oricât"). */
+export function validMinFreeHours(raw: string | null): string {
+  const value = raw?.trim() ?? "";
+  return MIN_FREE_HOURS_OPTIONS.some((option) => option.value === value) ? value : "";
 }
 
 function RoomFiltersForm() {
@@ -89,7 +102,7 @@ function RoomFiltersForm() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <label className="min-w-0 space-y-1 text-sm font-medium">
           <span className="block">Clădire</span>
           <select
@@ -121,6 +134,21 @@ function RoomFiltersForm() {
             onChange={(event) => setParam("minCapacity", validMinCapacity(event.target.value))}
             className={FIELD_CLASS}
           />
+        </label>
+
+        <label className="min-w-0 space-y-1 text-sm font-medium">
+          <span className="block">Liberă cel puțin</span>
+          <select
+            value={validMinFreeHours(params.get("minFreeHours"))}
+            onChange={(event) => setParam("minFreeHours", validMinFreeHours(event.target.value))}
+            className={FIELD_CLASS}
+          >
+            {MIN_FREE_HOURS_OPTIONS.map(({ value, label }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
 

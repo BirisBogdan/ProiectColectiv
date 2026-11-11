@@ -8,9 +8,12 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
           <Link href="/" className="text-lg font-semibold">
             StudyRoom Finder
           </Link>
-          <nav>
+          <nav className="flex items-center gap-4">
             <Link href="/rooms" className="font-medium hover:underline">
               Săli
+            </Link>
+            <Link href="/rooms/plan" className="font-medium hover:underline">
+              Plan
             </Link>
           </nav>
         </div>
