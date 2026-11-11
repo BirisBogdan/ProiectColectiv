@@ -38,7 +38,7 @@
 | TODO-20 | `[DONE]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | Diana     |
 | TODO-21 | `[ ]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | _(liber)_      |
 | TODO-22 | `[DONE]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
-| TODO-23 | `[DONE]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | Buruian Bogdan |
+| TODO-23 | `[DONE]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | Bogdan Buruian |
 | TODO-24 | `[ ]` | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
 | TODO-25 | `[ ]` | Frontend | Restul textelor pe `lib/i18n` | _(liber)_      |
 
