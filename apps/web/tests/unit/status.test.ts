@@ -137,8 +137,8 @@ describe("computeStatus", () => {
 
   it("follows daylight saving time", () => {
     const entries = [entry("13:00", "15:00")];
-    // 10:30 UTC on 2026-06-15 (a Monday) is 13:30 in Romania (UTC+3).
-    expect(computeStatus("c-510", entries, new Date("2026-06-15T10:30:00Z"))).toEqual({
+    // 10:30 UTC on 2026-10-05 (a Monday, still summer time) is 13:30 in Romania (UTC+3).
+    expect(computeStatus("c-510", entries, new Date("2026-10-05T10:30:00Z"))).toEqual({
       status: "occupied",
       until: "15:00",
     });
@@ -150,6 +150,33 @@ describe("computeStatus", () => {
     expect(computeStatus("c-510", entries, new Date("2026-11-01T22:45:00Z"))).toEqual({
       status: "occupied",
       until: "01:30",
+    });
+  });
+});
+
+describe("computeStatus: teaching periods and week parity", () => {
+  it("is unknown on 24 December, even with a class that day (Thursday)", () => {
+    const entries = [entry("10:00", "12:00", { day: 4 })];
+    expect(computeStatus("c-510", entries, new Date("2026-12-24T10:30:00Z"))).toEqual({
+      status: "unknown",
+      until: null,
+    });
+  });
+
+  it("is unknown for a room with no classes outside the periods (never free)", () => {
+    expect(computeStatus("c-510", [], new Date("2027-02-10T10:30:00Z")).status).toBe("unknown");
+  });
+
+  it("the same hour occupies the room one week and leaves it free the next", () => {
+    const entries = [entry("10:00", "12:00", { weeks: "odd" })];
+    // 12 Oct 2026 is week 3 (odd), 19 Oct 2026 is week 4 (even). Both Mondays; 07:30 UTC is 10:30 in Romania.
+    expect(computeStatus("c-510", entries, new Date("2026-10-12T07:30:00Z"))).toEqual({
+      status: "occupied",
+      until: "12:00",
+    });
+    expect(computeStatus("c-510", entries, new Date("2026-10-19T07:30:00Z"))).toEqual({
+      status: "free",
+      until: null,
     });
   });
 });

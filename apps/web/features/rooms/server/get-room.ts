@@ -3,8 +3,8 @@ import { rooms } from "../data/rooms";
 import { scheduleEntries } from "../data/schedule";
 import type { RoomDetail } from "../types";
 import { countActiveCheckins } from "./checkins";
+import { entriesToday } from "./calendar";
 import { computeStatus } from "./status";
-import { bucharestNow } from "./time";
 
 /** The room, its current status and today's classes, or null if the room does not exist. */
 export function getRoomDetail(id: string, now: Date): RoomDetail | null {
@@ -12,11 +12,6 @@ export function getRoomDetail(id: string, now: Date): RoomDetail | null {
   if (!room) return null;
 
   const building = buildings.find((b) => b.id === room.buildingId);
-  const { day } = bucharestNow(now);
-
-  const today = scheduleEntries
-    .filter((e) => e.roomId === room.id && e.day === day)
-    .sort((a, b) => a.start.localeCompare(b.start));
 
   return {
     room: {
@@ -25,6 +20,6 @@ export function getRoomDetail(id: string, now: Date): RoomDetail | null {
       ...computeStatus(room.id, scheduleEntries, now),
       activeCheckins: countActiveCheckins(room.id, now),
     },
-    today,
+    today: entriesToday(room.id, scheduleEntries, now),
   };
 }

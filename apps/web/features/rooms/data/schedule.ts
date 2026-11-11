@@ -8,6 +8,9 @@ import type { ScheduleEntry } from "../types";
 //   gamma  two classes a day with a long break (Tue, Thu)
 //   2-i, s-12, a-101, l-001  a few classes each
 //   5-i, s-10  no classes at all
+//
+// Odd/even weeks (`weeks`): gamma on Thursday 12:00 only in even weeks; a-101 on Friday has a
+// different class at 10:00 (odd weeks) and 12:00 (even weeks).
 type Day = ScheduleEntry["day"];
 
 const entry = (
@@ -17,7 +20,8 @@ const entry = (
   end: string,
   subject: string,
   group: string,
-): ScheduleEntry => ({ roomId, day, start, end, subject, group });
+  weeks?: ScheduleEntry["weeks"],
+): ScheduleEntry => ({ roomId, day, start, end, subject, group, ...(weeks ? { weeks } : {}) });
 
 const SDA = "Structuri de date și algoritmi";
 const BD = "Baze de date";
@@ -61,14 +65,14 @@ export const scheduleEntries: ScheduleEntry[] = [
   entry("gamma", 2, "08:00", "10:00", SDA, "Curs anul 2"),
   entry("gamma", 2, "12:00", "14:00", BD, "Curs anul 2"),
   entry("gamma", 4, "08:00", "10:00", SO, "Curs anul 2"),
-  entry("gamma", 4, "12:00", "14:00", ANA, "Curs anul 1"),
+  entry("gamma", 4, "12:00", "14:00", ANA, "Curs anul 1", "even"),
 
   // a few classes in the other rooms
   entry("2-i", 1, "10:00", "12:00", ANA, "Curs anul 1"),
   entry("2-i", 3, "10:00", "12:00", ALG, "Curs anul 1"),
   entry("s-12", 1, "12:00", "14:00", BD, "Seminar 231"),
   entry("s-12", 2, "16:00", "18:00", SO, "Seminar 232"),
-  entry("a-101", 5, "10:00", "12:00", PROG, "Curs anul 2"),
-  entry("a-101", 5, "12:00", "14:00", SDA, "Curs anul 2"),
+  entry("a-101", 5, "10:00", "12:00", PROG, "Curs anul 2", "odd"),
+  entry("a-101", 5, "12:00", "14:00", SDA, "Curs anul 2", "even"),
   entry("l-001", 4, "16:00", "18:00", BD, "Laborator 241"),
 ];
