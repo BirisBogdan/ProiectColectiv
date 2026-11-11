@@ -34,7 +34,7 @@
 | TODO-16 | `[ ]` | Frontend | Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a | _(liber)_      |
 | TODO-17 | `[ ]` | Backend | Supabase local: prima migrație, RLS și seed pentru săli | _(liber)_      |
 | TODO-18 | `[ ]` | Backend | `room_schedule` și funcția SQL `room_status` | _(liber)_      |
-| TODO-19 | `[~]` | Backend | Săptămâni pare/impare și perioada de cursuri | Alexia         |
+| TODO-19 | `[DONE]` | Backend | Săptămâni pare/impare și perioada de cursuri | Alexia      |
 | TODO-20 | `[DONE]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | Diana     |
 | TODO-21 | `[ ]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | _(liber)_      |
 | TODO-22 | `[DONE]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
@@ -677,9 +677,11 @@ TODO-17 și Docker Desktop.
 - [ ] În PR, un tabel cu fiecare caz din `status.test.ts` și testul SQL care îi corespunde.
 - [ ] PR revizuit de cine a făcut TODO-17 sau de un coleg din cealaltă jumătate.
 
-### TODO-19 `[~]` Săptămâni pare/impare și perioada de cursuri
+### TODO-19 `[DONE]` Săptămâni pare/impare și perioada de cursuri
 
 **Asignat:** Alexia · **Branch:** `feat/srf-be11-week-parity`
+
+Orele cu `weeks` ocupă sala doar în săptămânile impare sau pare, iar în afara perioadelor de cursuri (calendar demo) toate sălile sunt `unknown`, nu `free`. Săptămânile se numără calendaristic; de confirmat cu facultatea, împreună cu sensul lui `sapt. 1`. `get-week`, `free-for` și `RoomSchedule` nu țin încă cont de `weeks`. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/19
 
 #### De ce
 Azi o oră care se ține din două în două săptămâni ar ocupa sala în fiecare săptămână, iar în vacanță toate sălile apar libere deși nu știm nimic despre ele. Ambele sunt răspunsuri greșite pe care studentul le-ar crede (CLAUDE.md §3.4).
