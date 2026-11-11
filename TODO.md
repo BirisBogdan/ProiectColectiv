@@ -30,8 +30,8 @@
 | TODO-12 | `[DONE]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia      |
 | TODO-13 | `[DONE]` | Frontend | Butonul de check-in pe pagina sălii | Tudor          |
 | TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian     |
-| TODO-15 | `[ ]` | Frontend | Pagina `/rooms/plan`: planul clădirii | _(liber)_      |
-| TODO-16 | `[ ]` | Frontend | Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a | _(liber)_      |
+| TODO-15 | `[DONE]` | Frontend | Pagina `/rooms/plan`: planul clădirii | Bogdan         |
+| TODO-16 | `[DONE]` | Frontend | Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a | Bogdan         |
 | TODO-17 | `[ ]` | Backend | Supabase local: prima migrație, RLS și seed pentru săli | _(liber)_      |
 | TODO-18 | `[ ]` | Backend | `room_schedule` și funcția SQL `room_status` | _(liber)_      |
 | TODO-19 | `[DONE]` | Backend | Săptămâni pare/impare și perioada de cursuri | Alexia      |
@@ -959,9 +959,11 @@ TODO-09 pe `main` (câmpul `activeCheckins`).
 - [ ] Cu serverul oprit, lista deja afișată rămâne pe ecran, cu mesajul mic de eroare; revine singură după repornire.
 - [ ] Schimbarea filtrelor funcționează ca înainte. Screenshot-uri în PR; lint, typecheck, teste verzi; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-15 `[ ]` Pagina `/rooms/plan`: planul clădirii
+### TODO-15 `[DONE]` Pagina `/rooms/plan`: planul clădirii
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2 · **Branch:** `feat/srf-fe7-plan-page`
+**Asignat:** Bogdan · **Val:** 2 · **Branch:** `feat/srf-fe7-plan-page`
+
+Gata: `/rooms/plan` arată sălile pe etaje (`FloorPlan`), cu clădirea în URL, reîmprospătare la 60 de secunde și linkul „Plan” în header; fiind un segment static, nu mai cade în `/rooms/[id]` („Sala nu există”). PR: _(de completat linkul)_
 
 #### De ce
 Când ești deja în clădire, e mai ușor să vezi pe etaje ce e liber decât să citești o listă. Acoperă cerința „plan al clădirii” din MVP, cu o schemă simplă.
@@ -993,9 +995,11 @@ TODO-11 pentru endpoint: până intră, lucrează cu un obiect mock `BuildingPla
 - [ ] Linkul „Plan” apare în header; screenshot-uri în PR, inclusiv la 375px.
 - [ ] Niciun mock rămas. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-11.
 
-### TODO-16 `[ ]` Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a
+### TODO-16 `[DONE]` Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Val:** 2, ultimul pe `main` pentru rularea QA · **Branch:** `feat/srf-fe8-free-for-filter`
+**Asignat:** Bogdan · **Val:** 2, ultimul pe `main` pentru rularea QA · **Branch:** `feat/srf-fe8-free-for-filter`
+
+Gata: selectul „Liberă cel puțin” scrie `minFreeHours` în URL, iar `docs/qa/studyroom-onboarding.md` are secțiunile etapei a 2-a, rulate o dată (rezultatele sunt în tabelul de la final). PR: _(de completat linkul)_
 
 #### De ce
 Filtrul din TODO-10 are nevoie de un control în pagină. Iar ca la TODO-08, cineva verifică la final că toată etapa merge cap-coadă.
