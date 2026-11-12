@@ -25,8 +25,8 @@
 | TODO-07 | `[DONE]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | Bogdan Buruian |
 | TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan         |
 | TODO-09 | `[DONE]` | Backend | Check-in: contractul, stocarea și endpointurile | Diana          |
-| TODO-10 | `[~]`    | Backend | Filtrul „liberă cel puțin N ore” | Luca           |
-| TODO-11 | `[~]`    | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | Luca           |
+| TODO-10 | `[DONE]` | Backend | Filtrul „liberă cel puțin N ore” | Luca           |
+| TODO-11 | `[DONE]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | Luca           |
 | TODO-12 | `[DONE]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia         |
 | TODO-13 | `[DONE]` | Frontend | Butonul de check-in pe pagina sălii | Tudor          |
 | TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian |
@@ -510,9 +510,11 @@ Nimic. Ceilalți depind de tine pentru tipuri, așa că ține PR-ul mic.
 - [ ] Check-in-ul se vede și în `GET /api/rooms` (dovada că stocarea e comună pentru toate rutele).
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec; PR revizuit de un coleg din cealaltă jumătate; anunți pe grup că „TODO-09 e pe main”.
 
-### TODO-10 `[~]` Filtrul „liberă cel puțin N ore”
+### TODO-10 `[DONE]` Filtrul „liberă cel puțin N ore”
 
 **Asignat:** Luca · **Val:** 2 · **Branch:** `feat/srf-be6-be7-free-for-building-plan` (împreună cu TODO-11)
+
+Gata: `isFreeFor` în `free-for.ts`, `minFreeHours` în `list-rooms.ts` și `parse-filters.ts`, cu teste. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/15
 
 #### De ce
 „Liberă” nu ajută dacă sala se ocupă peste 10 minute. Filtrul e în lista de MVP (backlog #20) și e singurul care lipsește din etapa 1.
@@ -541,9 +543,11 @@ TODO-09 pe `main` (doar ca să eviți un rebase pe `list-rooms.ts`).
 - [ ] `curl "localhost:3000/api/rooms?minFreeHours=abc"` întoarce toate sălile, nu eroare.
 - [ ] Testele trec; lint și typecheck verzi; PR revizuit de cine are TODO-16.
 
-### TODO-11 `[~]` Planul clădirii: date și `GET /api/buildings/[id]/plan`
+### TODO-11 `[DONE]` Planul clădirii: date și `GET /api/buildings/[id]/plan`
 
 **Asignat:** Luca · **Val:** 2 · **Branch:** `feat/srf-be6-be7-free-for-building-plan` (împreună cu TODO-10)
+
+Gata: pozițiile demo în `floor-plans.ts`, `getBuildingPlan` și `GET /api/buildings/[id]/plan` (404 pentru clădire inexistentă), cu teste. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/15
 
 #### De ce
 „Hartă sau plan al clădirii” e în MVP (backlog #21). Cine desenează planurile reale e încă o întrebare deschisă (OQ-6), așa că pornim de la o schemă pe grilă: fiecare sală are un rând și o coloană pe etajul ei. Dacă primim planuri reale, se schimbă datele și desenul, nu și stările.
@@ -1035,9 +1039,11 @@ TODO-10 pentru filtrare; poți scrie componenta și înainte, pentru că ea doar
 - [ ] Checklist-ul e actualizat și rulat o dată, cu rezultatele în PR sau într-un issue.
 - [ ] Lint, typecheck, teste verzi; PR revizuit de cine are TODO-10.
 
-### TODO-21 `[ ]` Pagina `/rooms/[id]/week`: orarul pe săptămână
+### TODO-21 `[DONE]` Pagina `/rooms/[id]/week`: orarul pe săptămână
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe9-room-week`
+**Asignat:** Raul · **Branch:** `feat/srf-fe9-room-week`
+
+Gata: `RoomWeek` și pagina `/rooms/[id]/week`, cu linkul „Vezi toată săptămâna” din pagina sălii. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/23
 
 #### De ce
 Pagina sălii arată doar ziua de azi. De aici studentul își poate planifica săptămâna: vede când are sala ore și când e liberă.
@@ -1171,9 +1177,11 @@ Nimic. Ești **singurul din etapa asta care modifică `package.json` și `pnpm-l
 - [ ] Un test stricat intenționat face CI-ul roșu (dovada în PR, apoi scoți modificarea).
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-25 `[ ]` Restul textelor pe `lib/i18n`
+### TODO-25 `[DONE]` Restul textelor pe `lib/i18n`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe13-i18n-rest`
+**Asignat:** Raul · **Branch:** `feat/srf-fe13-i18n-rest`
+
+Gata: textele din header, `/rooms`, `/rooms/[id]`, `/rooms/plan` și componentele sălilor vin din `useMessages()`; `LanguageSwitcher` e în header. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/23
 
 #### De ce
 TODO-22 a construit mecanismul de traduceri și l-a folosit doar în `StatusBadge`, pe pagina de start și pe `not-found.tsx`, ca să nu intre în conflict cu etapa a 2-a. Până se mută și restul, în engleză aplicația e jumătate în română. A apărut ca item nou din TODO-22, pasul 6.

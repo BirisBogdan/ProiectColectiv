@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  appliedMinFreeHours,
   RoomFilters,
   validMinCapacity,
   validMinFreeHours,
@@ -59,6 +60,22 @@ describe("validMinFreeHours", () => {
   });
 });
 
+describe("appliedMinFreeHours", () => {
+  it.each([
+    ["2", "2"],
+    [" 2 ", "2"],
+    ["2.0", "2"],
+    ["5", "5"],
+    ["1.5", "1.5"],
+  ])("keeps %j as %j, like the API", (raw, expected) => {
+    expect(appliedMinFreeHours(raw)).toBe(expected);
+  });
+
+  it.each(["", "   ", "0", "-1", "abc", "Infinity", null])("drops %j", (raw) => {
+    expect(appliedMinFreeHours(raw)).toBe("");
+  });
+});
+
 describe("RoomFilters", () => {
   beforeEach(() => {
     navigation.query = "";
@@ -101,7 +118,25 @@ describe("RoomFilters", () => {
     expect(renderAt("minFreeHours=2")).toMatch(/<option value="2" selected="">2 ore<\/option>/);
   });
 
-  it.each(["minFreeHours=abc", "minFreeHours=5", ""])("shows Oricât for %j", (query) => {
-    expect(renderAt(query)).toMatch(/<option value="" selected="">Oricât<\/option>/);
+  it.each(["minFreeHours=abc", "minFreeHours=0", "minFreeHours=-1", ""])(
+    "shows Oricât for %j",
+    (query) => {
+      expect(renderAt(query)).toMatch(/<option value="" selected="">Oricât<\/option>/);
+    },
+  );
+
+  it.each([
+    ["minFreeHours=5", "5", "5 ore"],
+    ["minFreeHours=1.5", "1.5", "1.5 ore"],
+  ])("shows a value the API applies but is not an option (%s)", (query, value, label) => {
+    const html = renderAt(query);
+    expect(html).toContain(`<option value="${value}" selected="">${label}</option>`);
+    expect(html).not.toMatch(/<option value="" selected="">Oricât<\/option>/);
+  });
+
+  it("matches 2.0 to the 2 option instead of adding another", () => {
+    const html = renderAt("minFreeHours=2.0");
+    expect(html).toMatch(/<option value="2" selected="">2 ore<\/option>/);
+    expect(html.match(/2 ore/g)).toHaveLength(1);
   });
 });

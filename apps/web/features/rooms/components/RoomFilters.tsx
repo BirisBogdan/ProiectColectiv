@@ -42,6 +42,17 @@ export function validMinFreeHours(raw: string | null): string {
   return MIN_FREE_HOURS_OPTIONS.some((option) => option.value === value) ? value : "";
 }
 
+/**
+ * The "free for at least" value the API will actually apply (see parseFilters), normalised
+ * so "2.0" matches the "2" option. "" when the API ignores it. A shared link can carry a
+ * value that is not one of the options (e.g. 7); the select must still show it.
+ */
+export function appliedMinFreeHours(raw: string | null): string {
+  const value = raw?.trim() ?? "";
+  const hours = Number(value);
+  return value && Number.isFinite(hours) && hours > 0 ? String(hours) : "";
+}
+
 function RoomFiltersForm() {
   const t = useMessages();
   const router = useRouter();
@@ -88,6 +99,9 @@ function RoomFiltersForm() {
   const buildingId = params.get("buildingId")?.trim() ?? "";
   // Without its own option the select would show "Toate" while the list is still filtered.
   const buildingNotListed = buildingId && !buildings?.some(({ id }) => id === buildingId);
+  const minFreeHours = appliedMinFreeHours(params.get("minFreeHours"));
+  // Same idea for a value from the URL that is not one of the options: show it, not "Oricât".
+  const minFreeHoursNotListed = minFreeHours && validMinFreeHours(minFreeHours) === "";
 
   return (
     <section aria-labelledby="room-filters-title" className="space-y-3">
@@ -141,8 +155,8 @@ function RoomFiltersForm() {
         <label className="min-w-0 space-y-1 text-sm font-medium">
           <span className="block">{t.filters.minFreeHours}</span>
           <select
-            value={validMinFreeHours(params.get("minFreeHours"))}
-            onChange={(event) => setParam("minFreeHours", validMinFreeHours(event.target.value))}
+            value={minFreeHours}
+            onChange={(event) => setParam("minFreeHours", appliedMinFreeHours(event.target.value))}
             className={FIELD_CLASS}
           >
             {MIN_FREE_HOURS_OPTIONS.map(({ value }) => (
@@ -150,6 +164,9 @@ function RoomFiltersForm() {
                 {value ? t.filters.hour(Number(value)) : t.filters.any}
               </option>
             ))}
+            {minFreeHoursNotListed && (
+              <option value={minFreeHours}>{t.filters.hour(Number(minFreeHours))}</option>
+            )}
           </select>
         </label>
       </div>
