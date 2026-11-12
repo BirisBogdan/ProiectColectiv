@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { RoomCard } from "@/features/rooms/components/RoomCard";
 import type { RoomWithStatus } from "@/features/rooms/types";
+import { useMessages } from "@/lib/i18n/use-locale";
 
 type LoadState = "loading" | "success" | "error";
 
@@ -44,6 +45,7 @@ export function isRoomList(value: unknown): value is RoomWithStatus[] {
 }
 
 export function RoomList() {
+  const t = useMessages();
   const searchParams = useSearchParams();
   const query = searchParams.toString();
   const [rooms, setRooms] = useState<RoomWithStatus[]>([]);
@@ -104,7 +106,7 @@ export function RoomList() {
   if (state === "loading") {
     return (
       <div aria-live="polite" className="space-y-3">
-        <p>Se încarcă sălile…</p>
+        <p>{t.rooms.loading}</p>
         <div aria-hidden className="grid gap-4 sm:grid-cols-2">
           {[1, 2, 3].map((skeleton) => (
             <div key={skeleton} className="h-36 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800" />
@@ -117,13 +119,13 @@ export function RoomList() {
   if (state === "error") {
     return (
       <div role="alert" className="space-y-3">
-        <p>Nu am putut încărca sălile.</p>
+        <p>{t.rooms.error}</p>
         <button
           type="button"
           onClick={() => setRetry((value) => value + 1)}
           className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
-          Reîncearcă
+          {t.rooms.retry}
         </button>
       </div>
     );
@@ -133,11 +135,11 @@ export function RoomList() {
     <>
       {refreshFailed && (
         <p role="status" className="text-sm text-red-700 dark:text-red-400">
-          Nu am putut actualiza lista.
+          {t.rooms.refreshError}
         </p>
       )}
       {rooms.length === 0 ? (
-        <p>Nicio sală nu se potrivește filtrelor.</p>
+        <p>{t.rooms.empty}</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {rooms.map((room) => (

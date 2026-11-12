@@ -19,6 +19,7 @@ export interface RoomWeek {
   code: string;
   buildingName: string;
   days: RoomWeekDay[]; // mereu 7 zile, de luni (1) până duminică (7)
+  weeks?: "odd" | "even";
 }
 
 // The window in which we look for free time. Outside it the faculty has no classes,

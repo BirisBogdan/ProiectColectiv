@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { FloorPlan, isBuildingPlan } from "@/features/rooms/components/FloorPlan";
 import type { Building, BuildingPlan } from "@/features/rooms/types";
+import { useMessages } from "@/lib/i18n/use-locale";
 
 // A static segment, so Next.js matches it before rooms/[id] and "plan" is never read as a room id.
 
@@ -20,6 +21,7 @@ const RETRY_CLASS =
   "rounded-lg bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600";
 
 function PlanContent() {
+  const t = useMessages();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -51,10 +53,10 @@ function PlanContent() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Planul clădirii</h1>
+      <h1 className="text-3xl font-bold">{t.plan.title}</h1>
 
       <label className="block max-w-xs space-y-1 text-sm font-medium">
-        <span className="block">Clădire</span>
+        <span className="block">{t.plan.building}</span>
         <select
           value={buildingId}
           disabled={!Array.isArray(buildings)}
@@ -67,7 +69,7 @@ function PlanContent() {
         >
           {buildingId && !(Array.isArray(buildings) && buildings.some(({ id }) => id === buildingId)) && (
             <option value={buildingId}>
-              {buildings === "loading" ? "Se încarcă…" : "Clădire necunoscută"}
+              {buildings === "loading" ? t.filters.loading : t.filters.unknownBuilding}
             </option>
           )}
           {Array.isArray(buildings) &&
@@ -80,12 +82,12 @@ function PlanContent() {
       </label>
 
       <p className="text-sm text-gray-600 dark:text-gray-400">
-        Schemă orientativă, nu planul real al clădirii.
+        {t.plan.schematic}
       </p>
 
       {buildings === "error" && !requestedId && (
         <div role="alert" className="space-y-3">
-          <p>Nu am putut încărca clădirile.</p>
+          <p>{t.filters.buildingsError}</p>
           <button
             type="button"
             onClick={() => {
@@ -94,7 +96,7 @@ function PlanContent() {
             }}
             className={RETRY_CLASS}
           >
-            Reîncearcă
+            {t.rooms.retry}
           </button>
         </div>
       )}
@@ -103,13 +105,14 @@ function PlanContent() {
         // Keyed by building so switching resets to "loading" instead of showing the old plan.
         <BuildingPlanView key={buildingId} buildingId={buildingId} />
       ) : (
-        buildings === "loading" && <p role="status">Se încarcă planul…</p>
+        buildings === "loading" && <p role="status">{t.plan.loading}</p>
       )}
     </div>
   );
 }
 
 function BuildingPlanView({ buildingId }: { buildingId: string }) {
+  const t = useMessages();
   const [state, setState] = useState<PlanState>({ status: "loading" });
   const [refreshFailed, setRefreshFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -163,16 +166,16 @@ function BuildingPlanView({ buildingId }: { buildingId: string }) {
     };
   }, [buildingId, attempt]);
 
-  if (state.status === "loading") return <p role="status">Se încarcă planul…</p>;
+  if (state.status === "loading") return <p role="status">{t.plan.loading}</p>;
 
   if (state.status === "not-found") {
     return (
       <div className="space-y-3">
         <p role="alert" className="font-semibold">
-          Clădirea nu există.
+          {t.plan.notFound}
         </p>
         <Link href="/rooms/plan" className="font-medium underline">
-          Vezi planul primei clădiri
+          {t.plan.first}
         </Link>
       </div>
     );
@@ -181,7 +184,7 @@ function BuildingPlanView({ buildingId }: { buildingId: string }) {
   if (state.status === "error") {
     return (
       <div role="alert" className="space-y-3">
-        <p>Nu am putut încărca planul clădirii.</p>
+        <p>{t.plan.error}</p>
         <button
           type="button"
           onClick={() => {
@@ -190,7 +193,7 @@ function BuildingPlanView({ buildingId }: { buildingId: string }) {
           }}
           className={RETRY_CLASS}
         >
-          Reîncearcă
+          {t.rooms.retry}
         </button>
       </div>
     );
@@ -200,20 +203,21 @@ function BuildingPlanView({ buildingId }: { buildingId: string }) {
     <div className="space-y-3">
       {refreshFailed && (
         <p role="status" className="text-sm text-red-700 dark:text-red-400">
-          Nu am putut actualiza planul.
+          {t.plan.refreshError}
         </p>
       )}
       <FloorPlan plan={state.plan} />
       <p className="text-sm text-gray-600 dark:text-gray-400">
-        Planul se actualizează automat la fiecare 60 de secunde.
+        {t.plan.updated}
       </p>
     </div>
   );
 }
 
 export default function RoomsPlanPage() {
+  const t = useMessages();
   return (
-    <Suspense fallback={<p role="status">Se încarcă planul…</p>}>
+    <Suspense fallback={<p role="status">{t.plan.loading}</p>}>
       <PlanContent />
     </Suspense>
   );

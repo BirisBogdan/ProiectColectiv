@@ -8,6 +8,7 @@ import { CheckinButton } from "@/features/rooms/components/CheckinButton";
 import { RoomHeader } from "@/features/rooms/components/RoomHeader";
 import { RoomSchedule } from "@/features/rooms/components/RoomSchedule";
 import type { RoomDetail } from "@/features/rooms/types";
+import { useMessages } from "@/lib/i18n/use-locale";
 
 type DetailState =
   | { status: "loading" }
@@ -16,6 +17,7 @@ type DetailState =
   | { status: "ready"; detail: RoomDetail; now: Date };
 
 function RoomDetailContent({ id }: { id: string }) {
+  const t = useMessages();
   const [state, setState] = useState<DetailState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
 
@@ -66,14 +68,14 @@ function RoomDetailContent({ id }: { id: string }) {
   return (
     <div className="space-y-6">
       <Link href="/rooms" className="inline-block font-medium underline">
-        ← Înapoi la săli
+        {t.room.back}
       </Link>
 
-      {state.status === "loading" && <p role="status">Se încarcă detaliile sălii…</p>}
+      {state.status === "loading" && <p role="status">{t.room.loading}</p>}
 
       {state.status === "error" && (
         <div className="space-y-3">
-          <p role="alert">Nu am putut încărca detaliile sălii.</p>
+          <p role="alert">{t.room.error}</p>
           <button
             type="button"
             onClick={() => {
@@ -82,7 +84,7 @@ function RoomDetailContent({ id }: { id: string }) {
             }}
             className="rounded-lg bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
           >
-            Reîncearcă
+            {t.rooms.retry}
           </button>
         </div>
       )}
@@ -92,8 +94,11 @@ function RoomDetailContent({ id }: { id: string }) {
           <RoomHeader room={state.detail.room} />
           <CheckinButton roomId={id} onChange={() => setAttempt((value) => value + 1)} />
           <RoomSchedule entries={state.detail.today} now={state.now} />
+          <Link href={`/rooms/${encodeURIComponent(id)}/week`} className="inline-block font-medium underline">
+            {t.room.viewWeek}
+          </Link>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Informațiile se actualizează automat la fiecare 60 de secunde.
+            {t.room.updated}
           </p>
         </>
       )}
