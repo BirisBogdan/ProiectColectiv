@@ -32,8 +32,8 @@
 | TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian |
 | TODO-15 | `[DONE]` | Frontend | Pagina `/rooms/plan`: planul clădirii | Bogdan         |
 | TODO-16 | `[DONE]` | Frontend | Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a | Bogdan         |
-| TODO-17 | `[ ]`    | Backend | Supabase local: prima migrație, RLS și seed pentru săli | _(liber)_      |
-| TODO-18 | `[ ]`    | Backend | `room_schedule` și funcția SQL `room_status` | _(liber)_      |
+| TODO-17 | `[DONE]` | Backend | Supabase local: prima migrație, RLS și seed pentru săli | Darius         |
+| TODO-18 | `[DONE]` | Backend | `room_schedule` și funcția SQL `room_status` | Darius         |
 | TODO-19 | `[DONE]` | Backend | Săptămâni pare/impare și perioada de cursuri | Alexia         |
 | TODO-20 | `[DONE]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | Diana          |
 | TODO-21 | `[DONE]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | Raul           |
@@ -613,9 +613,11 @@ Nimic. **Nu descărca automat** paginile: dacă avem voie și de unde, e OQ-8, �
 - [ ] Niciun apel de rețea în cod și nicio dependență față de `apps/web`.
 - [ ] În PR: lista codurilor de săli găsite și ce a fost ciudat în format (o să ne trebuiască pentru OQ-8 și backlog #16). PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-17 `[ ]` Supabase local: prima migrație, RLS și seed pentru săli
+### TODO-17 `[DONE]` Supabase local: prima migrație, RLS și seed pentru săli
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be9-supabase-catalog`
+**Asignat:** Darius · **Branch:** `feat/srf-be9-supabase-catalog`
+
+Configurația locală Supabase (`supabase/config.toml`), prima migrație cu tabelele `faculties`, `buildings` și `rooms` + RLS (`select` doar pentru `authenticated`), `supabase/seed.sql`, testele pgTAP în `supabase/tests/rooms_catalog.test.sql` și tipurile `apps/web/lib/supabase/database.types.ts` sunt făcute. PR: _(de completat linkul)_
 
 #### De ce
 Datele hardcodate au o limită. Facem primul pas spre baza de date doar local, fără conturi și fără să schimbăm aplicația, și stabilim de la început regula cea mai importantă a proiectului: fiecare tabel are RLS și un test care o dovedește (CLAUDE.md §3.2).
@@ -646,9 +648,11 @@ Nimic din etapa a 2-a. Ai nevoie de **Docker Desktop** pe laptop, deci ia itemul
 - [ ] Niciun fișier din `features/` nu e schimbat, iar `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec.
 - [ ] Un coleg a rulat pașii din README pe laptopul lui. PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-18 `[ ]` `room_schedule` și funcția SQL `room_status`
+### TODO-18 `[DONE]` `room_schedule` și funcția SQL `room_status`
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be10-room-status-sql`
+**Asignat:** Darius · **Branch:** `feat/srf-be10-room-status-sql`
+
+Migrația pentru `room_schedule` cu RLS și funcția SQL `room_status(p_room_id, p_at)` (evaluată în `Europe/Bucharest`, cu `parity` nefolosit încă până la integrarea cu TODO-19), completarea `seed.sql`, testele pgTAP din `supabase/tests/room_status.test.sql` și regenerarea `database.types.ts` sunt făcute. PR: _(de completat linkul)_
 
 #### De ce
 Când trecem pe Supabase, regula „e sala liberă?” trebuie să dea același răspuns ca în TypeScript. O mutăm acum, cu aceleași cazuri de test ca în `status.test.ts`, și vedem devreme dacă modelul de date rezistă (backlog #19).
