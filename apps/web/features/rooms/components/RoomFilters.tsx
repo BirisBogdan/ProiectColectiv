@@ -3,18 +3,19 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, startTransition, useEffect, useOptimistic, useState } from "react";
 import type { Building } from "@/features/rooms/types";
+import { useMessages } from "@/lib/i18n/use-locale";
 
 const FLAG_FILTERS = [
-  { param: "freeOnly", label: "Doar libere acum" },
-  { param: "outlets", label: "Prize" },
-  { param: "projector", label: "Proiector" },
+  { param: "freeOnly", key: "freeOnly" },
+  { param: "outlets", key: "outlets" },
+  { param: "projector", key: "projector" },
 ] as const;
 
 export const MIN_FREE_HOURS_OPTIONS = [
-  { value: "", label: "Oricât" },
-  { value: "1", label: "1 oră" },
-  { value: "2", label: "2 ore" },
-  { value: "3", label: "3 ore" },
+  { value: "" },
+  { value: "1" },
+  { value: "2" },
+  { value: "3" },
 ] as const;
 
 const FIELD_CLASS =
@@ -42,6 +43,7 @@ export function validMinFreeHours(raw: string | null): string {
 }
 
 function RoomFiltersForm() {
+  const t = useMessages();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -91,29 +93,29 @@ function RoomFiltersForm() {
     <section aria-labelledby="room-filters-title" className="space-y-3">
       <div className="flex items-center justify-between gap-3">
         <h2 id="room-filters-title" className="font-semibold">
-          Filtre
+          {t.filters.title}
         </h2>
         <button
           type="button"
           onClick={() => navigate("")}
           className="rounded-lg px-2 py-1 text-sm font-medium underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
-          Resetează
+          {t.filters.reset}
         </button>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <label className="min-w-0 space-y-1 text-sm font-medium">
-          <span className="block">Clădire</span>
+          <span className="block">{t.filters.building}</span>
           <select
             value={buildingId}
             onChange={(event) => setParam("buildingId", event.target.value)}
             className={FIELD_CLASS}
           >
-            <option value="">Toate</option>
+            <option value="">{t.filters.allBuildings}</option>
             {buildingNotListed && (
               <option value={buildingId}>
-                {buildings || buildingsFailed ? "Clădire necunoscută" : "Se încarcă…"}
+                {buildings || buildingsFailed ? t.filters.unknownBuilding : t.filters.loading}
               </option>
             )}
             {buildings?.map((building) => (
@@ -125,7 +127,7 @@ function RoomFiltersForm() {
         </label>
 
         <label className="min-w-0 space-y-1 text-sm font-medium">
-          <span className="block">Capacitate minimă</span>
+          <span className="block">{t.filters.minCapacity}</span>
           <input
             type="number"
             min={1}
@@ -137,15 +139,15 @@ function RoomFiltersForm() {
         </label>
 
         <label className="min-w-0 space-y-1 text-sm font-medium">
-          <span className="block">Liberă cel puțin</span>
+          <span className="block">{t.filters.minFreeHours}</span>
           <select
             value={validMinFreeHours(params.get("minFreeHours"))}
             onChange={(event) => setParam("minFreeHours", validMinFreeHours(event.target.value))}
             className={FIELD_CLASS}
           >
-            {MIN_FREE_HOURS_OPTIONS.map(({ value, label }) => (
+            {MIN_FREE_HOURS_OPTIONS.map(({ value }) => (
               <option key={value} value={value}>
-                {label}
+                {value ? t.filters.hour(Number(value)) : t.filters.any}
               </option>
             ))}
           </select>
@@ -153,7 +155,7 @@ function RoomFiltersForm() {
       </div>
 
       <div className="flex flex-wrap gap-x-3 gap-y-2">
-        {FLAG_FILTERS.map(({ param, label }) => (
+        {FLAG_FILTERS.map(({ param, key }) => (
           <label key={param} className="flex items-center gap-1.5 text-sm">
             <input
               type="checkbox"
@@ -161,14 +163,14 @@ function RoomFiltersForm() {
               onChange={(event) => setParam(param, event.target.checked ? "1" : "")}
               className="size-4"
             />
-            {label}
+            {t.filters[key]}
           </label>
         ))}
       </div>
 
       {buildingsFailed && (
         <p role="alert" className="text-sm text-red-700 dark:text-red-400">
-          Nu am putut încărca clădirile.
+          {t.filters.buildingsError}
         </p>
       )}
     </section>

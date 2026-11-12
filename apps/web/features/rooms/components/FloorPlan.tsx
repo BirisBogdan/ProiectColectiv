@@ -1,10 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckinSignal } from "@/features/rooms/components/CheckinSignal";
 import type { BuildingPlan } from "@/features/rooms/types";
+import { useMessages } from "@/lib/i18n/use-locale";
 
-export function floorTitle(floor: number): string {
-  return floor === 0 ? "Parter" : `Etaj ${floor}`;
+export function floorTitle(floor: number, labels = { ground: "Parter", floor: "Etaj" }): string {
+  return floor === 0 ? labels.ground : `${labels.floor} ${floor}`;
 }
 
 /** Narrow check of a GET /api/buildings/[id]/plan body, so a bad response shows an error, not a crash. */
@@ -34,8 +37,9 @@ export function isBuildingPlan(value: unknown): value is BuildingPlan {
 }
 
 export function FloorPlan({ plan }: { plan: BuildingPlan }) {
+  const t = useMessages();
   if (plan.floors.length === 0) {
-    return <p>Clădirea nu are încă săli în plan.</p>;
+    return <p>{t.plan.empty}</p>;
   }
 
   return (
@@ -43,7 +47,7 @@ export function FloorPlan({ plan }: { plan: BuildingPlan }) {
       {plan.floors.map(({ floor, rooms }) => (
         <section key={floor} aria-labelledby={`floor-${floor}`} className="space-y-2">
           <h2 id={`floor-${floor}`} className="text-lg font-semibold">
-            {floorTitle(floor)}
+            {floorTitle(floor, { ground: t.room.groundFloor, floor: t.room.floor })}
           </h2>
           <ul className="grid grid-cols-3 gap-2 rounded-xl border border-dashed border-gray-300 p-2 dark:border-gray-700">
             {rooms.map((room) => (

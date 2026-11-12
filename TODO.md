@@ -14,8 +14,8 @@
 
 ## Index
 
-| ID | Status | Parte | Titlu | Asignat        |
-|---|---|---|---|----------------|
+| ID | Status   | Parte | Titlu | Asignat        |
+|---|----------|---|---|----------------|
 | TODO-01 | `[DONE]` | Backend | Fundația: tipuri, date hardcodate și `GET /api/buildings` | Bogdan         |
 | TODO-02 | `[DONE]` | Backend | `GET /api/rooms`: lista sălilor cu filtre | Darius         |
 | TODO-03 | `[DONE]` | Backend | Motorul de stare: e sala liberă acum? | Alexia         |
@@ -24,23 +24,23 @@
 | TODO-06 | `[DONE]` | Frontend | Pagina `/rooms`: lista de săli | Raul           |
 | TODO-07 | `[DONE]` | Frontend | Pagina `/rooms/[id]`: detaliul unei săli | Bogdan Buruian |
 | TODO-08 | `[DONE]` | Frontend | Bara de filtre și checklist-ul de QA | Bogdan         |
-| TODO-09 | `[DONE]` | Backend | Check-in: contractul, stocarea și endpointurile | Diana      |
-| TODO-10 | `[~]` | Backend | Filtrul „liberă cel puțin N ore” | Luca           |
-| TODO-11 | `[~]` | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | Luca           |
-| TODO-12 | `[DONE]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia      |
+| TODO-09 | `[DONE]` | Backend | Check-in: contractul, stocarea și endpointurile | Diana          |
+| TODO-10 | `[~]`    | Backend | Filtrul „liberă cel puțin N ore” | Luca           |
+| TODO-11 | `[~]`    | Backend | Planul clădirii: date și `GET /api/buildings/[id]/plan` | Luca           |
+| TODO-12 | `[DONE]` | Backend | Importerul de orar: parser FMI pe fișiere salvate | Alexia         |
 | TODO-13 | `[DONE]` | Frontend | Butonul de check-in pe pagina sălii | Tudor          |
-| TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian     |
+| TODO-14 | `[DONE]` | Frontend | Semnalul „persoane aici” și lista care se actualizează singură | Bogdan Buruian |
 | TODO-15 | `[DONE]` | Frontend | Pagina `/rooms/plan`: planul clădirii | Bogdan         |
 | TODO-16 | `[DONE]` | Frontend | Filtrul „liberă cel puțin” în UI și QA pentru etapa a 2-a | Bogdan         |
-| TODO-17 | `[ ]` | Backend | Supabase local: prima migrație, RLS și seed pentru săli | _(liber)_      |
-| TODO-18 | `[ ]` | Backend | `room_schedule` și funcția SQL `room_status` | _(liber)_      |
-| TODO-19 | `[DONE]` | Backend | Săptămâni pare/impare și perioada de cursuri | Alexia      |
-| TODO-20 | `[DONE]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | Diana     |
-| TODO-21 | `[ ]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | _(liber)_      |
+| TODO-17 | `[ ]`    | Backend | Supabase local: prima migrație, RLS și seed pentru săli | _(liber)_      |
+| TODO-18 | `[ ]`    | Backend | `room_schedule` și funcția SQL `room_status` | _(liber)_      |
+| TODO-19 | `[DONE]` | Backend | Săptămâni pare/impare și perioada de cursuri | Alexia         |
+| TODO-20 | `[DONE]` | Backend | `GET /api/rooms/[id]/week`: orarul pe săptămână și intervalele libere | Diana          |
+| TODO-21 | `[DONE]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | Raul           |
 | TODO-22 | `[DONE]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
 | TODO-23 | `[DONE]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | Buruian Bogdan |
-| TODO-24 | `[ ]` | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
-| TODO-25 | `[ ]` | Frontend | Restul textelor pe `lib/i18n` | _(liber)_      |
+| TODO-24 | `[ ]`    | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
+| TODO-25 | `[DONE]` | Frontend | Restul textelor pe `lib/i18n` | Raul           |
 
 ---
 

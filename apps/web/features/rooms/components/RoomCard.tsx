@@ -1,9 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckinSignal } from "@/features/rooms/components/CheckinSignal";
 import type { RoomWithStatus } from "@/features/rooms/types";
+import { useMessages } from "@/lib/i18n/use-locale";
 
 export function RoomCard({ room }: { room: RoomWithStatus }) {
+  const t = useMessages();
   return (
     <Link
       href={`/rooms/${room.id}`}
@@ -14,7 +18,7 @@ export function RoomCard({ room }: { room: RoomWithStatus }) {
           <div className="min-w-0">
             <h2 className="truncate text-xl font-bold">{room.code}</h2>
             <p className="truncate text-sm text-gray-600 dark:text-gray-400">
-              {room.buildingName} · {room.floor === 0 ? "Parter" : `Etaj ${room.floor}`}
+              {room.buildingName} · {room.floor === 0 ? t.room.groundFloor : `${t.room.floor} ${room.floor}`}
             </p>
           </div>
           <div className="flex min-w-0 flex-col items-start gap-1">
@@ -24,9 +28,9 @@ export function RoomCard({ room }: { room: RoomWithStatus }) {
         </div>
 
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-700 dark:text-gray-300">
-          <span>{room.capacity} locuri</span>
-          {room.hasOutlets && <span>Prize</span>}
-          {room.hasProjector && <span>Proiector</span>}
+          <span>{t.room.capacity(room.capacity)}</span>
+          {room.hasOutlets && <span>{t.room.outlets}</span>}
+          {room.hasProjector && <span>{t.room.projector}</span>}
         </div>
       </article>
     </Link>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { bucharestNow } from "@/features/rooms/server/time";
 import type { Checkin } from "@/features/rooms/types";
+import { useMessages } from "@/lib/i18n/use-locale";
 
 // No login yet, so the browser remembers its own check-in. Supabase replaces this
 // with a per-user row (backlog #08, #22).
@@ -89,6 +90,7 @@ const buttonClass =
   "rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-60";
 
 export function CheckinButton({ roomId, onChange }: { roomId: string; onChange: () => void }) {
+  const t = useMessages();
   const stored = useSyncExternalStore(subscribe, readStored, serverSnapshot);
   const [now, setNow] = useState(() => new Date());
   const [pending, setPending] = useState(false);
@@ -142,7 +144,7 @@ export function CheckinButton({ roomId, onChange }: { roomId: string; onChange: 
   }
 
   return (
-    <section className="space-y-2" aria-label="Check-in">
+    <section className="space-y-2" aria-label={t.checkin.ariaLabel}>
       {state === "none" && (
         <button
           type="button"
@@ -150,14 +152,14 @@ export function CheckinButton({ roomId, onChange }: { roomId: string; onChange: 
           disabled={pending}
           className={`${buttonClass} bg-blue-700 hover:bg-blue-800`}
         >
-          Sunt aici
+          {t.checkin.here}
         </button>
       )}
 
       {state === "here" && checkin && (
         <div className="flex flex-wrap items-center gap-3">
           <p className="font-medium">
-            Ești aici până la {bucharestNow(new Date(checkin.expiresAt)).time}
+            {t.checkin.until(bucharestNow(new Date(checkin.expiresAt)).time)}
           </p>
           <button
             type="button"
@@ -165,26 +167,26 @@ export function CheckinButton({ roomId, onChange }: { roomId: string; onChange: 
             disabled={pending}
             className={`${buttonClass} bg-gray-700 hover:bg-gray-800`}
           >
-            Am plecat
+            {t.checkin.left}
           </button>
         </div>
       )}
 
       {state === "elsewhere" && checkin && (
         <p>
-          Ai deja check-in în altă sală.{" "}
+          {t.checkin.elsewhere}{" "}
           <Link
             href={`/rooms/${encodeURIComponent(checkin.roomId)}`}
             className="font-medium underline"
           >
-            Vezi sala
+            {t.checkin.viewRoom}
           </Link>
         </p>
       )}
 
       {failed && (
         <p role="alert" className="text-sm text-red-700 dark:text-red-400">
-          Nu am putut salva check-in-ul.
+          {t.checkin.saveError}
         </p>
       )}
     </section>

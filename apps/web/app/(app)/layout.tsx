@@ -1,6 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { useMessages } from "@/lib/i18n/use-locale";
 
 export default function AppLayout({ children }: LayoutProps<"/">) {
+  const t = useMessages();
+
   return (
     <>
       <header className="border-b border-gray-200 dark:border-gray-800">
@@ -10,11 +16,12 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
           </Link>
           <nav className="flex items-center gap-4">
             <Link href="/rooms" className="font-medium hover:underline">
-              Săli
+              {t.nav.rooms}
             </Link>
             <Link href="/rooms/plan" className="font-medium hover:underline">
-              Plan
+              {t.nav.plan}
             </Link>
+            <LanguageSwitcher />
           </nav>
         </div>
       </header>
