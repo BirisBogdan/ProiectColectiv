@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Status: mostly a plan.** Only the first sprint's skeleton exists: `apps/web/` (Next.js + TypeScript + Tailwind, Vitest), the pnpm workspace and the `web` CI job. `scripts/schedule-import/` now holds a first FMI parser (TODO-17): it reads timetable pages saved by hand with `--from-file`, makes no network calls and writes nowhere, and its `importer` CI job runs `pytest`. The PWA shell exists (TODO-23): `apps/web/public/manifest.webmanifest`, `public/sw.js`, `public/offline.html`, `public/icons/` and `components/RegisterServiceWorker.tsx`; the service worker registers only in production and never caches `/api/*`. `supabase/`, `.github/scripts/`, `.claude/skills/` and Playwright are **not in the repo yet**; they return with their backlog items. Every path, command and rule for them is the *intended* shape. When something lands, make this file true or change it; never leave a claim here that the code contradicts. `TODO.md` is the current sprint; read it before starting any piece of work.
+> **Status: mostly a plan.** Only the first sprint's skeleton exists: `apps/web/` (Next.js + TypeScript + Tailwind, Vitest), the pnpm workspace and the `web` CI job. `scripts/schedule-import/` now holds a first FMI parser (TODO-17): it reads timetable pages saved by hand with `--from-file`, makes no network calls and writes nowhere, and its `importer` CI job runs `pytest`. The PWA shell exists (TODO-23): `apps/web/public/manifest.webmanifest`, `public/sw.js`, `public/offline.html`, `public/icons/` and `components/RegisterServiceWorker.tsx`; the service worker registers only in production and never caches `/api/*`. `supabase/` now holds the local config, migrations and RLS policies for `faculties`, `buildings`, `rooms` and `room_schedule`, the `room_status` SQL function, demo `seed.sql`, pgTAP tests in `supabase/tests/` and generated types in `apps/web/lib/supabase/database.types.ts` (the web app still reads the hardcoded TypeScript files until the switch). `.github/scripts/`, `.claude/skills/` and Playwright are **not in the repo yet**; they return with their backlog items. Every path, command and rule for them is the *intended* shape. When something lands, make this file true or change it; never leave a claim here that the code contradicts. `TODO.md` is the current sprint; read it before starting any piece of work.
 >
 > **IDs:** every `TODO-NN` and `OQ-N` in this file refers to the full backlog, not to `TODO.md`, whose sprint items are numbered separately. The backlog is out of the repo for now; read it with `git show d7acbd8:TODO-backlog.md`.
 
@@ -65,7 +65,7 @@ Things that hold this up, all easy to undo by accident:
 
 ## 2. Commands
 
-Package manager: pnpm (OQ-5). The whole-repo and web app commands work today, except `pnpm test:e2e`; the rest are planned.
+Package manager: pnpm (OQ-5). The whole-repo, web app, local Supabase and importer commands work today; `pnpm test:e2e` is still planned.
 
 ```bash
 # whole repo
@@ -162,7 +162,7 @@ python -m pytest
 
 Deliberate or unresolved; do not assume these are safe.
 
-- **Most of §2 is still a plan.** The `supabase` commands and `pnpm test:e2e` are a plan until their directories and config return. The importer runs only on pages saved by hand (`--from-file`): it does not fetch from the network (OQ-8) and does not write to a database yet.
+- **Part of §2 is still a plan.** `pnpm test:e2e` is a plan until Playwright returns. Local `supabase` commands work with Docker Desktop (`pnpm dlx supabase ...`), though the web app still reads the hardcoded TypeScript data. The importer runs only on pages saved by hand (`--from-file`): it does not fetch from the network (OQ-8) and does not write to a database yet.
 - **Data model is incomplete (TODO-53).** Blocks, content reports, consents, notification preferences, buildings, roles and announcements have no tables yet.
 - **Only FMI's timetable format is targeted (TODO-17, TODO-28).** FSEGA rooms will show as "unknown", not "free", until its adapter exists; never default an unknown room to free.
 - **Who the dorm administrator is, and their email, is unknown (OQ-3, TODO-44).**
