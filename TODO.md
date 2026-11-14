@@ -1,6 +1,6 @@
 # TODO — UBB Campus
 
-**Sprintul curent: StudyRoom Finder.** Etapa 1 (onboarding, TODO-01..08) e gata; acum lucrăm în paralel la etapa a 2-a (TODO-09..16) și etapa a 3-a (TODO-17..24), fiecare cu 4 itemi de backend și 4 de frontend. Fișierul conține doar itemii sprintului.
+**Sprintul curent: StudyRoom Finder.** Etapa 1 (onboarding, TODO-01..08) e gata; acum lucrăm în paralel la etapa a 2-a (TODO-09..16) și etapa a 3-a (TODO-17..24), fiecare cu 4 itemi de backend și 4 de frontend. Etapa a 4-a (TODO-26..40) duce aplicația pe date reale: orarul importat, check-in-uri în baza de date și rapoarte de probleme, plus extra-urile amânate. Fișierul conține doar itemii sprintului.
 
 ## Cum folosim fișierul
 
@@ -8,7 +8,7 @@
 - Nu ștergi și nu tai itemi. Când e gata: `[DONE]`, plus o propoziție cu ce s-a făcut și linkul la PR.
 - Schimbarea statusului înseamnă două editări: titlul itemului și rândul din Index.
 
-**Status:** `[ ]` liber · `[~]` în lucru · `[DONE]` gata
+**Status:** `[ ]` liber · `[~]` în lucru · `[DONE]` gata · `[POSTPONED]` amânat până validăm MVP-ul (nu se începe)
 
 ---
 
@@ -41,6 +41,21 @@
 | TODO-23 | `[DONE]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | Buruian Bogdan |
 | TODO-24 | `[ ]`    | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
 | TODO-25 | `[DONE]` | Frontend | Restul textelor pe `lib/i18n` | Raul           |
+| TODO-26 | `[ ]`    | Backend | Importerul FMI descarcă singur orarul | _(liber)_      |
+| TODO-27 | `[ ]`    | Backend | Importerul scrie orarul în Supabase, cu loturi și verificări | _(liber)_      |
+| TODO-28 | `[ ]`    | Backend | Catalogul real al sălilor FMI | _(liber)_      |
+| TODO-29 | `[ ]`    | Backend | Importul automat pe GitHub Actions | _(liber)_      |
+| TODO-30 | `[ ]`    | Backend | `room_status` în SQL: săptămâni pare/impare și perioada de cursuri | _(liber)_      |
+| TODO-31 | `[ ]`    | Backend | Aplicația citește sălile și orarul din Supabase | _(liber)_      |
+| TODO-32 | `[ ]`    | Backend | Adaptorul FSEGA și sălile FSEGA | _(liber)_      |
+| TODO-33 | `[ ]`    | Backend | Tabelul `room_checkins`: check-in-uri care rămân după restart | _(liber)_      |
+| TODO-34 | `[ ]`    | Backend | Check-in-ul trece pe baza de date | _(liber)_      |
+| TODO-35 | `[ ]`    | Frontend | Check-in-uri live pentru toată lumea | _(liber)_      |
+| TODO-36 | `[ ]`    | Backend | Raportarea problemelor dintr-o sală: tabelul și endpointul | _(liber)_      |
+| TODO-37 | `[ ]`    | Frontend | „Raportează o problemă” pe pagina sălii | _(liber)_      |
+| TODO-38 | `[POSTPONED]` | Extra | Sălile favorite | _(amânat)_      |
+| TODO-39 | `[POSTPONED]` | Extra | Alerta „sala se eliberează în 10 minute” | _(amânat)_      |
+| TODO-40 | `[POSTPONED]` | Extra | „Vin la 14:00”: check-in în avans | _(amânat)_      |
 
 ---
 
@@ -286,6 +301,71 @@ Se lucrează în același timp cu etapa a 2-a, așa că itemii ating, pe cât po
 - **Testele pgTAP rulează doar local**, pentru că în CI ar cere Docker și timp de configurare. Ce trebuie: să le adăugăm în CI când există proiectul `dev`.
 - **Doar câteva texte sunt traduse.** Restul componentelor trec pe `lib/i18n` după ce se termină etapa a 2-a, ca să evităm conflictele. Vezi TODO-22.
 - **Sărbătorile și sesiunea arată `unknown`, pe baza unui calendar demo.** TODO-19 alege varianta asta pentru că o sală necunoscută nu e niciodată `free`. Ce trebuie: calendarul oficial al anului universitar.
+
+---
+
+## Etapa a 4-a (TODO-26..40)
+
+Demo-ul e gata: listă cu filtre, pagina sălii, check-in, săptămâna, planul și engleza. Ce lipsește ca să devină produs: **date reale** (orarul și sălile importate de pe site-urile facultăților și ținute în baza de date), **check-in-uri care rămân** (salvate în baza de date și văzute live de toată lumea) și **raportarea problemelor** dintr-o sală. Extra-urile (favorite, alerta „se eliberează în 10 minute”, check-in în avans) sunt scrise ca itemi, dar rămân `[POSTPONED]` până validăm MVP-ul (CLAUDE.md). Workflow-ul și regulile sunt cele de mai sus.
+
+**Atenție la numere:** itemii de aici au tot numerotarea sprintului. Fiecare spune ce item din backlog acoperă (de ex. TODO-32 de aici e backlog #28, FSEGA).
+
+### Ce trebuie înainte, în afara etapei
+
+Etapa asta trece aplicația de pe fișierele TypeScript pe Supabase, așa că are nevoie de lucruri care nu sunt itemi aici:
+
+- **Proiectul Supabase `dev`** (backlog #04). Fără el, importul automat (TODO-29) și trecerea aplicației pe baza de date (TODO-31) merg doar local.
+- **Login cu `@stud.ubbcluj.ro`** (backlog #08). Fără el, check-in-urile și rapoartele sunt anonime și oricine poate apăsa de mai multe ori. TODO-33, 34 și 36 sunt gândite să meargă și înainte, cu `user_id` gol, dar regula „un check-in activ de om” vine abia cu login-ul.
+- **Răspunsul la OQ-8** (de unde luăm orarul FMI și dacă avem voie să-l descărcăm automat). Blochează doar TODO-26 și TODO-29.
+
+### Fișiere și regula anti-conflicte
+
+| TODO | Parte | Fișiere proprii |
+|---|---|---|
+| TODO-26 | Backend | `scripts/schedule-import/schedule_import/adapters/fmi.py` (doar `fetch`), `schedule_import/fetch.py`, `__main__.py` |
+| TODO-27 | Backend | Migrația `schedule_import_batches` din `supabase/`, `scripts/schedule-import/schedule_import/load.py`, `requirements.txt` |
+| TODO-28 | Backend | `scripts/schedule-import/catalog/fmi-rooms.csv`, `schedule_import/catalog.py`, migrația pentru coloanele noi din `rooms` |
+| TODO-29 | Backend | `.github/workflows/import.yml`, `scripts/schedule-import/README.md` |
+| TODO-30 | Backend | Migrația `teaching_periods` și noua versiune a `room_status` din `supabase/`, `supabase/tests/room_status.test.sql` |
+| TODO-31 | Backend | `apps/web/lib/supabase/server.ts`, `features/rooms/server/` (`list-rooms.ts`, `get-room.ts`, `get-week.ts`, `get-plan.ts`), `features/rooms/data/` |
+| TODO-32 | Backend | `scripts/schedule-import/schedule_import/adapters/fsega.py`, `catalog/fsega-rooms.csv`, fixture-urile și testele FSEGA |
+| TODO-33 | Backend | Migrația `room_checkins` din `supabase/`, `supabase/tests/room_checkins.test.sql` |
+| TODO-34 | Backend | `features/rooms/server/checkins.ts`, `app/api/rooms/[id]/checkins/`, `app/api/checkins/` |
+| TODO-35 | Frontend | `features/rooms/components/RoomList.tsx`, `RoomHeader.tsx`, `CheckinSignal.tsx`, `CheckinButton.tsx`, `features/rooms/hooks/useLiveCheckins.ts` |
+| TODO-36 | Backend | Migrația `room_reports` din `supabase/`, `supabase/tests/room_reports.test.sql`, `features/rooms/server/reports.ts`, `app/api/rooms/[id]/reports/` |
+| TODO-37 | Frontend | `features/rooms/components/ReportProblem.tsx`, `ReportSignal.tsx`, `app/(app)/rooms/[id]/page.tsx` |
+| TODO-38 | Extra | `room_favourites` (migrație + teste), `features/rooms/components/FavouriteButton.tsx` |
+| TODO-39 | Extra | `room_free_alerts` (migrație + teste), `supabase/functions/room-free-alerts/`, `features/rooms/components/FreeAlertButton.tsx` |
+| TODO-40 | Extra | `room_checkins` (coloana `planned_for`), `features/rooms/components/PlannedCheckin.tsx` |
+
+Căile din `features/`, `app/` și `lib/` sunt relative la `apps/web/`.
+
+**Excepții planificate:**
+
+- **`features/rooms/types.ts`:** în etapa asta îl modifică doar TODO-36 (câmpul `recentReports`), iar mai târziu TODO-40 (`plannedCheckins`). Se adaugă câmpuri, nu se schimbă cele existente: contractul cu frontendul rămâne.
+- **`database.types.ts`:** fiecare item cu migrație îl regenerează. La conflict, regenerezi din nou după rebase, nu rezolvi de mână.
+- **`CLAUDE.md`:** TODO-27, 29 și 31 actualizează nota de status, §2 și §6. La conflict, păstrați ambele modificări.
+
+### Dependențe și ordinea de merge
+
+| TODO | Poate porni | Trebuie să aștepte |
+|---|---|---|
+| TODO-28, 30, 33, 36 | imediat | nimic (doar Supabase local) |
+| TODO-26 | după OQ-8 | răspunsul la OQ-8 |
+| TODO-27 | imediat, pe fixture-uri | TODO-28 pe `main` (codurile de săli se verifică pe catalog) |
+| TODO-29 | după TODO-26 și 27 | proiectul `dev` (backlog #04) |
+| TODO-31 | imediat | TODO-30 pe `main`, ca baza de date să dea aceeași stare ca TypeScript |
+| TODO-32 | după TODO-27 | sursa și formatul orarului FSEGA |
+| TODO-34 | după TODO-33 | TODO-31 pe `main` (același client Supabase) |
+| TODO-35 | imediat, pe mock | TODO-34 |
+| TODO-37 | imediat, pe mock | TODO-36 |
+| TODO-38, 39, 40 | `[POSTPONED]` | validarea MVP-ului și login-ul (backlog #08) |
+
+### Ce rămâne deschis după etapa asta
+
+- **Corecțiile de admin** (backlog #18) și **coada de moderare** pentru rapoarte (backlog #15) nu intră aici. Ce trebuie: răspunsul la OQ-4 (cine sunt adminii). Până atunci, rapoartele „orar greșit” din TODO-36 se citesc direct din baza de date.
+- **Alertele la importuri eșuate** merg doar ca job roșu în GitHub Actions. Ce trebuie: Sentry (backlog #05).
+- **Planul clădirii rămâne schema demo** (OQ-6): TODO-31 citește sălile din baza de date, dar pozițiile din `floor-plans.ts` rămân scrise de mână.
 
 ---
 
@@ -761,6 +841,253 @@ Nimic. Ține tipurile în fișierul tău, nu în `types.ts`.
 - [ ] `curl -i localhost:3000/api/rooms/nu-exista/week` întoarce 404.
 - [ ] Lint, typecheck, teste verzi; PR revizuit de cine are TODO-21.
 
+### TODO-26 `[ ]` Importerul FMI descarcă singur orarul
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be13-importer-fetch` · **Backlog:** #17
+
+#### De ce
+Azi importerul citește doar pagini salvate de mână (TODO-12). Ca orarul din aplicație să fie cel real și la zi, trebuie să-l poată lua singur de pe site-ul FMI, fără ca cineva să salveze zeci de pagini în fiecare săptămână.
+
+#### Depinde de
+**OQ-8.** Nu începe codul de rețea până nu știm de unde avem voie să luăm orarul (o pagină publică, un export sau un API de la facultate). Dacă facultatea dă un export, adaptorul citește exportul și pasul 2 se schimbă.
+
+#### Ce ai de făcut
+
+1. **`schedule_import/fetch.py`**: o singură funcție pentru cereri HTTP, folosită de toate adaptoarele:
+   - un `User-Agent` generic cu numele proiectului, fără emailuri sau nume de persoane;
+   - cel mult o cerere pe secundă, timeout de 20 de secunde, 3 încercări cu pauză crescătoare;
+   - citește `charset`-ul din pagină (FMI folosește `ISO-8859-2`), nu presupune UTF-8.
+
+2. **`adapters/fmi.py`**, metoda `fetch()`: citește pagina-index a sălilor pentru semestrul curent, ia linkurile spre paginile fiecărei săli și le descarcă. Adresa semestrului (`.../files/orar/2026-1/`) e parametru, nu e scrisă în cod.
+
+3. **`__main__.py`**: fără `--from-file`, programul descarcă. `--dry-run` rămâne obligatoriu până la TODO-27. Opțiunea `--save-raw <dir>` salvează paginile descărcate, ca să putem face fixture-uri noi când se schimbă formatul.
+
+4. **Teste**: rețeaua se înlocuiește cu fixture-urile existente (un server fals sau `monkeypatch`), deci `pytest` rămâne fără internet. Cazuri: index cu linkuri relative, o pagină care dă 404 (eroare clară, nu listă goală), `charset` diferit.
+
+#### Gata când
+- [ ] `python -m schedule_import --faculty fmi --dry-run` descarcă orarul real și tipărește același rezumat ca la TODO-12.
+- [ ] `pytest` trece fără rețea, local și în CI.
+- [ ] În PR: răspunsul la OQ-8 (link sau mesajul de la facultate), câte pagini s-au descărcat și cât a durat. PR revizuit de cine a făcut TODO-12.
+
+### TODO-27 `[ ]` Importerul scrie orarul în Supabase, cu loturi și verificări
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be14-importer-load` · **Backlog:** #17
+
+#### De ce
+Un import care șterge orarul și apoi pică la jumătate face toate sălile să pară libere. De aceea fiecare import e un lot nou, care înlocuiește lotul vechi doar dacă trece verificările (CLAUDE.md §3.3). Asta e regula care face importul automat sigur.
+
+#### Depinde de
+TODO-28 pe `main` înainte de PR, pentru că verificarea „fiecare cod de sală e cunoscut” citește catalogul. Poți lucra pe fixture-uri și pe Supabase local între timp.
+
+#### Ce ai de făcut
+
+1. **Migrație nouă** `schedule_import_batches`: `id`, `faculty_id`, `created_at timestamptz`, `row_count int`, `status text check (status in ('pending', 'active', 'rejected'))`, `reason text`. În `room_schedule` adaugi `batch_id` cu foreign key. RLS activat; politici de `select` ca la TODO-17, fără politici de scriere.
+
+2. **Funcția SQL** `activate_schedule_batch(p_batch_id)`: într-o singură tranzacție marchează lotul nou `active` și pe cel vechi al aceleiași facultăți `rejected`, apoi șterge rândurile loturilor vechi. Funcția de stare citește doar rândurile lotului `active`.
+
+3. **`schedule_import/load.py`**: scrie rândurile ca lot `pending`, rulează verificările și apelează `activate_schedule_batch` doar dacă trec:
+   - numărul de rânduri nu e sub 70% din lotul activ (pragul e constantă, cu comentariu);
+   - fiecare `room_code` există în `rooms`; un cod necunoscut respinge lotul și îl scrie în `reason`;
+   - un lot respins rămâne în tabel, ca să vedem de ce, iar lotul activ nu se atinge.
+
+4. **`__main__.py`**: `--write` în loc de `--dry-run`. Cheia `service_role` se citește din variabila de mediu `SUPABASE_SERVICE_ROLE_KEY` și nu apare niciodată în log-uri sau în fișiere din repo.
+
+5. **Teste**: pytest pentru verificări (fără bază de date) și pgTAP pentru `activate_schedule_batch`: lotul vechi rămâne activ când cel nou e respins, iar `anon` și `authenticated` nu pot scrie.
+
+6. Regenerează `database.types.ts` și actualizează `CLAUDE.md` (§2 și §6: importerul scrie acum în baza de date).
+
+#### Gata când
+- [ ] Pe Supabase local, `--write` cu fixture-urile creează un lot activ, iar `room_status` folosește rândurile lui.
+- [ ] Un import cu un cod de sală inventat e respins și orarul rămâne cel vechi (dovada în PR).
+- [ ] `pytest` și `supabase test db` trec. PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-28 `[ ]` Catalogul real al sălilor FMI
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be15-fmi-catalog` · **Backlog:** #16
+
+#### De ce
+Orarul spune doar codul sălii. Capacitatea, prizele, proiectorul, clădirea și etajul nu apar nicăieri, iar filtrele depind de ele. Cele 9 săli de acum sunt demo.
+
+#### Depinde de
+Nimic din cod. Trebuie cineva care merge prin clădirile FMI (sau primește lista de la facultate). Lista de coduri o dă importerul: rezumatul de la TODO-12 sau TODO-26.
+
+#### Ce ai de făcut
+
+1. **`scripts/schedule-import/catalog/fmi-rooms.csv`**, cu antet: `code,building_id,floor,capacity,has_outlets,has_projector,checked_on,checked_by`. Codul e exact ca în orar (`C310`, `5/I`). O sală neverificată încă are capacitatea goală, nu un număr ghicit.
+
+2. **`schedule_import/catalog.py`**: încarcă CSV-ul în `buildings` și `rooms` cu upsert după `code`. Nu șterge săli: una care dispare din CSV rămâne și se raportează la stderr.
+
+3. **Migrație**: `rooms.capacity` poate fi `null` (necunoscută), dar `check (capacity > 0)` rămâne. Filtrul „capacitate minimă” nu arată sălile cu capacitate necunoscută. Pseudo-sala `Virtual` se exclude din catalog și se ignoră la import, cu comentariu.
+
+4. **Teste**: CSV invalid (coloană lipsă, `capacity = 0`, cod dublat) dă eroare clară; upsert-ul de două ori nu dublează nimic.
+
+#### Gata când
+- [ ] CSV-ul acoperă toate codurile găsite de importer, cu `checked_on` completat pentru cel puțin sălile din clădirea centrală.
+- [ ] Importul din TODO-27 nu mai respinge niciun cod de sală FMI.
+- [ ] Teste verzi. PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-29 `[ ]` Importul automat pe GitHub Actions
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be16-import-cron` · **Backlog:** #17
+
+#### De ce
+Orarul se schimbă în primele săptămâni ale semestrului. Un import pornit de mână se uită; unul pornit în fiecare noapte nu.
+
+#### Depinde de
+TODO-26, TODO-27 și proiectul Supabase `dev` (backlog #04). Fără `dev`, nu are unde scrie.
+
+#### Ce ai de făcut
+
+1. **`.github/workflows/import.yml`**: rulează noaptea (de ex. `0 3 * * *`, adică 05:00 sau 06:00 în România) și la cerere (`workflow_dispatch`, cu facultatea ca parametru).
+2. Secretele `SUPABASE_URL` și `SUPABASE_SERVICE_ROLE_KEY` stau în GitHub Secrets, separat pentru `dev` și `prod` (environments).
+3. Un lot respins face jobul roșu și scrie motivul în rezumatul jobului. Până la Sentry (backlog #05), asta e alerta.
+4. Actualizează `scripts/schedule-import/README.md` și §2 din `CLAUDE.md`.
+
+#### Gata când
+- [ ] Un run pornit de mână pe `dev` creează un lot activ.
+- [ ] Un run cu un prag forțat să pice e roșu, iar orarul din `dev` rămâne neschimbat.
+- [ ] PR revizuit de cine a făcut TODO-27.
+
+### TODO-30 `[ ]` `room_status` în SQL: săptămâni pare/impare și perioada de cursuri
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be17-room-status-parity` · **Backlog:** #19
+
+#### De ce
+TODO-18 a lăsat `parity` nefolosit, iar TODO-19 a pus săptămânile și vacanțele doar în TypeScript. Când aplicația trece pe baza de date (TODO-31), funcția SQL trebuie să dea exact aceeași stare, altfel o oră din două în două săptămâni ocupă sala mereu și în vacanță totul apare liber.
+
+#### Depinde de
+Nimic. Supabase local și Docker.
+
+#### Ce ai de făcut
+
+1. **Migrație** `teaching_periods` (`start_date date`, `end_date date`, `check (start_date <= end_date)`), cu RLS ca la TODO-17, și aceleași perioade demo ca în `features/rooms/data/calendar.ts` în `seed.sql`.
+2. **Funcția** `teaching_week(p_at timestamptz)`, cu aceleași reguli ca `teachingWeek` din `server/calendar.ts` (săptămâni de luni, numărate peste vacanță, `null` în afara perioadelor).
+3. **`room_status`**, versiune nouă: în afara perioadelor → `unknown`; altfel ignoră rândurile cu `parity` diferită de săptămâna curentă. Ține și comentariul despre ce a rămas din TODO-18.
+4. **Teste pgTAP**: fiecare caz din `tests/unit/calendar.test.ts`, inclusiv granița de zi între UTC și România. În PR, tabelul caz TypeScript → caz SQL, ca la TODO-18.
+
+#### Gata când
+- [ ] `supabase test db` trece, iar fiecare caz din `calendar.test.ts` are un test SQL.
+- [ ] `room_status` pentru 24 decembrie 2026 întoarce `unknown` pentru orice sală.
+- [ ] PR revizuit de cine a făcut TODO-19.
+
+### TODO-31 `[ ]` Aplicația citește sălile și orarul din Supabase
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be18-read-supabase` · **Backlog:** #16, #19, #20
+
+#### De ce
+Până nu face pasul ăsta, tot importul de mai sus nu se vede în aplicație: rutele citesc în continuare `features/rooms/data/*.ts`. Contractul din `types.ts` a fost gândit tocmai ca frontendul să nu se schimbe la trecere.
+
+#### Depinde de
+TODO-30 pe `main` și un proiect Supabase la care să se conecteze aplicația (local pentru dezvoltare, `dev` pentru preview, backlog #04).
+
+**Decizie de luat în PR, cu echipa:** politicile din TODO-17 lasă doar `authenticated` să citească, iar login-ul (backlog #08) nu există încă. Variantele: (a) catalogul și orarul sunt publice, deci adăugăm `select` și pentru `anon` pe `rooms`, `buildings`, `room_schedule`, `teaching_periods`; (b) rutele citesc pe server cu o cheie de server până la login. Recomandarea: (a), pentru că datele sunt deja publice pe site-ul facultății, iar cheia de server nu ajunge în browser nici așa. Scrie decizia în `CLAUDE.md` §3.2.
+
+#### Ce ai de făcut
+
+1. **`lib/supabase/server.ts`**: clientul de server, cu URL-ul și cheia din variabile de mediu (`.env.local`, exemplu în `.env.example`).
+2. **`list-rooms.ts`, `get-room.ts`, `get-week.ts`, `get-plan.ts`**: citesc din Supabase și întorc exact tipurile de acum. Starea vine din `room_status`, nu din `computeStatus`. `computeStatus` rămâne pentru teste și ca referință.
+3. **`features/rooms/data/`**: datele demo rămân doar ca fixture-uri pentru teste, cu un comentariu. `floor-plans.ts` rămâne (OQ-6).
+4. **Teste**: testele unitare existente trec pe un client fals; un test de integrare marcat separat rulează pe Supabase local.
+5. Actualizează `CLAUDE.md` (nota de status și §6: aplicația nu mai citește datele hardcodate) și `README.md` (variabilele de mediu).
+
+#### Gata când
+- [ ] Cu Supabase local pornit, `/rooms` arată sălile din baza de date, iar o sală adăugată în `seed.sql` apare fără nicio modificare în `features/`.
+- [ ] `curl localhost:3000/api/rooms` are aceeași formă ca înainte (comparația în PR).
+- [ ] Lint, typecheck, teste verzi. PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-32 `[ ]` Adaptorul FSEGA și sălile FSEGA
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be19-fsega-adapter` · **Backlog:** #28
+
+#### De ce
+Modulul promite FMI și FSEGA. Până există adaptorul, sălile FSEGA apar `unknown`, niciodată `free` (CLAUDE.md §6).
+
+#### Depinde de
+TODO-27 (încărcarea pe loturi) și **sursa orarului FSEGA**: unde e publicat, în ce format și dacă avem voie să-l descărcăm (aceeași întrebare ca OQ-8, pentru FSEGA). Fără răspuns, faci doar pașii 1 și 3, pe pagini salvate de mână.
+
+#### Ce ai de făcut
+
+1. **`adapters/fsega.py`**, cu aceeași interfață ca FMI. Tot ce ține de formatul FSEGA stă doar aici; dacă îți trebuie ceva comun, întâi îl muți în `base.py` într-un PR separat.
+2. **`catalog/fsega-rooms.csv`**, în formatul de la TODO-28, cu `faculty_id = 'fsega'`.
+3. **Teste** pe 2-3 pagini FSEGA salvate, ca la TODO-12, plus o notă în `scripts/schedule-import/README.md` despre ce e neobișnuit în format.
+4. Loturile sunt pe facultate: un import FSEGA eșuat nu atinge orarul FMI (test).
+
+#### Gata când
+- [ ] `--faculty fsega --dry-run` tipărește rânduri corecte, verificate manual pe câteva ore.
+- [ ] După import, sălile FSEGA au stare calculată, iar cele fără orar rămân `unknown`.
+- [ ] PR revizuit de cine a făcut TODO-27.
+
+### TODO-33 `[ ]` Tabelul `room_checkins`: check-in-uri care rămân după restart
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be20-checkins-table` · **Backlog:** #22
+
+#### De ce
+Check-in-urile din TODO-09 stau în memorie: se pierd la restart, iar pe Vercel fiecare instanță vede alt număr. Le mutăm în baza de date, cu aceleași reguli (expiră după 2 ore, nu schimbă `status`).
+
+#### Depinde de
+Nimic. Supabase local și Docker.
+
+#### Ce ai de făcut
+
+1. **Migrație** `room_checkins`: `id uuid default gen_random_uuid()`, `room_id` cu foreign key, `user_id uuid null references auth.users`, `created_at timestamptz default now()`, `expires_at timestamptz not null`, `ended_at timestamptz null` (check-out manual). `check (expires_at > created_at)`.
+2. **Funcții SQL** `checkin_room(p_room_id)` și `checkout(p_checkin_id)`: TTL-ul de 2 ore e într-un singur loc, în funcție. Când `auth.uid()` există, un check-in nou al aceluiași om îl închide pe cel vechi (un om, o sală). Fără login, `user_id` rămâne gol; scrie în comentariu că asta e temporar, până la backlog #08.
+3. **View** `room_checkin_counts` (`room_id`, `active_count`): numără doar check-in-urile cu `expires_at > now()` și `ended_at is null`. View-ul nu arată `user_id`: nimeni nu vede cine e în sală, doar câți.
+4. **RLS**: nimeni nu citește direct `room_checkins` (doar view-ul și propriile rânduri, când există login); scrierea doar prin funcții.
+5. **Adaugă tabelul în funcția de ștergere a contului** când aceasta există (CLAUDE.md §3.10); până atunci, notează-l în backlog #50.
+6. **Teste pgTAP**: expirarea exact la 2 ore, check-out-ul, numărarea pe sală, „un om, o sală”, iar `anon` nu vede `user_id`.
+
+#### Gata când
+- [ ] `supabase test db` trece, cu aceleași cazuri ca `tests/unit/checkins.test.ts`.
+- [ ] În PR: tabelul caz TypeScript → caz SQL.
+- [ ] PR revizuit de cine a făcut TODO-09.
+
+### TODO-34 `[ ]` Check-in-ul trece pe baza de date
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be21-checkins-db` · **Backlog:** #22
+
+#### De ce
+Cu tabelul din TODO-33 gata, endpointurile trebuie să-l folosească, ca un check-in făcut pe telefon să se vadă pe orice alt dispozitiv și după un deploy.
+
+#### Depinde de
+TODO-33 și TODO-31 pe `main` (același client Supabase).
+
+#### Ce ai de făcut
+
+1. **`server/checkins.ts`**: aceleași funcții, dar peste `checkin_room`, `checkout` și `room_checkin_counts`. Dispare stocarea pe `globalThis`; `resetCheckins` rămâne doar în testele cu client fals.
+2. **Rutele** `POST /api/rooms/[id]/checkins` și `DELETE /api/checkins/[id]` păstrează exact răspunsurile din tabelul de endpointuri al etapei a 2-a.
+3. `activeCheckins` din `list-rooms.ts` și `get-room.ts` vine din view, într-o singură interogare pentru toată lista, nu câte una pe sală.
+4. **Teste**: testele existente trec pe clientul fals; un test de integrare pe Supabase local face check-in, repornește serverul și vede check-in-ul.
+
+#### Gata când
+- [ ] Un check-in rămâne după `Ctrl+C` și repornirea lui `pnpm dev`.
+- [ ] Un check-in făcut dintr-un browser apare în `GET /api/rooms` din alt browser.
+- [ ] `status` nu se schimbă din cauza check-in-urilor (testul de la TODO-09 trece). PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-36 `[ ]` Raportarea problemelor dintr-o sală: tabelul și endpointul
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be22-room-reports` · **Backlog:** #23 (extins)
+
+#### De ce
+Studenții văd primii că proiectorul nu merge, că nu sunt prize sau că orarul arată liber o sală în care se ține curs. Backlog #23 acoperea doar „marcată liberă, dar ocupată”; aici îl extindem la orice problemă a sălii și îl scoatem din `[POSTPONED]`, pentru că fără rapoarte datele greșite din import nu le vede nimeni.
+
+#### Depinde de
+Nimic. Supabase local și Docker. Login-ul (backlog #08) face limitarea pe om mai bună, dar nu e necesar pentru primul pas.
+
+#### Ce ai de făcut
+
+1. **Migrație** `room_reports`: `id`, `room_id`, `user_id uuid null`, `kind text check (kind in ('occupied', 'projector', 'outlets', 'wrong_schedule', 'other'))`, `note text check (char_length(note) <= 500)`, `created_at`, `resolved_at null`. RLS: scrierea doar prin funcția de mai jos; nimeni nu citește direct `user_id`.
+2. **Funcția** `report_room_problem(p_room_id, p_kind, p_note)`: cel mult un raport de același fel pe sală și pe om la 30 de minute (fără login, pe sală, ca limită grosieră). Pragul e constantă, cu comentariu.
+3. **View** `room_recent_reports`: pe sală, câte rapoarte nerezolvate are fiecare `kind` în ultimele 2 ore (`occupied`) sau 14 zile (restul).
+4. **`server/reports.ts`** și **`app/api/rooms/[id]/reports/route.ts`**: `POST` cu `{ kind, note? }` → `201`, `400 { "error": "Invalid report" }`, `404 { "error": "Room not found" }`, `429 { "error": "Too many reports" }`.
+5. **`types.ts`** (excepția planificată): `recentReports: { kind: RoomReportKind; count: number }[]` în `RoomWithStatus`. Rapoartele **nu** schimbă `status`: ca la check-in, UI-ul arată ambele semnale (CLAUDE.md §4).
+6. Rapoartele `wrong_schedule` sunt materia primă pentru corecțiile de admin (backlog #18) și coada de moderare (backlog #15); scrie asta în comentariul tabelului.
+7. **Teste** pgTAP (RLS, limita de 30 de minute, view-ul) și Vitest (validarea body-ului și codurile de răspuns).
+
+#### Gata când
+- [ ] `curl -X POST -d '{"kind":"projector"}' localhost:3000/api/rooms/c-510/reports` întoarce 201, iar `GET /api/rooms/c-510` arată raportul în `recentReports`.
+- [ ] Al doilea raport identic în 30 de minute întoarce 429.
+- [ ] `supabase test db` și `pnpm test:run` trec. PR revizuit de cine are TODO-37.
+
 ---
 
 ## Frontend
@@ -1204,3 +1531,110 @@ TODO-22 pe `main`. Ca să nu existe conflicte, pornește după ce itemii care at
 - [ ] Cu „EN” ales, `/rooms`, `/rooms/{id}` și header-ul sunt în engleză; în română arată exact ca înainte.
 - [ ] Niciun text vizibil scris direct în componentele de mai sus (`grep` după diacritice în `app/` și `features/` găsește doar comentarii și `metadata`).
 - [ ] În consolă nu apar erori de hidratare. Lint, typecheck, teste verzi; PR revizuit de un coleg din cealaltă jumătate.
+
+### TODO-35 `[ ]` Check-in-uri live pentru toată lumea
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe14-live-checkins` · **Backlog:** #20, #22
+
+#### De ce
+Azi lista se reîncarcă o dată pe minut (TODO-14), iar check-in-ul „meu” e ținut în `localStorage`. Cu check-in-urile în baza de date, numărul de oameni dintr-o sală se poate schimba pe ecran în aceeași secundă pentru toți, fără să bombardăm serverul.
+
+#### Depinde de
+TODO-34. Până e gata, lucrezi pe un mock al canalului Realtime.
+
+#### Ce ai de făcut
+
+1. **`features/rooms/hooks/useLiveCheckins.ts`**: se abonează prin Supabase Realtime la schimbările din `room_checkins` și actualizează `activeCheckins` din lista deja încărcată. Canalul transmite doar `room_id`, niciodată `user_id`; dacă RLS din TODO-33 nu permite asta, folosește un canal de broadcast trimis de funcțiile SQL și spune în PR.
+2. **`RoomList.tsx`**, **`RoomHeader.tsx`**, **`CheckinSignal.tsx`**: folosesc hook-ul. Reîncărcarea de 60 de secunde rămâne ca rezervă (pentru stare și când Realtime nu e conectat), cu un comentariu.
+3. **`CheckinButton.tsx`**: după login (backlog #08), check-in-ul „meu” vine de la server; până atunci, `localStorage` rămâne, cu comentariul actualizat.
+4. Fără erori de hidratare și fără abonamente rămase deschise la schimbarea paginii (cleanup în `useEffect`).
+5. **Teste** Vitest cu un canal fals: un eveniment crește numărul pe cardul potrivit și pe niciun altul; dezabonarea la unmount.
+
+#### Gata când
+- [ ] Două browsere deschise pe `/rooms`: check-in-ul din primul apare în al doilea în cel mult 2 secunde, fără refresh (video sau GIF în PR).
+- [ ] Cu Realtime oprit, lista se actualizează în continuare la un minut.
+- [ ] Lint, typecheck, teste verzi. PR revizuit de cine a făcut TODO-34.
+
+### TODO-37 `[ ]` „Raportează o problemă” pe pagina sălii
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe15-report-problem` · **Backlog:** #23 (extins)
+
+#### De ce
+Raportul trebuie să coste un student două atingeri, altfel nu-l face nimeni. Iar ceilalți trebuie să-l vadă înainte să meargă până la sală.
+
+#### Depinde de
+TODO-36 pentru endpoint. Până atunci, lucrezi pe un mock.
+
+#### Ce ai de făcut
+
+1. **`ReportProblem.tsx`**: un buton „Raportează o problemă” pe `/rooms/[id]`, care deschide o listă cu tipurile din TODO-36 (Sala e ocupată, Proiectorul nu merge, Nu sunt prize, Orarul e greșit, Altceva) și o notă opțională. După trimitere, un mesaj de mulțumire; la 429, „Ai raportat deja asta”.
+2. **`ReportSignal.tsx`**: pe card și în header-ul sălii, lângă `CheckinSignal`, de ex. „Proiector raportat defect (2)” sau „Raportată ocupată acum 15 min”. Nu schimbă `StatusBadge`: „liberă după orar” și „raportată ocupată” se văd împreună.
+3. Toate textele noi prin `lib/i18n`, în română și engleză.
+4. Accesibil de pe telefon: butoane de cel puțin 44px, focus vizibil, lista se închide cu `Esc`.
+5. **Teste** Vitest: trimiterea fiecărui tip, nota peste 500 de caractere, mesajul la 429, semnalul pe card.
+6. Adaugă parcursul în `docs/qa/studyroom-onboarding.md`.
+
+#### Gata când
+- [ ] Un raport făcut pe `/rooms/c-510` apare pe cardul sălii din `/rooms` (screenshot în PR, în ambele limbi).
+- [ ] `StatusBadge` nu se schimbă după un raport.
+- [ ] Lint, typecheck, teste verzi. PR revizuit de cine a făcut TODO-36.
+
+---
+
+## Extra `[POSTPONED]`
+
+Extra-uri din lista de funcționalități, scrise ca itemi ca să nu le pierdem. **Nu le începeți** până nu validăm MVP-ul cu studenți reali (CLAUDE.md: „Extras are `[POSTPONED]` until the MVP is validated”). Toate au nevoie de login (backlog #08), pentru că sunt ale unui om anume. Când pornesc, se scriu în detaliu ca ceilalți itemi și se împart în backend și frontend, dacă e nevoie.
+
+### TODO-38 `[POSTPONED]` Sălile favorite
+
+**Asignat:** _(amânat)_ · **Backlog:** #27
+
+#### De ce
+Majoritatea studenților învață în aceleași 2-3 săli. O stea pe sală și un filtru „Favorite” le scurtează căutarea la o privire.
+
+#### Depinde de
+Validarea MVP-ului, login-ul (backlog #08) și TODO-31.
+
+#### Ce ai de făcut
+1. Tabel `room_favourites` (`user_id`, `room_id`, primary key pe ambele), cu RLS: fiecare vede și modifică doar rândurile lui; test pgTAP; adăugat în funcția de ștergere a contului (backlog #50).
+2. `FavouriteButton.tsx` pe card și pe pagina sălii; filtrul `favourites=1` în `/api/rooms` și în `RoomFilters`.
+3. Opțional, „sala preferată” afișată pe pagina de start.
+
+#### Gata când
+- [ ] Favoritele rămân după logout și login pe alt dispozitiv; nimeni nu vede favoritele altcuiva (test pgTAP).
+
+### TODO-39 `[POSTPONED]` Alerta „sala se eliberează în 10 minute”
+
+**Asignat:** _(amânat)_ · **Backlog:** #24
+
+#### De ce
+Când toate sălile bune sunt ocupate, studentul vrea să afle când se eliberează una, fără să tot reîncarce pagina.
+
+#### Depinde de
+Validarea MVP-ului, login-ul (backlog #08), notificările Web Push (backlog #11) și preferințele de notificare (backlog #12), plus orarul real (TODO-31).
+
+#### Ce ai de făcut
+1. Tabel `room_free_alerts` (`user_id`, `room_id`, `created_at`, `expires_at`), cu RLS și test pgTAP; o alertă se șterge singură după ce s-a trimis sau după 12 ore.
+2. Funcție programată (Edge Function cu cron, la fiecare 5 minute): pentru fiecare alertă, dacă `room_status` spune că sala devine liberă în 10 minute, trimite notificarea prin funcția comună din backlog #12, nu direct.
+3. `FreeAlertButton.tsx` pe pagina unei săli ocupate: „Anunță-mă când se eliberează”.
+
+#### Gata când
+- [ ] O alertă pusă pe o sală ocupată până la 12:00 trimite o singură notificare între 11:50 și 11:55, iar un utilizator cu notificările oprite nu primește nimic.
+
+### TODO-40 `[POSTPONED]` „Vin la 14:00”: check-in în avans
+
+**Asignat:** _(amânat)_ · **Backlog:** #38
+
+#### De ce
+Un grup care vrea să învețe împreună la 14:00 ar vrea să le spună celorlalți că sala va fi folosită. Sălile sunt ale facultății, deci asta poate fi doar un semnal, nu o rezervare (backlog #38).
+
+#### Depinde de
+Validarea MVP-ului, login-ul (backlog #08) și TODO-33/34.
+
+#### Ce ai de făcut
+1. Coloana `planned_for timestamptz null` în `room_checkins`: un check-in în avans, cel mult cu 24 de ore înainte, doar într-un interval liber după orar. La `planned_for` devine check-in obișnuit, cu aceeași expirare.
+2. `plannedCheckins` în `RoomWithStatus` și `PlannedCheckin.tsx` pe pagina sălii: „3 persoane plănuiesc să vină la 14:00”.
+3. Textul spune clar că nu e o rezervare. `status` nu se schimbă, ca la check-in (CLAUDE.md §4).
+
+#### Gata când
+- [ ] Un check-in în avans apare pe pagina sălii pentru toți, devine check-in obișnuit la ora aleasă și nu poate fi pus peste o oră din orar.
