@@ -1,6 +1,6 @@
 # TODO — UBB Campus
 
-**Sprintul curent: StudyRoom Finder.** Etapa 1 (onboarding, TODO-01..08) e gata; acum lucrăm în paralel la etapa a 2-a (TODO-09..16) și etapa a 3-a (TODO-17..24), fiecare cu 4 itemi de backend și 4 de frontend. Etapa a 4-a (TODO-26..40) duce aplicația pe date reale: orarul importat, check-in-uri în baza de date și rapoarte de probleme, plus extra-urile amânate. Fișierul conține doar itemii sprintului.
+**Sprintul curent: StudyRoom Finder.** Etapa 1 (onboarding, TODO-01..08) e gata; acum lucrăm în paralel la etapa a 2-a (TODO-09..16) și etapa a 3-a (TODO-17..24), fiecare cu 4 itemi de backend și 4 de frontend. Etapa a 4-a (TODO-26..40) duce aplicația pe date reale: orarul importat, check-in-uri în baza de date și rapoarte de probleme, plus extra-urile amânate. Etapa a 5-a (TODO-41..58) pornește al doilea modul, **Cămin / Dorm Manager**: login, codurile de invitație, spălătoria, raportările către administrator, anunțurile, cheltuielile și împrumuturile. Fișierul conține doar itemii sprintului.
 
 ## Cum folosim fișierul
 
@@ -56,6 +56,24 @@
 | TODO-38 | `[POSTPONED]` | Extra | Sălile favorite | _(amânat)_      |
 | TODO-39 | `[POSTPONED]` | Extra | Alerta „sala se eliberează în 10 minute” | _(amânat)_      |
 | TODO-40 | `[POSTPONED]` | Extra | „Vin la 14:00”: check-in în avans | _(amânat)_      |
+| TODO-41 | `[ ]`    | Backend | Login cu `@stud.ubbcluj.ro` și tabelul `profiles` | _(liber)_      |
+| TODO-42 | `[ ]`    | Backend | Tabelele căminului, rolurile și datele demo | _(liber)_      |
+| TODO-43 | `[ ]`    | Backend | Codurile de invitație: creare, folosire, revocare, plecare din cameră | _(liber)_      |
+| TODO-44 | `[ ]`    | Backend | Rezervările la spălătorie, fără suprapuneri | _(liber)_      |
+| TODO-45 | `[ ]`    | Backend | Mașinile de spălat: defecte, scoase din uz și semnalate de studenți | _(liber)_      |
+| TODO-46 | `[ ]`    | Backend | Raportările administrative: tabelul, poza și statusul | _(liber)_      |
+| TODO-47 | `[ ]`    | Backend | Emailul automat către administratorul căminului | _(liber)_      |
+| TODO-48 | `[ ]`    | Backend | Anunțurile pe etaj sau cămin: tabelul și regulile | _(liber)_      |
+| TODO-49 | `[ ]`    | Backend | Cheltuielile pe cameră: tabelele și balanțele | _(liber)_      |
+| TODO-50 | `[ ]`    | Backend | Împrumutul de obiecte între vecini: cererile și răspunsurile | _(liber)_      |
+| TODO-51 | `[ ]`    | Frontend | Pagina de login și pagina `/dorm` cu „Intră cu un cod” | _(liber)_      |
+| TODO-52 | `[ ]`    | Frontend | Spălătoria: grila de sloturi, rezervarea și starea mașinilor | _(liber)_      |
+| TODO-53 | `[ ]`    | Frontend | Formularul de raportare și „Rapoartele mele” | _(liber)_      |
+| TODO-54 | `[ ]`    | Frontend | Anunțurile: lista, formularul și „Trimite pe WhatsApp” | _(liber)_      |
+| TODO-55 | `[ ]`    | Frontend | Cheltuielile pe cameră: adăugare și „cine cui datorează” | _(liber)_      |
+| TODO-56 | `[ ]`    | Frontend | Împrumuturile între vecini: cereri și oferte | _(liber)_      |
+| TODO-57 | `[ ]`    | Frontend | Reminderul înainte de spălătorie și QA pentru etapa a 5-a | _(liber)_      |
+| TODO-58 | `[POSTPONED]` | Extra | Sincronizarea anunțurilor cu grupurile de WhatsApp | _(amânat)_      |
 
 ---
 
@@ -366,6 +384,96 @@ Căile din `features/`, `app/` și `lib/` sunt relative la `apps/web/`.
 - **Corecțiile de admin** (backlog #18) și **coada de moderare** pentru rapoarte (backlog #15) nu intră aici. Ce trebuie: răspunsul la OQ-4 (cine sunt adminii). Până atunci, rapoartele „orar greșit” din TODO-36 se citesc direct din baza de date.
 - **Alertele la importuri eșuate** merg doar ca job roșu în GitHub Actions. Ce trebuie: Sentry (backlog #05).
 - **Planul clădirii rămâne schema demo** (OQ-6): TODO-31 citește sălile din baza de date, dar pozițiile din `floor-plans.ts` rămân scrise de mână.
+
+---
+
+## Etapa a 5-a (TODO-41..58): Cămin / Dorm Manager
+
+StudyRoom Finder e gata ca demo, așa că pornim al doilea modul: aplicația pentru studenții din Hașdeu și Economica. Etapa acoperă tot ce scrie despre Modulul C în documentul inițial („UBB Campus: lista de funcționalități”):
+
+- **MVP:** alăturarea la cameră / cămin prin **cod de invitație**, **programarea la spălătorie** (sloturi pe mașină și pe zi, rezervare, anulare, reminder), **raportările administrative** (categorie, poză, status trimis / în lucru / rezolvat) și **emailul generat automat** pentru administrator;
+- **mașinile de spălat** ca obiect separat: care sunt, care e defectă, ce se întâmplă cu rezervările când una se strică;
+- **anunțurile pe etaj sau cămin** (zgomot, întreruperi de apă), cu butonul „Trimite pe WhatsApp” acum și sincronizarea cu grupurile de WhatsApp mai târziu (TODO-58);
+- **cheltuielile pe cameră** și **împrumutul de obiecte între vecini**, din descrierea modulului.
+
+Primul item e **login-ul cu `@stud.ubbcluj.ro`** (backlog #08), pentru că toate celelalte depind de „cine ești”: doar membrii căminului rezervă mașini, un raport are un autor, iar RLS are nevoie de `auth.uid()`.
+
+**Ordinea:** MVP-ul (TODO-41..47 și 51..53, 57) intră primul. Anunțurile, cheltuielile și împrumuturile (TODO-48..50 și 54..56) sunt scrise complet și se pot lua oricând, dar au prioritate mai mică. CLAUDE.md le tratează ca Extra / OQ-7; le-am scos din `[POSTPONED]` la cererea lui Bogdan, pentru că sunt în documentul inițial. Doar sincronizarea cu WhatsApp (TODO-58) rămâne `[POSTPONED]`.
+
+**Atenție la numere:** ca în etapa a 4-a, itemii au numerotarea sprintului, iar fiecare spune ce item din backlog acoperă. În `CLAUDE.md`, `TODO-41`, `TODO-42`, `TODO-44` etc. sunt numere din backlog (de ex. TODO-42 din CLAUDE.md, rezervările, e TODO-44 de aici).
+
+**Unde e codul:** tot ce ține de cămin stă în `apps/web/features/dorm/` și `apps/web/app/(app)/dorm/`. Frontendul vorbește direct cu Supabase (`supabase.rpc(...)` și `select`), fără route handlers noi: regulile stau în baza de date (CLAUDE.md §1). Fiecare item de backend scrie și funcțiile TypeScript tipate din `features/dorm/queries/`, pe care le importă frontendul; până intră, frontendul lucrează pe un mock cu aceeași semnătură.
+
+### Ce trebuie înainte, în afara etapei
+
+Nimic din lista asta nu blochează lucrul local (Supabase local, date demo), dar fiecare blochează pilotul cu studenți reali:
+
+- **Care cămin e pilotul** (Hașdeu sau Economica, ce clădire), câte mașini are și **cât durează un slot** la spălătorie. Până aflăm, `seed.sql` are un cămin demo și constantele sunt marcate „demo” în comentarii.
+- **OQ-3: cine e administratorul căminului**, ce email primește rapoartele și dacă primește cont (`dorm_admin`) ca să schimbe statusul. Până atunci, statusul îl schimbă un `dorm_admin` din echipă, iar adresa e una de test.
+- **Un cont Resend** cu domeniu verificat, pentru emailurile reale (OTP, rapoarte, remindere). Local, emailurile se văd în Mailpit (`localhost:54324`) sau în consolă.
+- **Proiectul Supabase `dev`** (backlog #04), ca să poată intra și alți studenți decât echipa.
+- **Consimțământul GDPR la înregistrare** (backlog #49): login-ul deschide conturi reale, deci trebuie înainte de pilot. Nu e item aici, ca să nu blocheze etapa.
+
+### Fișiere și regula anti-conflicte
+
+| TODO | Parte | Fișiere proprii |
+|---|---|---|
+| TODO-41 | Backend | Migrația `profiles` și hook-ul de domeniu, `supabase/tests/auth.test.sql`, `apps/web/lib/supabase/client.ts`, `apps/web/proxy.ts`, secțiunea `[auth]` din `supabase/config.toml` |
+| TODO-42 | Backend | Migrația `dorms`, `dorm_rooms`, `dorm_members`, `laundry_machines`, `user_roles`, `supabase/tests/dorm_core.test.sql`, partea de cămin din `seed.sql`, `features/dorm/types.ts`, `features/dorm/queries/dorm.ts` |
+| TODO-43 | Backend | Migrația `dorm_invites` și funcțiile ei, `supabase/tests/dorm_invites.test.sql`, `features/dorm/queries/invites.ts` |
+| TODO-44 | Backend | Migrația `laundry_bookings` și funcțiile ei, `supabase/tests/laundry_bookings.test.sql`, `features/dorm/queries/laundry.ts` |
+| TODO-45 | Backend | Migrația `laundry_machine_issues` și funcțiile de stare a mașinilor, `supabase/tests/laundry_machines.test.sql`, `features/dorm/queries/machines.ts` |
+| TODO-46 | Backend | Migrația `maintenance_reports`, bucket-ul `maintenance-photos`, `supabase/tests/maintenance_reports.test.sql`, `features/dorm/queries/reports.ts` |
+| TODO-47 | Backend | `supabase/functions/maintenance-report-email/`, `supabase/functions/_shared/email.ts`, migrația `dorm_admin_contacts` și webhook-ul |
+| TODO-48 | Backend | Migrația `announcements`, `supabase/tests/announcements.test.sql`, `features/dorm/queries/announcements.ts` |
+| TODO-49 | Backend | Migrația `expenses`, `expense_splits`, `supabase/tests/expenses.test.sql`, `features/dorm/queries/expenses.ts` |
+| TODO-50 | Backend | Migrația `loan_requests`, `supabase/tests/loan_requests.test.sql`, `features/dorm/queries/loans.ts` |
+| TODO-51 | Frontend | `app/(auth)/login/`, `app/(auth)/auth/callback/`, `app/(app)/dorm/page.tsx`, `features/dorm/components/JoinWithCode.tsx`, `DormHome.tsx`, `InviteButton.tsx` |
+| TODO-52 | Frontend | `app/(app)/dorm/laundry/`, `features/dorm/components/LaundryDayGrid.tsx`, `MyBookings.tsx`, `MachineStatus.tsx` |
+| TODO-53 | Frontend | `app/(app)/dorm/reports/`, `features/dorm/components/ReportForm.tsx`, `ReportList.tsx`, `ReportStatusBadge.tsx`, `features/dorm/lib/resize-image.ts` |
+| TODO-54 | Frontend | `app/(app)/dorm/announcements/`, `features/dorm/components/AnnouncementList.tsx`, `AnnouncementForm.tsx`, `ShareOnWhatsApp.tsx` |
+| TODO-55 | Frontend | `app/(app)/dorm/expenses/`, `features/dorm/components/ExpenseForm.tsx`, `BalanceSummary.tsx` |
+| TODO-56 | Frontend | `app/(app)/dorm/loans/`, `features/dorm/components/LoanBoard.tsx`, `LoanRequestForm.tsx` |
+| TODO-57 | Frontend | `supabase/functions/laundry-reminders/`, migrația pentru coloanele de reminder, `features/dorm/lib/ics.ts`, `docs/qa/dorm-manager.md` |
+| TODO-58 | Extra | `docs/whatsapp-sync.md` (întâi doar cercetarea) |
+
+Căile din `features/`, `app/` și `lib/` sunt relative la `apps/web/`.
+
+**Excepții planificate:**
+
+- **`lib/supabase/server.ts`:** îl creează primul care ajunge pe `main` dintre TODO-31 și TODO-41; celălalt îl refolosește.
+- **`app/(app)/layout.tsx`:** doar TODO-51 îl modifică (linkul „Cămin”, „Intră în cont” / „Ieși din cont”).
+- **`app/(app)/dorm/page.tsx`:** e al lui TODO-51. TODO-52..56 adaugă fiecare câte un link spre pagina lor în `DormHome.tsx`, o singură linie.
+- **`lib/i18n/messages.ts`:** fiecare item de frontend își adaugă cheile sub `dorm.<pagina>`. La conflict, păstrați ambele.
+- **`features/dorm/types.ts`:** îl creează TODO-42; ceilalți doar adaugă tipuri la final.
+- **`supabase/seed.sql`:** partea de cămin e a lui TODO-42; TODO-43 adaugă un cod de invitație demo, TODO-47 o adresă de test, TODO-48..50 câteva rânduri demo, la finalul secțiunii de cămin.
+- **`supabase/config.toml`:** TODO-41 (auth), TODO-47 și TODO-57 (funcții). La conflict, păstrați ambele.
+- **`database.types.ts`:** fiecare item cu migrație îl regenerează. La conflict, regenerezi după rebase.
+- **`CLAUDE.md`:** TODO-41 actualizează nota de status și §3.1, TODO-42 §3.2 și §6, TODO-47 §3.9.
+
+### Dependențe și ordinea de merge
+
+| TODO | Poate porni | Trebuie să aștepte |
+|---|---|---|
+| TODO-41, 42 | imediat | nimic (doar Supabase local) |
+| TODO-43, 44, 46 | după TODO-42 | TODO-42 pe `main` |
+| TODO-45 | după TODO-44 | TODO-44 pe `main` (anulează rezervări) |
+| TODO-47 | după TODO-46 | TODO-46 pe `main`; Resend și OQ-3 doar pentru emailurile reale |
+| TODO-48, 49, 50 | după TODO-42 | TODO-42 pe `main`; prioritate mai mică decât MVP-ul |
+| TODO-51 | imediat, pe mock | TODO-41 și TODO-43 |
+| TODO-52 | imediat, pe mock | TODO-44 și TODO-45 |
+| TODO-53 | imediat, pe mock | TODO-46 |
+| TODO-54, 55, 56 | imediat, pe mock | TODO-48, 49, respectiv 50 |
+| TODO-57 | după TODO-44 și 47 | rularea QA: toți itemii de MVP pe `main` |
+| TODO-58 | `[POSTPONED]` | TODO-48 și TODO-54 folosite o vreme de studenți reali |
+
+### Ce rămâne deschis după etapa asta
+
+- **Notificările push** (backlog #10) nu intră: reminderul la spălătorie e pe email și în calendar (`.ics`). Ce trebuie: VAPID și `device_tokens`.
+- **Preferințele de notificare** (backlog #12) nu există încă. Până atunci, reminderul se poate opri per rezervare, iar emailul către administrator nu e o notificare a unui student.
+- **Raportarea și blocarea conținutului** (backlog #48) lipsesc: un anunț sau o cerere de împrumut nepotrivită o șterge doar autorul sau `dorm_admin`. Ce trebuie: tabelul `content_reports`.
+- **Ștergerea contului** (backlog #50): fiecare tabel nou din etapa asta are `user_id`, deci trebuie adăugat în funcția de ștergere când există.
+- **OQ-3 și pilotul** (vezi mai sus): până la răspuns, emailurile merg la o adresă de test și datele căminului sunt demo.
 
 ---
 
@@ -1088,6 +1196,264 @@ Nimic. Supabase local și Docker. Login-ul (backlog #08) face limitarea pe om ma
 - [ ] Al doilea raport identic în 30 de minute întoarce 429.
 - [ ] `supabase test db` și `pnpm test:run` trec. PR revizuit de cine are TODO-37.
 
+
+### TODO-41 `[ ]` Login cu `@stud.ubbcluj.ro` și tabelul `profiles`
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be1-auth` · **Backlog:** #08
+
+#### De ce
+Tot Modulul C e despre „cine ești”: doar membrii unui cămin rezervă mașinile lui, un raport are un autor, iar un cod de invitație leagă un om de o cameră. RLS are nevoie de `auth.uid()`. În plus, login-ul rezolvă și regula „un check-in activ de om” din etapa a 4-a.
+
+#### Depinde de
+Nimic. Supabase local și Docker; emailurile cu codul apar local în Mailpit, fără Resend. Pagina de login e în TODO-51.
+
+#### Ce ai de făcut
+
+1. **`supabase/config.toml`**: email OTP (cod de 6 cifre) și magic link pornite, înregistrarea cu parolă oprită, `site_url` și `additional_redirect_urls` pentru `localhost:3000/auth/callback`.
+2. **Hook-ul before-user-created** (CLAUDE.md §3.1): o funcție SQL care respinge orice email care nu se termină exact în `@stud.ubbcluj.ro`, fără să conteze literele mari. Atenție la `x@stud.ubbcluj.ro.evil.com` și `x@ubbcluj.ro`. Configurat în `config.toml`. Verificarea din formular (TODO-51) e doar pentru UX; regula e aici.
+3. **Migrație** `profiles`: `id uuid primary key references auth.users on delete cascade`, `display_name text check (char_length(display_name) between 1 and 60)`, `created_at`. Un trigger pe insert în `auth.users` creează rândul, cu `display_name` luat din partea dinainte de `@` (de ex. `ion.popescu`). RLS: fiecare își citește și își modifică doar rândul lui. Colegii de cameră se văd prin funcțiile din TODO-42, nu prin `select` direct.
+4. **`lib/supabase/client.ts`** (browser) și **`lib/supabase/server.ts`** (server, cu cookie-uri; dacă TODO-31 l-a creat deja, îl refolosești). Cu `@supabase/ssr`; ești singurul din etapa asta care adaugă dependențe în `apps/web/package.json`.
+5. **`proxy.ts`** (în versiunea noastră de Next.js, `middleware.ts` s-a redenumit; citește `AGENTS.md` și ghidul din `node_modules/next/dist/docs/`): reîmprospătează sesiunea și trimite spre `/login?next=...` orice cerere spre `/dorm` fără sesiune. `/rooms` rămâne public.
+6. **Teste** pgTAP `supabase/tests/auth.test.sql`: hook-ul acceptă `ion.popescu@stud.ubbcluj.ro` și `ION@STUD.UBBCLUJ.RO`, respinge `x@gmail.com`, `x@ubbcluj.ro` și `x@stud.ubbcluj.ro.evil.com`; trigger-ul creează profilul; un utilizator nu citește profilul altuia.
+7. Actualizează nota de status și §3.1 din `CLAUDE.md`.
+
+#### Gata când
+- [ ] Local, o înregistrare cu `test@stud.ubbcluj.ro` primește codul în Mailpit (`localhost:54324`), iar una cu `test@gmail.com` e refuzată de hook, nu doar de formular.
+- [ ] `/dorm` fără sesiune duce la `/login?next=/dorm`; `/rooms` merge fără login.
+- [ ] `supabase test db`, `pnpm lint`, `pnpm typecheck`, `pnpm test:run` trec. PR revizuit de cine are TODO-51.
+
+### TODO-42 `[ ]` Tabelele căminului, rolurile și datele demo
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be2-core-tables` · **Backlog:** #40, #53 (partea de cămin)
+
+#### De ce
+Fiecare funcție din modul pornește de la „în ce cămin și în ce cameră stai”. Tabelele astea sunt fundația, la fel ca `rooms` și `buildings` pentru StudyRoom Finder.
+
+#### Depinde de
+Nimic. Folosește doar `auth.users`, care există mereu în Supabase, deci poate porni în paralel cu TODO-41.
+
+#### Ce ai de făcut
+
+1. **Migrație** cu tabelele din modelul simplificat (CLAUDE.md §3.2), plus rolurile:
+   - `dorms`: `id`, `slug text unique` (de ex. `hasdeu-14`), `name`, `campus text check (campus in ('hasdeu', 'economica'))`, `created_at`;
+   - `dorm_rooms`: `id`, `dorm_id`, `number text`, `floor int`, `capacity int check (capacity between 1 and 6)`, `unique (dorm_id, number)`;
+   - `dorm_members`: `id`, `user_id`, `dorm_room_id`, `joined_at`, `left_at null`; un singur rând activ pe om (index unic parțial pe `user_id` unde `left_at is null`);
+   - `laundry_machines`: `id`, `dorm_id`, `label` (de ex. „Mașina 1, parter”), `kind text check (kind in ('washer', 'dryer'))`, `status text check (status in ('working', 'out_of_order', 'retired')) default 'working'`;
+   - `user_roles`: `user_id`, `role text check (role in ('admin', 'dorm_admin'))`, `dorm_id null`, cu `check` că un `dorm_admin` are mereu `dorm_id`. Rolurile nu stau în `user_metadata` (CLAUDE.md §3.1).
+2. **Funcții ajutătoare** `security definer stable`, folosite de RLS în toată etapa: `my_dorm_id()`, `my_dorm_room_id()`, `is_dorm_member(p_dorm_id)`, `is_dorm_admin(p_dorm_id)`. Plus `my_roommates()`, care întoarce doar `display_name` pentru colegii activi de cameră.
+3. **RLS:** `dorms` se citește de orice utilizator autentificat; `dorm_rooms` și `laundry_machines` doar de membrii căminului; `dorm_members` doar propriile rânduri. **Nicio politică de insert pe `dorm_members`:** intrarea se face doar prin codul de invitație (TODO-43).
+4. **`seed.sql`**: un cămin demo (de ex. „Căminul demo, Hașdeu”), 2 etaje × 4 camere, 3 mașini de spălat și un uscător, plus 3 utilizatori demo în `auth.users` (doar local), dintre care unul `dorm_admin`. Scrie în comentariu că datele sunt demo până se alege căminul pilot.
+5. **`features/dorm/types.ts`** și **`features/dorm/queries/dorm.ts`**: `getMyDorm()` → căminul, camera, colegii, sau `null` dacă omul nu e membru.
+6. **Teste** pgTAP `supabase/tests/dorm_core.test.sql`: un străin nu citește camerele și mașinile; un membru le citește; insert direct în `dorm_members` e refuzat; a doua apartenență activă e refuzată; `my_roommates()` nu întoarce emailuri.
+7. Actualizează §3.2 și §6 din `CLAUDE.md` (tabelele de cămin există).
+
+#### Gata când
+- [ ] `supabase db reset` încarcă căminul demo, iar ca utilizator demo `getMyDorm()` întoarce camera lui.
+- [ ] `supabase test db` și `pnpm typecheck` trec. PR revizuit de cine are TODO-43.
+
+### TODO-43 `[ ]` Codurile de invitație: creare, folosire, revocare, plecare din cameră
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be3-invites` · **Backlog:** #41
+
+#### De ce
+E primul punct din MVP: „Creare sau alăturare la cameră / cămin prin cod de invitație”. Codul e singura cale de intrare, ca să nu poată oricine să rezerve mașinile unui cămin în care nu stă (CLAUDE.md §3.8).
+
+#### Depinde de
+TODO-42 pe `main`.
+
+#### Ce ai de făcut
+
+1. **Migrație** `dorm_invites`: `id`, `dorm_room_id`, `code text unique`, `created_by`, `expires_at default now() + interval '7 days'`, `max_uses int`, `uses int default 0`, `revoked_at null`, `created_at`. RLS: citește doar cel care l-a creat și `dorm_admin`-ul căminului; nicio scriere directă.
+2. **Cine creează coduri** (întrebarea din backlog #41): `dorm_admin`-ul pentru orice cameră din căminul lui, iar un membru activ doar pentru camera lui. Așa, primul om dintr-o cameră primește codul de la administrator, iar colegii lui și-l dau între ei. Scrie decizia în PR; dacă echipa vrea altceva, se schimbă doar funcția.
+3. **Funcții SQL:**
+   - `create_dorm_invite(p_dorm_room_id)` → codul: 8 caractere aleatorii dintr-un alfabet fără `0/O/1/I/L`, `max_uses` = locurile libere din cameră;
+   - `redeem_dorm_invite(p_code)` → camera: într-o singură tranzacție, cu `for update` pe invitație, verifică și întoarce erori distincte: `invalid_code`, `expired`, `revoked`, `used_up`, `room_full`, `already_member`;
+   - `revoke_dorm_invite(p_code)`: doar creatorul sau `dorm_admin`;
+   - `leave_dorm_room()`: pune `left_at` pe apartenența activă și anulează rezervările viitoare de la spălătorie (după TODO-44; până atunci, un comentariu `TODO`).
+4. **`features/dorm/queries/invites.ts`**: wrapper-e tipate, cu erorile ca tip union, ca frontendul să arate mesajul potrivit.
+5. **`seed.sql`**: un cod demo valid, de ex. `DEMO2026`, scris și în comentariu.
+6. **Teste** pgTAP `supabase/tests/dorm_invites.test.sql`: fiecare eroare de mai sus, codul revocat nu mai merge, camera plină refuză, `leave_dorm_room()` permite apoi un alt cod.
+
+#### Gata când
+- [ ] Un utilizator demo fără cameră intră cu `DEMO2026` și `getMyDorm()` îl arată în cameră; al doilea `redeem` dă `already_member`.
+- [ ] `supabase test db` și `pnpm typecheck` trec. PR revizuit de cine are TODO-51.
+
+### TODO-44 `[ ]` Rezervările la spălătorie, fără suprapuneri
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be4-laundry-bookings` · **Backlog:** #42
+
+#### De ce
+E motivul principal pentru care un student din cămin ar instala aplicația: azi rezervarea se face pe o foaie lipită pe ușă sau pe grupul de WhatsApp. Regula „două rezervări nu se suprapun pe aceeași mașină” trebuie să țină și când doi oameni apasă în aceeași secundă, deci stă în baza de date (CLAUDE.md §3.7).
+
+#### Depinde de
+TODO-42 pe `main`.
+
+#### Ce ai de făcut
+
+1. **Migrație** `laundry_bookings`: `id`, `machine_id`, `user_id`, `starts_at`, `ends_at`, `status text check (status in ('active', 'cancelled'))`, `cancel_reason text null`, `created_at`, `cancelled_at`; `check (ends_at > starts_at)`. **Exclusion constraint** (cu `btree_gist`): `exclude using gist (machine_id with =, tstzrange(starts_at, ends_at, '[)') with &&) where (status = 'active')`.
+2. **Regulile, ca și constante cu comentariu „demo”** până aflăm de la căminul pilot: slot de 90 de minute, program 07:00–23:00 ora României, rezervare cu cel mult 7 zile înainte, cel mult 2 rezervări viitoare active de om.
+3. **Funcții SQL:**
+   - `book_laundry_slot(p_machine_id, p_starts_at)`: doar membrii căminului mașinii, doar pe o mașină `working`, doar la începutul unui slot, nu în trecut. Erori distincte: `not_member`, `machine_unavailable`, `invalid_slot`, `slot_taken` (prinsă din exclusion constraint), `too_many_bookings`;
+   - `cancel_laundry_booking(p_booking_id)`: doar rezervarea ta, doar înainte să înceapă;
+   - `laundry_day(p_dorm_id, p_date)`: pentru fiecare mașină, sloturile zilei cu starea `free`, `booked`, `mine` sau `past`. **Nu întoarce cine a rezervat**: colegii văd doar că slotul e ocupat.
+4. **RLS:** fiecare își vede doar rezervările lui; grila vine din `laundry_day`. Nicio scriere directă.
+5. Completează `leave_dorm_room()` din TODO-43 ca să anuleze rezervările viitoare.
+6. **`features/dorm/queries/laundry.ts`**: `getLaundryDay`, `bookSlot`, `cancelBooking`, `getMyBookings`.
+7. **Teste** pgTAP `supabase/tests/laundry_bookings.test.sql`: suprapunerea e refuzată chiar și la insert direct cu `service_role`; un slot anulat se poate rezerva din nou; un străin nu poate rezerva; limita de 2; ziua cu schimbarea orei (ultima duminică din octombrie) are sloturile corecte.
+
+#### Gata când
+- [ ] Doi utilizatori demo care rezervă același slot: unul primește rezervarea, celălalt `slot_taken`.
+- [ ] `laundry_day` pentru azi arată sloturile trecute ca `past` și nu conține niciun `user_id`.
+- [ ] `supabase test db` și `pnpm typecheck` trec. PR revizuit de cine are TODO-52.
+
+### TODO-45 `[ ]` Mașinile de spălat: defecte, scoase din uz și semnalate de studenți
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be5-laundry-machines` · **Backlog:** #42 (extins)
+
+#### De ce
+O programare nu ajută dacă mașina e stricată de o săptămână. Studenții trebuie să poată spune „mașina 2 nu merge”, administratorul trebuie să o poată scoate din programare, iar cine avea rezervare pe ea trebuie să afle.
+
+#### Depinde de
+TODO-44 pe `main`, pentru că anulează rezervări.
+
+#### Ce ai de făcut
+
+1. **Migrație** `laundry_machine_issues`: `id`, `machine_id`, `user_id`, `kind text check (kind in ('not_working', 'leaking', 'door_stuck', 'other'))`, `note text check (char_length(note) <= 300)`, `created_at`, `resolved_at null`.
+2. **Funcții SQL:**
+   - `report_machine_issue(p_machine_id, p_kind, p_note)`: orice membru al căminului; cel mult o semnalare deschisă de om pe mașină;
+   - `set_machine_status(p_machine_id, p_status)`: doar `dorm_admin`. Trecerea pe `out_of_order` sau `retired` anulează rezervările viitoare, cu `cancel_reason = 'machine_out_of_order'`, și închide semnalările deschise când revine pe `working`;
+   - `add_laundry_machine(p_label, p_kind)` și `rename_laundry_machine(...)`: doar `dorm_admin`, ca administratorul să-și țină singur lista la zi.
+3. **Regula automată, ca și constantă:** de la 3 semnalări `not_working` de la oameni diferiți în 24 de ore, mașina apare cu avertismentul „Posibil defectă” în `laundry_day`, dar rămâne rezervabilă până o trece `dorm_admin` pe `out_of_order`. Așa un singur om nu poate bloca o mașină.
+4. Opțional, o semnalare `not_working` creează și un raport administrativ (TODO-46) cu categoria „spălătorie”, dacă TODO-46 e pe `main`. Altfel, notează în PR.
+5. **`features/dorm/queries/machines.ts`**: wrapper-e tipate.
+6. **Teste** pgTAP `supabase/tests/laundry_machines.test.sql`: un student nu poate schimba statusul; `out_of_order` anulează rezervările viitoare și nu le atinge pe cele trecute; pragul de 3; o mașină `out_of_order` nu se poate rezerva.
+
+#### Gata când
+- [ ] Ca `dorm_admin` demo, trecerea unei mașini pe `out_of_order` anulează rezervările viitoare, iar ele apar cu motivul în `getMyBookings()` al proprietarului.
+- [ ] `supabase test db` și `pnpm typecheck` trec. PR revizuit de cine are TODO-52.
+
+### TODO-46 `[ ]` Raportările administrative: tabelul, poza și statusul
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be6-maintenance-reports` · **Backlog:** #43
+
+#### De ce
+MVP: „Raportări administrative: formular cu categorie, poză și status (trimis, în lucru, rezolvat)”. Azi o chiuvetă spartă se raportează la administrație pe hârtie sau deloc, iar studentul nu știe dacă s-a întâmplat ceva.
+
+#### Depinde de
+TODO-42 pe `main`.
+
+#### Ce ai de făcut
+
+1. **Migrație** `maintenance_reports`: `id`, `dorm_id`, `dorm_room_id null` (null pentru spațiile comune), `user_id`, `category text check (category in ('plumbing', 'electrical', 'heating', 'furniture', 'internet', 'laundry', 'cleaning', 'other'))`, `description text check (char_length(description) between 10 and 1000)`, `location text null check (char_length(location) <= 200)` (de ex. „baia de la etajul 2”), `photo_path text null`, `status text check (status in ('sent', 'in_progress', 'resolved')) default 'sent'`, `created_at`, `status_changed_at`, `resolved_at null`.
+2. **Bucket privat** `maintenance-photos`, cu calea `{dorm_id}/{report_id}.jpg`, maxim 5 MB, doar `image/jpeg`, `image/png`, `image/webp`. RLS pe `storage.objects`: urcă doar autorul raportului, citesc autorul și `dorm_admin`. Curățarea EXIF se face în browser, în TODO-53 (CLAUDE.md §5).
+3. **Funcții SQL:**
+   - `create_maintenance_report(p_category, p_description, p_location, p_in_my_room)`: căminul și camera se iau din apartenența activă, nu din parametri; cel mult 5 rapoarte de om pe zi;
+   - `attach_report_photo(p_report_id, p_path)`: doar autorul, doar dacă fișierul există în bucket;
+   - `set_report_status(p_report_id, p_status)`: doar `dorm_admin`-ul căminului; tranzițiile permise sunt `sent → in_progress → resolved` și `sent → resolved`.
+4. **Cine vede ce:** autorul își vede rapoartele, `dorm_admin` le vede pe toate din căminul lui. Ceilalți locatari nu le văd în MVP, pentru că un raport poate conține detalii despre o cameră anume.
+5. **`features/dorm/queries/reports.ts`**: `createReport` (raport, apoi upload, apoi `attach_report_photo`, toate într-o funcție), `getMyReports`, `getDormReports` (pentru `dorm_admin`), `setReportStatus`.
+6. **Teste** pgTAP `supabase/tests/maintenance_reports.test.sql`: un străin nu vede rapoartele; un student nu schimbă statusul; tranziția `resolved → sent` e refuzată; limita de 5 pe zi; politicile bucket-ului.
+
+#### Gata când
+- [ ] Ca utilizator demo, un raport cu poză apare în `getMyReports()` cu statusul `sent`; ca `dorm_admin`, îl treci pe `in_progress`, iar autorul vede schimbarea.
+- [ ] `supabase test db` și `pnpm typecheck` trec. PR revizuit de cine are TODO-53.
+
+### TODO-47 `[ ]` Emailul automat către administratorul căminului
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be7-report-email` · **Backlog:** #44
+
+#### De ce
+MVP: „Email pentru administrator generat automat din raport”. Administratorul nu trebuie să instaleze aplicația ca să afle de o problemă: primește un email clar, cu tot ce îi trebuie.
+
+#### Depinde de
+TODO-46 pe `main`. Local merge fără Resend (emailul se scrie în consolă). Pentru emailuri reale: contul Resend și răspunsul la OQ-3.
+
+#### Ce ai de făcut
+
+1. **Migrație** `dorm_admin_contacts`: `dorm_id`, `email`, `name null`. **Fără nicio politică pentru clienți**: o citește doar Edge Function-ul, cu `service_role`. Adresa e configurare, nu se introduce din aplicație (CLAUDE.md §3.9). În `seed.sql`, o adresă de test.
+2. **`supabase/functions/_shared/email.ts`**: `sendEmail({ to, subject, html, text })` prin Resend; fără `RESEND_API_KEY`, scrie emailul în consolă și întoarce „trimis”. TODO-57 îl refolosește.
+3. **`supabase/functions/maintenance-report-email/`**: pornit de un Database Webhook la insert în `maintenance_reports` (sau la `attach_report_photo`, ca să prindă și poza; alege și scrie de ce în PR):
+   - subiect: „[UBB Campus] Raport nou: Instalații sanitare, camera 214, Căminul X”;
+   - corp, în română, HTML și text simplu: categoria, descrierea, locul, camera, data și ora (ora României), numele afișat al autorului și un link semnat spre poză, valabil 7 zile. **Fără emailul studentului**, până se decide altfel la OQ-3;
+   - coloanele `emailed_at` și `email_error` în `maintenance_reports` (în migrația ta), ca să se vadă ce nu a plecat.
+4. **Fără spam:** dacă în ultimele 2 ore a plecat deja un email pentru aceeași categorie și aceeași cameră (sau același loc comun), nu trimite altul; scrie motivul în `email_error`. Pragul e constantă, cu comentariu.
+5. **Teste** Deno pentru funcțiile pure: textul emailului (cu și fără poză, cameră sau spațiu comun) și regula anti-spam.
+6. Actualizează §3.9 din `CLAUDE.md`.
+
+#### Gata când
+- [ ] Local, un raport nou face ca emailul să apară în consola funcției (sau în Mailpit), cu toate câmpurile și linkul spre poză.
+- [ ] Al doilea raport identic în 2 ore nu mai trimite email și are motivul în `email_error`.
+- [ ] Testele Deno și `supabase test db` trec. PR revizuit de cine are TODO-46.
+
+### TODO-48 `[ ]` Anunțurile pe etaj sau cămin: tabelul și regulile
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be8-announcements` · **Backlog:** #45
+
+#### De ce
+Din documentul inițial: „Anunțuri pe etaj sau cămin (zgomot, întreruperi de apă)”. Azi asta se pierde pe grupurile de WhatsApp. Le facem în aplicație, dar gândite de la început ca să poată fi sincronizate mai târziu cu WhatsApp (TODO-58).
+
+#### Depinde de
+TODO-42 pe `main`. Prioritate mai mică decât MVP-ul.
+
+#### Ce ai de făcut
+
+1. **Migrație** `announcements`: `id`, `dorm_id`, `floor int null` (null = tot căminul), `author_id`, `category text check (category in ('noise', 'water', 'electricity', 'heating', 'event', 'lost_found', 'other'))`, `title text check (char_length(title) between 3 and 100)`, `body text check (char_length(body) <= 1000)`, `is_official boolean default false`, `expires_at` (implicit 7 zile, maxim 30), `created_at`, `deleted_at null`. Plus, pentru TODO-58: `source text check (source in ('app', 'whatsapp')) default 'app'` și `external_id text null unique`. Scrie în comentariu de ce există.
+2. **Cine postează:** orice membru, pe etajul lui sau pe tot căminul; doar `dorm_admin` poate pune `is_official = true` („Anunț oficial”). Cel mult 3 anunțuri de om pe zi.
+3. **Funcții SQL:** `post_announcement(...)`, `delete_announcement(p_id)` (autorul sau `dorm_admin`, ștergere logică), `dorm_announcements(p_floor_only boolean)`: anunțurile neexpirate din căminul tău, cele oficiale primele, apoi cele mai noi. Autorul apare doar cu `display_name`.
+4. **RLS:** citesc doar membrii căminului; nicio scriere directă.
+5. **`features/dorm/queries/announcements.ts`** și câteva anunțuri demo în `seed.sql`.
+6. **Teste** pgTAP `supabase/tests/announcements.test.sql`: un străin nu le vede, un student nu poate pune `is_official`, cele expirate și șterse nu apar, limita de 3 pe zi.
+
+#### Gata când
+- [ ] Ca utilizator demo vezi anunțurile demo ale căminului, iar unul nou pe etajul tău apare primul după cele oficiale.
+- [ ] `supabase test db` și `pnpm typecheck` trec. PR revizuit de cine are TODO-54.
+
+### TODO-49 `[ ]` Cheltuielile pe cameră: tabelele și balanțele
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be9-expenses` · **Backlog:** #46
+
+#### De ce
+Din descrierea modulului: „gestionarea cheltuielilor pe cameră”. Colegii de cameră împart detergentul, hârtia igienică sau un frigider și vor să știe cine cui datorează. **Aplicația doar notează; banii nu trec prin ea**, la fel ca la plata în bani din Modulul B (CLAUDE.md §3.5).
+
+#### Depinde de
+TODO-42 pe `main`. Prioritate mai mică decât MVP-ul.
+
+#### Ce ai de făcut
+
+1. **Migrație** `expenses`: `id`, `dorm_room_id`, `paid_by`, `amount_cents int check (amount_cents > 0)`, `description text check (char_length(description) between 2 and 120)`, `spent_on date`, `created_by`, `created_at`, `deleted_at null`. Și `expense_splits`: `expense_id`, `user_id`, `share_cents int`, cu suma părților egală cu `amount_cents` (verificată în funcție). Plus `settlements`: `id`, `dorm_room_id`, `from_user`, `to_user`, `amount_cents`, `created_at` („i-am dat banii”). Toate în lei, în bani (cenți), ca să nu existe erori de rotunjire.
+2. **Funcții SQL:** `add_expense(p_amount_cents, p_description, p_spent_on, p_paid_by, p_split_between uuid[])` (împărțire egală; restul de câțiva bani merge la cel care a plătit), `delete_expense(p_id)` (doar cine a creat-o, în 48 de ore), `record_settlement(...)`, `room_balances()`: cât are de dat sau de primit fiecare coleg. **Balanța se calculează, nu se stochează.**
+3. **Când pleacă cineva din cameră** (`leave_dorm_room()`), cheltuielile lui rămân, iar balanța lui se vede în continuare de colegi; scrie asta în comentariu.
+4. **RLS:** doar colegii activi de cameră citesc; nicio scriere directă.
+5. **`features/dorm/queries/expenses.ts`** și câteva cheltuieli demo în `seed.sql`.
+6. **Teste** pgTAP `supabase/tests/expenses.test.sql`: cineva din altă cameră nu vede nimic, împărțirea la 3 a 10 lei dă 334 + 333 + 333 de bani, balanțele au suma 0, o plată de decontare le aduce la 0.
+
+#### Gata când
+- [ ] Cu 3 colegi demo, o cheltuială de 30 de lei plătită de unul arată `+20 lei` la el și `-10 lei` la ceilalți doi.
+- [ ] `supabase test db` și `pnpm typecheck` trec. PR revizuit de cine are TODO-55.
+
+### TODO-50 `[ ]` Împrumutul de obiecte între vecini: cererile și răspunsurile
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-be10-loans` · **Backlog:** #47
+
+#### De ce
+Din descrierea modulului: „împrumutul de obiecte între vecini”. Un fier de călcat, un uscător de rufe sau o tigaie se găsesc mereu la cineva pe etaj, doar că nu știi la cine.
+
+#### Depinde de
+TODO-42 pe `main`. Prioritate mai mică decât MVP-ul.
+
+#### Ce ai de făcut
+
+1. **Migrație** `loan_requests`: `id`, `dorm_id`, `floor int null`, `requester_id`, `item text check (char_length(item) between 2 and 80)`, `note text null check (char_length(note) <= 300)`, `needed_until timestamptz null`, `status text check (status in ('open', 'accepted', 'returned', 'cancelled', 'expired')) default 'open'`, `lender_id null`, `created_at`, `accepted_at`, `returned_at`. O cerere deschisă expiră după 3 zile.
+2. **Funcții SQL:** `ask_to_borrow(...)`, `offer_to_lend(p_request_id)` (primul care se oferă o acceptă; nu poți să-ți împrumuți ție), `mark_returned(p_request_id)` (confirmă proprietarul obiectului, adică `lender_id`), `cancel_loan_request(p_request_id)`, `dorm_loan_board()`: cererile deschise din cămin, cele de pe etajul tău primele.
+3. **Ce vede fiecare:** cererile deschise le vede tot căminul, cu `display_name`; o cerere acceptată o văd doar cei doi. Pentru predare, cei doi văd numărul camerei celuilalt, nimic altceva.
+4. Cel mult 3 cereri deschise de om.
+5. **`features/dorm/queries/loans.ts`** și câteva cereri demo în `seed.sql`.
+6. **Teste** pgTAP `supabase/tests/loan_requests.test.sql`: un străin nu vede cererile, doi oameni care se oferă în același timp (unul câștigă), doar `lender_id` poate marca returnarea, cererile expirate nu apar.
+
+#### Gata când
+- [ ] Ca doi utilizatori demo: unul cere un fier de călcat, celălalt se oferă, primul vede camera celui care împrumută, iar al doilea marchează returnarea.
+- [ ] `supabase test db` și `pnpm typecheck` trec. PR revizuit de cine are TODO-56.
+
 ---
 
 ## Frontend
@@ -1579,6 +1945,178 @@ TODO-36 pentru endpoint. Până atunci, lucrezi pe un mock.
 - [ ] `StatusBadge` nu se schimbă după un raport.
 - [ ] Lint, typecheck, teste verzi. PR revizuit de cine a făcut TODO-36.
 
+
+### TODO-51 `[ ]` Pagina de login și pagina `/dorm` cu „Intră cu un cod”
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-fe1-login-and-join` · **Backlog:** #08, #41
+
+#### De ce
+E ușa de intrare în modul: te loghezi cu emailul de student, introduci codul primit de la administrator sau de la un coleg și ajungi în camera ta.
+
+#### Depinde de
+TODO-41 (login) și TODO-43 (coduri). Până intră, lucrezi pe mock-uri cu aceeași semnătură ca `features/dorm/queries/`.
+
+#### Ce ai de făcut
+
+1. **`app/(auth)/login/page.tsx`**: un câmp de email, cu verificarea `@stud.ubbcluj.ro` în formular (mesaj: „Folosește adresa de student, …@stud.ubbcluj.ro”), apoi câmpul pentru codul de 6 cifre. Linkul din email merge și el, prin **`app/(auth)/auth/callback/route.ts`**. După login te duce la `next` din URL (doar căi interne, care încep cu `/`), altfel la `/dorm`. Scoate verificarea emailului într-o funcție pură, `isStudentEmail(email)`.
+2. **`app/(app)/layout.tsx`** (excepția planificată): linkul „Cămin” spre `/dorm`, plus „Intră în cont” sau „Ieși din cont”.
+3. **`app/(app)/dorm/page.tsx`**:
+   - **fără cameră:** `JoinWithCode.tsx`, cu un câmp care acceptă codul cu litere mici sau cu spații și îl normalizează. Fiecare eroare din TODO-43 are mesajul ei: „Codul nu există”, „Codul a expirat, cere unul nou”, „Camera e plină” etc.;
+   - **cu cameră:** `DormHome.tsx`, cu numele căminului, camera, colegii (doar numele afișate) și câte un card spre Spălătorie, Raportări, Anunțuri, Cheltuieli și Împrumuturi (cardurile apar pe măsură ce intră paginile lor);
+   - **`InviteButton.tsx`**: „Invită un coleg” creează un cod, îl arată mare, cu butonul „Copiază” și data expirării;
+   - „Părăsește camera”, cu o confirmare în pagină (nu `window.confirm`), care spune că rezervările viitoare se anulează.
+4. Textele în `lib/i18n/messages.ts`, sub `dorm.home` și `auth`.
+5. **Teste** Vitest: `isStudentEmail` (literele mari, domeniile false din TODO-41), normalizarea codului, mesajul pentru fiecare eroare, `next` extern ignorat.
+
+#### Gata când
+- [ ] Cu Supabase local: login cu codul din Mailpit, apoi `DEMO2026` te duce în camera demo; refresh-ul păstrează sesiunea.
+- [ ] Un cod greșit și unul expirat arată mesajele corecte. Fără scroll orizontal la 375px; screenshot-uri în PR.
+- [ ] Niciun mock rămas. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-43.
+
+### TODO-52 `[ ]` Spălătoria: grila de sloturi, rezervarea și starea mașinilor
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-fe2-laundry` · **Backlog:** #42
+
+#### De ce
+E ecranul pe care studenții îl vor deschide cel mai des: „când e liberă o mașină azi?”, din două atingeri.
+
+#### Depinde de
+TODO-44 (rezervări) și TODO-45 (starea mașinilor). Până intră, lucrezi pe mock-uri.
+
+#### Ce ai de făcut
+
+1. **`app/(app)/dorm/laundry/page.tsx`**: în partea de sus, „Rezervările mele” (`MyBookings.tsx`), cu ora, mașina, butonul „Anulează” și, pentru cele anulate de administrator, motivul („Mașina a fost scoasă din uz”). Sub ele, alegerea zilei (azi și următoarele 6), salvată în URL (`?day=2026-11-25`).
+2. **`LaundryDayGrid.tsx`**: pentru ziua aleasă, sloturile fiecărei mașini. Pe telefon, o mașină pe rând (alegi mașina dintr-o listă de butoane), cu sloturile una sub alta; pe ecran lat, mașinile în coloane. Fiecare slot se înțelege din text, nu doar din culoare: „Liber”, „Ocupat”, „Rezervarea ta”, „Trecut”.
+3. **Rezervarea:** atingi un slot liber → confirmarea în pagină („Mașina 1, azi 18:00–19:30”) → „Rezervă”. Pe `slot_taken`: „Cineva tocmai a rezervat slotul” și grila se reîncarcă. Pe `too_many_bookings`: „Ai deja 2 rezervări viitoare”.
+4. **`MachineStatus.tsx`**: lângă fiecare mașină, „Defectă” (din `out_of_order`, fără sloturi rezervabile) sau „Posibil defectă” (avertismentul din TODO-45), plus butonul „Semnalează o problemă” (alegi ce nu merge și, opțional, o notă). Pentru `dorm_admin`: „Scoate din uz” și „Repune în funcțiune”, cu o confirmare care spune câte rezervări se anulează.
+5. Grila se reîncarcă la 60 de secunde și când revii în tab, fără să clipească (ca în `RoomList.tsx`).
+6. Textele în `lib/i18n/messages.ts`, sub `dorm.laundry`.
+7. **Teste** Vitest pe funcțiile pure: eticheta slotului, mesajul pentru fiecare eroare, formatarea orei în ora României (inclusiv ziua cu schimbarea orei).
+
+#### Gata când
+- [ ] Ca doi utilizatori demo în două browsere: unul rezervă, celălalt vede slotul „Ocupat” după reîncărcare, iar dacă apasă pe el în același timp primește mesajul corect.
+- [ ] Ca `dorm_admin`, „Scoate din uz” face mașina „Defectă”, iar rezervarea celuilalt apare anulată, cu motivul.
+- [ ] Fără scroll orizontal la 375px; screenshot-uri în PR. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-44.
+
+### TODO-53 `[ ]` Formularul de raportare și „Rapoartele mele”
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-fe3-reports` · **Backlog:** #43
+
+#### De ce
+Raportul trebuie să se poată face în 30 de secunde, de pe telefon, cu o poză făcută pe loc. Iar studentul trebuie să vadă după aceea dacă problema e „în lucru” sau „rezolvată”.
+
+#### Depinde de
+TODO-46. Până intră, lucrezi pe un mock.
+
+#### Ce ai de făcut
+
+1. **`app/(app)/dorm/reports/new/page.tsx`** cu **`ReportForm.tsx`**: categoria (butoane mari, cu text: „Instalații sanitare”, „Electricitate”, „Căldură”, „Mobilier”, „Internet”, „Spălătorie”, „Curățenie”, „Altceva”), „În camera mea” sau „Spațiu comun” (cu câmpul de loc), descrierea și o poză opțională (`<input type="file" accept="image/*" capture="environment">`).
+2. **`features/dorm/lib/resize-image.ts`**: înainte de upload, poza se micșorează la maxim 1600 px și se recodează ca JPEG printr-un `canvas`. Asta scoate și datele EXIF, inclusiv locația GPS (CLAUDE.md §5). Scrie regula într-un comentariu.
+3. **`app/(app)/dorm/reports/page.tsx`** cu **`ReportList.tsx`** și **`ReportStatusBadge.tsx`**: rapoartele tale, cele mai noi primele, cu „Trimis”, „În lucru” sau „Rezolvat” scris, nu doar colorat, și data ultimei schimbări.
+4. **Pentru `dorm_admin`:** pe aceeași pagină, „Toate rapoartele căminului”, cu filtru pe status și butoanele pentru tranzițiile permise („Începe lucrul”, „Marchează rezolvat”).
+5. După trimitere: „Raportul a fost trimis administratorului” și lista ta. Dacă poza nu a urcat, raportul rămâne trimis și apare „Poza nu a putut fi atașată”, cu „Reîncearcă”.
+6. Textele în `lib/i18n/messages.ts`, sub `dorm.reports`.
+7. **Teste** Vitest: validarea formularului (descrierea de minim 10 caractere), eticheta fiecărui status, tranzițiile arătate pentru fiecare status.
+
+#### Gata când
+- [ ] De pe un telefon real (sau DevTools), un raport cu poză ajunge în lista ta ca „Trimis”, iar poza din bucket nu mai are EXIF (verifică cu `exiftool` și pune rezultatul în PR).
+- [ ] Ca `dorm_admin`, „Marchează rezolvat” schimbă statusul și la autor. Screenshot-uri în PR, la 375px.
+- [ ] Niciun mock rămas. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-46.
+
+### TODO-54 `[ ]` Anunțurile: lista, formularul și „Trimite pe WhatsApp”
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-fe4-announcements` · **Backlog:** #45
+
+#### De ce
+Partea vizibilă a lui TODO-48. Butonul „Trimite pe WhatsApp” e primul pas spre WhatsApp: azi toată lumea e pe grupul căminului, așa că un anunț scris în aplicație trebuie să ajungă ușor și acolo, fără nicio integrare cu WhatsApp.
+
+#### Depinde de
+TODO-48. Până intră, lucrezi pe un mock. Prioritate mai mică decât MVP-ul.
+
+#### Ce ai de făcut
+
+1. **`app/(app)/dorm/announcements/page.tsx`** cu **`AnnouncementList.tsx`**: filtrul „Etajul meu” / „Tot căminul”, anunțurile oficiale primele cu eticheta „Oficial”, apoi celelalte, cu categoria, titlul, textul, autorul și „acum 2 ore”. Autorul și `dorm_admin` văd „Șterge”.
+2. **`AnnouncementForm.tsx`**: categoria, etajul sau tot căminul, titlul, textul, cât rămâne vizibil (1, 3, 7 zile); `dorm_admin` are și bifa „Anunț oficial”.
+3. **`ShareOnWhatsApp.tsx`**: pe fiecare anunț, un link `https://wa.me/?text=...` cu titlul, textul și numele căminului, codat corect (`encodeURIComponent`). Pe telefon deschide WhatsApp, pe desktop WhatsApp Web. Nu trimite nimic de la noi și nu are nevoie de niciun cont.
+4. Un card „Anunțuri” în `DormHome.tsx` (excepția planificată), cu numărul de anunțuri noi de azi.
+5. Textele în `lib/i18n/messages.ts`, sub `dorm.announcements`.
+6. **Teste** Vitest: textul trimis pe WhatsApp (diacritice, `&`, linii noi), ordinea oficial → nou, „acum N ore”.
+
+#### Gata când
+- [ ] Un anunț nou apare în listă, iar „Trimite pe WhatsApp” deschide WhatsApp cu textul complet, cu diacritice.
+- [ ] Un anunț expirat nu mai apare. Screenshot-uri în PR, la 375px.
+- [ ] Niciun mock rămas. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-48.
+
+### TODO-55 `[ ]` Cheltuielile pe cameră: adăugare și „cine cui datorează”
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-fe5-expenses` · **Backlog:** #46
+
+#### De ce
+Partea vizibilă a lui TODO-49: la final de lună, fiecare vede dintr-o privire cât are de dat și cui.
+
+#### Depinde de
+TODO-49. Până intră, lucrezi pe un mock. Prioritate mai mică decât MVP-ul.
+
+#### Ce ai de făcut
+
+1. **`app/(app)/dorm/expenses/page.tsx`**: sus, **`BalanceSummary.tsx`**: „Ai de primit 20 lei” sau „Ai de dat 10 lei lui Ion”, cu butonul „I-am dat banii” (decontare), apoi lista cheltuielilor, cele mai noi primele.
+2. **`ExpenseForm.tsx`**: suma în lei (acceptă `12,50` și `12.50`), descrierea, data, cine a plătit și între cine se împarte (implicit toți colegii de cameră).
+3. Textul de sub titlu: „Aplicația doar notează cheltuielile. Banii îi dați între voi.”
+4. Un card „Cheltuieli” în `DormHome.tsx`, cu balanța ta.
+5. Textele în `lib/i18n/messages.ts`, sub `dorm.expenses`.
+6. **Teste** Vitest: parsarea sumei (`12,50`, `12.5`, `abc`, `0`), formatarea în lei, textul balanței (de primit, de dat, la zi).
+
+#### Gata când
+- [ ] Cu 3 colegi demo, o cheltuială adăugată de unul apare la toți, cu balanțele corecte; o decontare le aduce la zero.
+- [ ] Screenshot-uri în PR, la 375px. Niciun mock rămas. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-49.
+
+### TODO-56 `[ ]` Împrumuturile între vecini: cereri și oferte
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-fe6-loans` · **Backlog:** #47
+
+#### De ce
+Partea vizibilă a lui TODO-50: „Are cineva un fier de călcat?” pus o dată în aplicație, nu pe trei grupuri.
+
+#### Depinde de
+TODO-50. Până intră, lucrezi pe un mock. Prioritate mai mică decât MVP-ul.
+
+#### Ce ai de făcut
+
+1. **`app/(app)/dorm/loans/page.tsx`** cu **`LoanBoard.tsx`**: cererile deschise din cămin, cele de pe etajul tău primele, fiecare cu butonul „Îl am eu”. Sub ele, „Cererile mele” și „Ce am împrumutat altora”, cu statusul scris.
+2. **`LoanRequestForm.tsx`**: obiectul, o notă și până când îți trebuie.
+3. După ce cineva se oferă, cei doi văd camera celuilalt („Ion, camera 214”); cel care a dat obiectul are butonul „Mi l-a dat înapoi”.
+4. Un card „Împrumuturi” în `DormHome.tsx`, cu numărul de cereri deschise pe etajul tău.
+5. Textele în `lib/i18n/messages.ts`, sub `dorm.loans`.
+6. **Teste** Vitest: eticheta fiecărui status și ce butoane apar pentru cel care cere și pentru cel care dă.
+
+#### Gata când
+- [ ] Cu doi utilizatori demo: cererea apare la celălalt, „Îl am eu” o acceptă, iar „Mi l-a dat înapoi” o închide.
+- [ ] Screenshot-uri în PR, la 375px. Niciun mock rămas. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-50.
+
+### TODO-57 `[ ]` Reminderul înainte de spălătorie și QA pentru etapa a 5-a
+
+**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/dorm-fe7-reminders-qa` · **Backlog:** #42
+
+#### De ce
+Reminderul e ultimul punct din „Programare la spălătorie” din MVP: un slot uitat e un slot pierdut pentru toată lumea. Și, ca la TODO-08 și TODO-16, cineva verifică la final că tot modulul merge cap-coadă.
+
+#### Depinde de
+TODO-44 și TODO-47 (`_shared/email.ts`). Rularea QA are nevoie de toți itemii de MVP pe `main`.
+
+#### Ce ai de făcut
+
+1. **Migrație**: coloanele `remind boolean default true` și `reminder_sent_at null` în `laundry_bookings`.
+2. **`supabase/functions/laundry-reminders/`**: pornită la 5 minute (`pg_cron` + `pg_net`, sau programarea din Supabase), trimite un email („Ai mașina 1 la 18:00, peste 30 de minute”) pentru rezervările active cu `remind = true`, care încep în următoarele 30 de minute și nu au `reminder_sent_at`. Pune `reminder_sent_at` în aceeași tranzacție, ca un reminder să nu plece de două ori.
+3. **În `MyBookings.tsx`** (de la TODO-52): bifa „Trimite-mi un email cu 30 de minute înainte” pe fiecare rezervare și butonul „Adaugă în calendar”, care descarcă un fișier `.ics` făcut în browser (**`features/dorm/lib/ics.ts`**, fără bibliotecă nouă), cu alarmă cu 30 de minute înainte.
+4. **`docs/qa/dorm-manager.md`**: checklist manual, cu rezultatele așteptate: login (email bun, email greșit, link din email), cod de invitație (bun, greșit, expirat, cameră plină), plecarea din cameră, spălătoria (rezervare, conflict, limită, anulare, mașină defectă), reminderul, raportul cu poză și schimbarea statusului, emailul către administrator, anunțurile și WhatsApp, cheltuielile, împrumuturile, 375px și un telefon real.
+5. După ce toți itemii de MVP sunt pe `main`, rulezi checklist-ul o dată. Ce e stricat devine item în `TODO.md` sau problemă pe GitHub, nu doar mesaj pe grup.
+6. **Teste** Vitest pentru `ics.ts` (ora în UTC corectă și pentru ziua cu schimbarea orei, caracterele speciale) și Deno pentru selecția rezervărilor din funcție.
+
+#### Gata când
+- [ ] Local, o rezervare peste 25 de minute primește un singur email, iar una cu bifa scoasă niciunul.
+- [ ] Fișierul `.ics` se deschide corect în Google Calendar și în calendarul de pe telefon, la ora corectă.
+- [ ] Checklist-ul e în repo și rulat o dată, cu rezultatele în PR sau într-un issue. Lint, typecheck, teste verzi; PR revizuit de cine are TODO-44.
+
 ---
 
 ## Extra `[POSTPONED]`
@@ -1638,3 +2176,20 @@ Validarea MVP-ului, login-ul (backlog #08) și TODO-33/34.
 
 #### Gata când
 - [ ] Un check-in în avans apare pe pagina sălii pentru toți, devine check-in obișnuit la ora aleasă și nu poate fi pus peste o oră din orar.
+
+### TODO-58 `[POSTPONED]` Sincronizarea anunțurilor cu grupurile de WhatsApp
+
+**Asignat:** _(amânat)_ · **Backlog:** #45 (extins)
+
+#### De ce
+Căminele își țin deja anunțurile pe grupuri de WhatsApp. Ideal, un anunț din aplicație ajunge singur pe grup și invers, ca studenții să nu fie nevoiți să urmărească două locuri. `announcements` (TODO-48) are deja `source` și `external_id` pentru asta.
+
+#### Depinde de
+TODO-48 și TODO-54 folosite o vreme de studenți reali, ca să știm dacă e nevoie. Și de ce permite WhatsApp: API-ul oficial (WhatsApp Business / Cloud API) e făcut pentru conversații între o firmă și un client și, din câte știm, nu poate citi sau posta în grupurile obișnuite. Bibliotecile neoficiale care se dau drept un telefon încalcă termenii WhatsApp și pot duce la blocarea numărului, deci nu le folosim.
+
+#### Ce ai de făcut
+1. **Întâi cercetarea**, în `docs/whatsapp-sync.md`: ce permite azi API-ul oficial (grupuri, Comunități, Canale), cât costă, ce aprobare cere de la Meta și ce variante legale rămân (de ex. un Canal WhatsApp al căminului în care postează un bot, sau doar butonul „Trimite pe WhatsApp” din TODO-54).
+2. Doar dacă cercetarea găsește o cale legală: o Edge Function care trimite anunțurile oficiale (`is_official = true`) în acel canal, cu `external_id` salvat, ca să nu plece de două ori. Sensul invers (din WhatsApp în aplicație) se decide separat.
+
+#### Gata când
+- [ ] `docs/whatsapp-sync.md` e în repo, cu recomandarea și sursele, iar echipa a decis pe baza lui dacă itemul pornește sau se închide.
