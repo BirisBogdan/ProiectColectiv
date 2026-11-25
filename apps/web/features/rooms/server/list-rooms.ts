@@ -1,7 +1,8 @@
 import { buildings } from "../data/buildings";
 import { rooms } from "../data/rooms";
 import { scheduleEntries } from "../data/schedule";
-import type { RoomStatus, RoomWithStatus } from "../types";
+import type { RoomListItem, RoomStatus, RoomWithStatus } from "../types";
+import { entriesToday } from "./calendar";
 import { countActiveCheckins } from "./checkins";
 import { isFreeFor } from "./free-for";
 import { computeStatus } from "./status";
@@ -68,4 +69,12 @@ export function listRooms(filters: RoomFilters, now: Date): RoomWithStatus[] {
       }
       return a.code.localeCompare(b.code);
     });
+}
+
+/** listRooms plus each room's classes today (start and end only), for the list's day strip. */
+export function listRoomsWithToday(filters: RoomFilters, now: Date): RoomListItem[] {
+  return listRooms(filters, now).map((room) => ({
+    ...room,
+    today: entriesToday(room.id, scheduleEntries, now).map(({ start, end }) => ({ start, end })),
+  }));
 }

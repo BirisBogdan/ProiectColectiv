@@ -5,8 +5,10 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import RoomNotFound from "@/app/(app)/rooms/not-found";
 import { CheckinButton } from "@/features/rooms/components/CheckinButton";
+import { DayStrip, DayStripAxis } from "@/features/rooms/components/DayStrip";
 import { RoomHeader } from "@/features/rooms/components/RoomHeader";
 import { RoomSchedule } from "@/features/rooms/components/RoomSchedule";
+import { bucharestNow } from "@/features/rooms/server/time";
 import type { RoomDetail } from "@/features/rooms/types";
 import { useMessages } from "@/lib/i18n/use-locale";
 
@@ -67,7 +69,9 @@ function RoomDetailContent({ id }: { id: string }) {
 
   return (
     <div className="space-y-4">
-      <Link href="/rooms" className="link inline-block text-sm">
+      {/* The list is beside the room (desktop) or under its sheet (phone), so this link is
+          only for keyboard and screen reader users. */}
+      <Link href="/rooms" className="link sr-only text-sm focus:not-sr-only focus:inline-block">
         {t.room.back}
       </Link>
 
@@ -92,6 +96,16 @@ function RoomDetailContent({ id }: { id: string }) {
       {state.status === "ready" && (
         <>
           <RoomHeader room={state.detail.room} />
+          <div className="space-y-1.5 px-1">
+            <DayStripAxis />
+            <DayStrip
+              busy={state.detail.today}
+              now={bucharestNow(state.now).time}
+              status={state.detail.room.status}
+              until={state.detail.room.until}
+              className="h-2.5"
+            />
+          </div>
           <CheckinButton roomId={id} onChange={() => setAttempt((value) => value + 1)} />
           <RoomSchedule entries={state.detail.today} now={state.now} />
           <Link href={`/rooms/${encodeURIComponent(id)}/week`} className="link inline-block text-sm">

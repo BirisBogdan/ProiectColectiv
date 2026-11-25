@@ -101,20 +101,81 @@ function RoomFiltersForm() {
   const minFreeHours = appliedMinFreeHours(params.get("minFreeHours"));
   // Same idea for a value from the URL that is not one of the options: show it, not "Oricât".
   const minFreeHoursNotListed = minFreeHours && validMinFreeHours(minFreeHours) === "";
+  // Building, capacity and free time sit behind the "Filtre" button; it says how many are set.
+  const advancedCount = [
+    buildingId,
+    validMinCapacity(params.get("minCapacity")),
+    minFreeHours,
+  ].filter(Boolean).length;
+  const [advancedOpen, setAdvancedOpen] = useState(advancedCount > 0);
 
   return (
-    <section aria-labelledby="room-filters-title" className="space-y-3">
-      <div className="flex items-center justify-between gap-3">
-        <h2 id="room-filters-title" className="text-xs font-medium tracking-wide text-fg-subtle uppercase">
-          {t.filters.title}
-        </h2>
-        <button type="button" onClick={() => navigate("")} className="link text-xs">
+    <section aria-labelledby="room-filters-title" className="space-y-2.5">
+      <h2 id="room-filters-title" className="sr-only">
+        {t.filters.title}
+      </h2>
+
+      <label className="relative block">
+        <span className="sr-only">{t.rooms.search}</span>
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-3 grid place-items-center text-fg-subtle"
+        >
+          ⌕
+        </span>
+        <input
+          type="search"
+          value={params.get("q") ?? ""}
+          placeholder={t.rooms.search}
+          onChange={(event) => setParam("q", event.target.value)}
+          className={`${FIELD_CLASS} pl-8 placeholder:text-fg-subtle`}
+        />
+      </label>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          aria-expanded={advancedOpen}
+          aria-controls="room-filters-more"
+          onClick={() => setAdvancedOpen((open) => !open)}
+          className="inline-flex h-8 items-center gap-1.5 rounded-md border border-line bg-surface px-3 text-sm font-medium text-fg transition-colors hover:border-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fg aria-expanded:border-line-strong aria-expanded:bg-surface-3"
+        >
+          {t.filters.more}
+          {advancedCount > 0 && (
+            <span className="text-fg-subtle tabular-nums">· {advancedCount}</span>
+          )}
+          <span aria-hidden className="text-[10px] text-fg-subtle">
+            {advancedOpen ? "▴" : "▾"}
+          </span>
+        </button>
+        {FLAG_FILTERS.map(({ param, key }) => (
+          // A toggle chip: the checkbox stays in the DOM for keyboards and screen readers.
+          <label
+            key={param}
+            className="group inline-flex h-8 cursor-pointer items-center gap-2 rounded-md border border-line bg-surface px-3 text-sm font-medium text-fg-muted transition-colors select-none hover:border-line-strong hover:text-fg has-checked:border-line-strong has-checked:bg-surface-3 has-checked:text-fg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-fg"
+          >
+            <span
+              aria-hidden
+              className="grid size-3.5 place-items-center rounded-[3px] border border-line-strong text-[9px] leading-none text-transparent group-has-checked:border-fg group-has-checked:bg-fg group-has-checked:text-canvas"
+            >
+              ✓
+            </span>
+            <input
+              type="checkbox"
+              checked={params.get(param) === "1"}
+              onChange={(event) => setParam(param, event.target.checked ? "1" : "")}
+              className="sr-only"
+            />
+            {t.filters[key]}
+          </label>
+        ))}
+        <button type="button" onClick={() => navigate("")} className="link ml-auto text-xs">
           {t.filters.reset}
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <label className="min-w-0 space-y-1.5">
+      <div id="room-filters-more" hidden={!advancedOpen} className="grid grid-cols-2 gap-3 pt-1">
+        <label className="col-span-2 min-w-0 space-y-1.5">
           <span className="field-label">{t.filters.building}</span>
           <select
             value={buildingId}
@@ -164,30 +225,6 @@ function RoomFiltersForm() {
             )}
           </select>
         </label>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        {FLAG_FILTERS.map(({ param, key }) => (
-          // A toggle chip: the checkbox stays in the DOM for keyboards and screen readers.
-          <label
-            key={param}
-            className="group inline-flex h-8 cursor-pointer items-center gap-2 rounded-md border border-line bg-surface px-3 text-sm font-medium text-fg-muted transition-colors select-none hover:border-line-strong hover:text-fg has-checked:border-line-strong has-checked:bg-surface-3 has-checked:text-fg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-fg"
-          >
-            <span
-              aria-hidden
-              className="grid size-3.5 place-items-center rounded-[3px] border border-line-strong text-[9px] leading-none text-transparent group-has-checked:border-fg group-has-checked:bg-fg group-has-checked:text-canvas"
-            >
-              ✓
-            </span>
-            <input
-              type="checkbox"
-              checked={params.get(param) === "1"}
-              onChange={(event) => setParam(param, event.target.checked ? "1" : "")}
-              className="sr-only"
-            />
-            {t.filters[key]}
-          </label>
-        ))}
       </div>
 
       {buildingsFailed && (

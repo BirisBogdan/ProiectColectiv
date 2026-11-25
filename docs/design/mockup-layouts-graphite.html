@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UBB Campus · Layout mockups (Graphite)</title>
+<style>
+  :root {
+    --canvas:#0a0a0a; --surface:#111; --surface-2:#171717; --surface-3:#222; --line:#1f1f1f; --line-strong:#2e2e2e;
+    --fg:#ededed; --fg-muted:#a1a1a1; --fg-subtle:#808080; --free:#3ecf8e; --busy:#ef6461; --unk:#8a8a8a;
+    --mono: ui-monospace, "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background:#050505; color:var(--fg); font-family:"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .mono { font-family: var(--mono); }
+  .num { font-variant-numeric: tabular-nums; }
+  .doc { max-width:1300px; margin:0 auto; padding:48px 32px 96px; }
+  .doc > header h1 { font-size:28px; font-weight:650; letter-spacing:-.02em; margin:0 0 6px; }
+  .doc > header p { color:var(--fg-muted); margin:0; max-width:780px; }
+  .jump { display:flex; flex-wrap:wrap; gap:8px; margin:24px 0 0; position:sticky; top:0; background:#050505; padding:12px 0; z-index:9; border-bottom:1px solid var(--line); }
+  .jump a { color:var(--fg-muted); text-decoration:none; padding:5px 11px; border-radius:6px; border:1px solid var(--line-strong); font-size:13px; }
+  section.opt { margin-top:56px; scroll-margin-top:70px; }
+  section.opt > h2 { margin:0; font-size:20px; font-weight:650; }
+  section.opt > h2 small { font-size:13px; color:var(--fg-subtle); font-weight:500; margin-left:8px; }
+  .why { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:12px 0 18px; }
+  .why div { border:1px solid var(--line); border-radius:8px; padding:10px 12px; color:var(--fg-muted); font-size:13px; background:var(--surface); }
+  .why b { color:var(--fg); display:block; font-size:13px; margin-bottom:2px; }
+  .row { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; }
+  .lbl { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--fg-subtle); margin-bottom:8px; }
+
+  /* frames */
+  .fd { width:1100px; max-width:100%; border:1px solid #222; border-radius:12px; overflow:hidden; background:var(--canvas); }
+  .chrome { height:30px; background:#070707; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:6px; padding:0 12px; }
+  .chrome i { width:10px; height:10px; border-radius:50%; background:#262626; }
+  .fm { width:360px; border:1px solid #2a2a2a; border-radius:34px; padding:9px; background:#070707; }
+  .fm .in { border-radius:26px; overflow:hidden; background:var(--canvas); height:740px; position:relative; }
+  .sb { height:36px; display:flex; justify-content:space-between; align-items:center; padding:0 22px; font-size:13px; font-weight:600; }
+
+  /* app chrome */
+  .top { height:52px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; padding:0 22px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:600; font-size:13.5px; }
+  .logo { width:22px; height:22px; border-radius:6px; background:var(--fg); color:var(--canvas); display:grid; place-items:center; font-size:11px; font-weight:800; }
+  .tabs { display:flex; gap:20px; align-items:center; height:100%; }
+  .tabs a { height:100%; display:flex; align-items:center; font-size:13.5px; font-weight:500; color:var(--fg-muted); border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .tabs a.on { color:var(--fg); border-color:var(--fg); }
+  .seg { display:inline-flex; border:1px solid var(--line); background:var(--surface); border-radius:6px; padding:2px; }
+  .seg b { font-size:11.5px; padding:2px 8px; border-radius:4px; color:var(--fg-subtle); }
+  .seg b.on { background:var(--surface-3); color:var(--fg); }
+  .kbd { font-family:var(--mono); font-size:11px; border:1px solid var(--line-strong); border-radius:4px; padding:0 5px; color:var(--fg-subtle); }
+
+  .toolbar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .search { flex:1; min-width:200px; height:34px; display:flex; align-items:center; gap:8px; padding:0 10px; border:1px solid var(--line); background:var(--surface); border-radius:6px; color:var(--fg-subtle); font-size:13px; }
+  .dd { height:34px; display:inline-flex; align-items:center; gap:6px; padding:0 10px; border:1px solid var(--line); background:var(--surface); border-radius:6px; font-size:13px; color:var(--fg); white-space:nowrap; }
+  .dd small { color:var(--fg-subtle); font-size:12px; }
+  .chip { height:30px; display:inline-flex; align-items:center; gap:6px; padding:0 10px; border:1px solid var(--line); background:var(--surface); border-radius:6px; font-size:12.5px; color:var(--fg-muted); white-space:nowrap; }
+  .chip.on { border-color:var(--line-strong); background:var(--surface-3); color:var(--fg); }
+  .chip.on::before { content:"✓"; font-size:10px; }
+  .btn { height:34px; display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 14px; border-radius:6px; font-weight:600; font-size:13px; white-space:nowrap; }
+  .btn.p { background:var(--fg); color:var(--canvas); }
+  .btn.s { background:var(--surface-2); border:1px solid var(--line-strong); color:var(--fg); }
+
+  .st { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; white-space:nowrap; }
+  .st::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .free { color:var(--free); } .busy { color:var(--busy); } .unk { color:var(--unk); }
+  .muted { color:var(--fg-muted); } .subtle { color:var(--fg-subtle); }
+  .panel { border:1px solid var(--line); background:var(--surface); border-radius:8px; }
+
+  /* day strip */
+  .strip { position:relative; height:8px; border-radius:2px; background:#1a1a1a; overflow:hidden; }
+  .strip .b { position:absolute; top:0; bottom:0; background:#3a3a3a; }
+  .strip .w { position:absolute; top:0; bottom:0; background:rgba(62,207,142,.35); }
+  .strip .n { position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--fg); }
+  .axis { display:flex; justify-content:space-between; font-family:var(--mono); font-size:10.5px; color:var(--fg-subtle); }
+
+  /* A: grouped list */
+  .grp { display:flex; justify-content:space-between; align-items:baseline; padding:14px 16px 6px; font-size:12px; font-weight:600; color:var(--fg-subtle); text-transform:uppercase; letter-spacing:.06em; }
+  .ra { display:grid; grid-template-columns:90px minmax(0,1.2fr) 70px minmax(0,1.6fr) 150px; gap:16px; align-items:center; padding:11px 16px; border-top:1px solid var(--line); font-size:13px; }
+  .ra .code { font-family:var(--mono); font-weight:600; font-size:14px; }
+  .ra.dim { color:var(--fg-muted); }
+  .ra.dim .code { color:var(--fg-muted); }
+  .hdr { font-size:11.5px; color:var(--fg-subtle); padding:8px 16px; border-top:0; }
+
+  /* B: split */
+  .split { display:grid; grid-template-columns:400px 1fr; height:620px; }
+  .split .left { border-right:1px solid var(--line); display:flex; flex-direction:column; min-height:0; }
+  .rb { padding:11px 16px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:7px; }
+  .rb .l1 { display:flex; justify-content:space-between; align-items:center; }
+  .rb .code { font-family:var(--mono); font-weight:600; }
+  .rb.sel { background:var(--surface-2); box-shadow: inset 2px 0 0 var(--fg); }
+  .rb .meta { font-size:12px; color:var(--fg-subtle); }
+  .detail { padding:24px 28px; overflow:hidden; }
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+  .stats div { padding:10px 14px; border-right:1px solid var(--line); }
+  .stats div:last-child { border-right:0; }
+  .stats dt { font-size:11.5px; color:var(--fg-subtle); }
+  .stats dd { margin:0; font-weight:600; font-size:13.5px; }
+  .tl { position:relative; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+  .tl .h { display:grid; grid-template-columns:52px 1fr; border-top:1px solid var(--line); height:34px; }
+  .tl .h:first-child { border-top:0; }
+  .tl .h span { font-family:var(--mono); font-size:11px; color:var(--fg-subtle); padding:4px 0 0 10px; }
+  .ev { position:absolute; left:60px; right:10px; border-radius:6px; background:var(--surface-3); border:1px solid var(--line-strong); padding:6px 10px; font-size:12.5px; }
+  .ev .t { font-weight:600; }
+  .ev .g { color:var(--fg-subtle); font-size:11.5px; }
+  .fw { position:absolute; left:60px; right:10px; border-radius:6px; border:1px dashed rgba(62,207,142,.45); color:var(--free); padding:6px 10px; font-size:12.5px; font-weight:500; }
+  .nowl { position:absolute; left:52px; right:0; height:2px; background:var(--fg); }
+  .nowl::before { content:""; position:absolute; left:-4px; top:-3px; width:8px; height:8px; border-radius:50%; background:var(--fg); }
+
+  /* C: mobile */
+  .mpad { padding:6px 16px; }
+  .rm { padding:12px 14px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:7px; }
+  .rm:last-child { border-bottom:0; }
+  .rm .l1 { display:flex; justify-content:space-between; align-items:center; }
+  .bnav { position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:var(--canvas); display:flex; justify-content:space-around; align-items:center; padding-bottom:6px; }
+  .bnav a { display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10.5px; color:var(--fg-subtle); }
+  .bnav a.on { color:var(--fg); }
+  .bnav i { width:18px; height:18px; border:1.6px solid currentColor; border-radius:5px; display:block; }
+  .sticky { position:absolute; left:0; right:0; bottom:62px; padding:12px 16px; border-top:1px solid var(--line); background:var(--canvas); display:flex; gap:10px; align-items:center; justify-content:space-between; }
+  .sheet { position:absolute; left:0; right:0; bottom:0; background:var(--surface); border-top:1px solid var(--line-strong); border-radius:16px 16px 0 0; padding:10px 16px 20px; }
+  .grab { width:36px; height:4px; border-radius:2px; background:var(--line-strong); margin:0 auto 12px; }
+  .scrim { position:absolute; inset:0; background:rgba(0,0,0,.55); }
+  .field { height:38px; border:1px solid var(--line); background:var(--canvas); border-radius:6px; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:13.5px; }
+  .flbl { font-size:11.5px; color:var(--fg-subtle); margin:12px 0 5px; }
+  .seg2 { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+  .seg2 span { text-align:center; padding:7px 0; font-size:12.5px; color:var(--fg-muted); border-right:1px solid var(--line); }
+  .seg2 span:last-child { border-right:0; }
+  .seg2 span.on { background:var(--fg); color:var(--canvas); font-weight:600; }
+
+  /* D: week grid */
+  .wk { display:grid; grid-template-columns:48px repeat(5,1fr); border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--surface); }
+  .wk .dh { padding:9px 10px; font-size:12px; font-weight:600; color:var(--fg-muted); border-left:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .wk .dh.today { color:var(--fg); background:var(--surface-2); box-shadow: inset 0 2px 0 var(--fg); }
+  .wk .hrs div { height:40px; font-family:var(--mono); font-size:10.5px; color:var(--fg-subtle); text-align:right; padding:2px 8px 0 0; }
+  .wk .col { position:relative; border-left:1px solid var(--line); background-image:linear-gradient(var(--line) 1px, transparent 1px); background-size:100% 40px; }
+  .wk .col.today { background-color:rgba(255,255,255,.015); }
+  .we { position:absolute; left:4px; right:4px; border-radius:5px; background:var(--surface-3); border:1px solid var(--line-strong); padding:5px 7px; font-size:11.5px; line-height:1.3; overflow:hidden; }
+  .we b { display:block; font-size:12px; }
+  .we span { color:var(--fg-subtle); font-family:var(--mono); font-size:10.5px; }
+</style>
+</head>
+<body>
+<div class="doc">
+  <header>
+    <h1>Layout — what I'd change</h1>
+    <p>Same Graphite style as the app now; only the layout changes. Each option fixes something that showed up when the app ran: the filters take half the screen, free and busy rooms are mixed together, the user has to open a room to see <i>when</i> it's free, and on a phone the actions are far from the thumb.</p>
+  </header>
+  <nav class="jump"><a href="#A">A · Now board</a><a href="#B">B · Split view</a><a href="#C">C · Mobile flow</a><a href="#D">D · Week grid</a></nav>
+
+  <!-- A -->
+  <section class="opt" id="A">
+    <h2>A · Now board <small>my main recommendation for /rooms</small></h2>
+    <div class="why">
+      <div><b>One-line toolbar</b>Search + 3 compact filters on one row instead of a form with labels. The list starts ~150px higher.</div>
+      <div><b>Grouped by status</b>"Free now" first, sorted by how long they stay free. Busy rooms below, dimmed.</div>
+      <div><b>Today at a glance</b>A small 08–20 strip per room: grey = class, green = the free window from now, white line = now.</div>
+    </div>
+    <div class="fd"><div class="chrome"><i></i><i></i><i></i></div>
+      <div class="top"><div class="brand"><div class="logo">U</div>StudyRoom Finder</div>
+        <div class="tabs"><a class="on">Săli</a><a>Plan</a><div class="seg"><b class="on">RO</b><b>EN</b></div></div></div>
+      <div style="padding:22px 22px 26px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+          <div><span style="font-size:22px;font-weight:650;letter-spacing:-.02em">Săli</span> <span class="subtle num" style="margin-left:8px">6 libere acum · 10:45</span></div>
+          <span class="subtle" style="font-size:12px">Actualizat automat</span>
+        </div>
+        <div class="toolbar" style="margin-bottom:14px">
+          <div class="search">⌕ Caută o sală (C512, Gamma…)<span style="margin-left:auto" class="kbd">/</span></div>
+          <span class="dd">Clădire <small>Toate</small> ▾</span>
+          <span class="dd">Locuri <small>≥ oricât</small> ▾</span>
+          <span class="dd">Liberă ≥ <small>1 oră</small> ▾</span>
+          <span class="chip">Prize</span><span class="chip">Proiector</span>
+        </div>
+        <div class="panel" id="boardA"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="opt" id="B">
+    <h2>B · Split view <small>desktop: list + detail side by side</small></h2>
+    <div class="why">
+      <div><b>No page jumps</b>Click a room on the left, its detail opens on the right. Back button not needed on desktop.</div>
+      <div><b>Real day timeline</b>Today's schedule as a time column, free windows drawn as dashed green blocks, "now" as a line.</div>
+      <div><b>Check-in where you look</b>"Sunt aici" sits in the detail header, next to the status.</div>
+    </div>
+    <div class="fd"><div class="chrome"><i></i><i></i><i></i></div>
+      <div class="top"><div class="brand"><div class="logo">U</div>StudyRoom Finder</div>
+        <div class="tabs"><a class="on">Săli</a><a>Plan</a><div class="seg"><b class="on">RO</b><b>EN</b></div></div></div>
+      <div class="split">
+        <div class="left">
+          <div style="padding:12px 14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px">
+            <div class="search" style="min-width:0">⌕ Caută o sală<span style="margin-left:auto" class="kbd">/</span></div>
+            <div class="toolbar"><span class="chip on">Libere acum</span><span class="chip">Prize</span><span class="chip">Proiector</span><span class="chip">Filtre ▾</span></div>
+          </div>
+          <div id="listB" style="overflow:hidden"></div>
+        </div>
+        <div class="detail">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+            <div>
+              <div class="subtle" style="font-size:12px">Clădirea Centrală · Etaj 5</div>
+              <div style="font-size:26px;font-weight:650;letter-spacing:-.02em">Sala <span class="mono">C512</span></div>
+              <div style="display:flex;gap:14px;align-items:center;margin-top:4px"><span class="st free num">Liberă până la 12:00</span><span class="muted num" style="font-size:12px">2 persoane aici</span></div>
+            </div>
+            <div style="display:flex;gap:8px"><span class="btn s">Săptămâna</span><span class="btn p">Sunt aici</span></div>
+          </div>
+          <dl class="stats" style="margin:18px 0 18px"><div><dt>Etaj</dt><dd>5</dd></div><div><dt>Capacitate</dt><dd class="num">30 locuri</dd></div><div><dt>Prize</dt><dd>Da</dd></div><div><dt>Proiector</dt><dd class="subtle">Nu</dd></div></dl>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><b style="font-size:14px">Azi, miercuri</b><span class="subtle" style="font-size:12px">ora României · date demonstrative</span></div>
+          <div class="tl" id="tlB"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="opt" id="C">
+    <h2>C · Mobile flow <small>the PWA on a phone</small></h2>
+    <div class="why">
+      <div><b>Bottom tab bar</b>Săli / Plan / Check-in in thumb reach. The top bar keeps only the title.</div>
+      <div><b>Filters in a sheet</b>One "Filtre · 2" button opens a bottom sheet; the list gets the whole screen.</div>
+      <div><b>Sticky check-in</b>On a room page the "Sunt aici" button is pinned at the bottom, always visible.</div>
+    </div>
+    <div class="row">
+      <div><div class="lbl">Lista</div><div class="fm"><div class="in">
+        <div class="sb num"><span>10:45</span><span>●●●</span></div>
+        <div class="mpad">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px"><span style="font-size:22px;font-weight:650">Săli</span><span class="seg"><b class="on">RO</b><b>EN</b></span></div>
+          <div class="search" style="min-width:0;margin-bottom:10px">⌕ Caută o sală</div>
+          <div class="toolbar" style="flex-wrap:nowrap;overflow:hidden;margin-bottom:12px"><span class="chip" style="color:var(--fg)">Filtre · 2</span><span class="chip on">Libere acum</span><span class="chip">Prize</span><span class="chip">Proiector</span></div>
+          <div class="panel" id="listC"></div>
+        </div>
+        <div class="bnav"><a class="on"><i></i>Săli</a><a><i></i>Plan</a><a><i style="border-radius:50%"></i>Check-in</a></div>
+      </div></div></div>
+
+      <div><div class="lbl">Detaliu sală</div><div class="fm"><div class="in">
+        <div class="sb num"><span>10:45</span><span>●●●</span></div>
+        <div class="mpad">
+          <div class="muted" style="font-size:13px;margin:2px 0 10px">‹ Săli</div>
+          <div class="subtle" style="font-size:12px">Clădirea Centrală · Etaj 5</div>
+          <div style="font-size:26px;font-weight:650;letter-spacing:-.02em">Sala <span class="mono">C512</span></div>
+          <div style="display:flex;gap:12px;align-items:center;margin:2px 0 14px"><span class="st free num">Liberă până la 12:00</span><span class="muted" style="font-size:12px">2 aici</span></div>
+          <div class="panel" style="display:grid;grid-template-columns:repeat(4,1fr);text-align:center;margin-bottom:16px">
+            <div style="padding:9px 0;border-right:1px solid var(--line)"><div class="subtle" style="font-size:11px">Etaj</div><b>5</b></div>
+            <div style="padding:9px 0;border-right:1px solid var(--line)"><div class="subtle" style="font-size:11px">Locuri</div><b>30</b></div>
+            <div style="padding:9px 0;border-right:1px solid var(--line)"><div class="subtle" style="font-size:11px">Prize</div><b>Da</b></div>
+            <div style="padding:9px 0"><div class="subtle" style="font-size:11px">Proiector</div><b class="subtle">Nu</b></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><b>Azi</b><span class="muted" style="font-size:12.5px;text-decoration:underline;text-underline-offset:3px">Toată săptămâna</span></div>
+          <div class="axis" style="margin-bottom:4px"><span>08</span><span>11</span><span>14</span><span>17</span><span>20</span></div>
+          <div class="strip" style="height:10px;margin-bottom:12px" id="stripC"></div>
+          <div class="panel">
+            <div style="padding:10px 12px;border-bottom:1px solid var(--line);opacity:.45;font-size:13px"><span class="mono subtle" style="font-size:12px">08:00–10:00</span> · Algebră liniară</div>
+            <div style="padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--free);box-shadow:inset 2px 0 0 var(--fg);background:var(--surface-2)"><span class="mono" style="font-size:12px">10:00–12:00</span> · Liberă <span style="font-size:10.5px;background:var(--fg);color:var(--canvas);padding:0 5px;border-radius:3px;font-weight:700;margin-left:4px">ACUM</span></div>
+            <div style="padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px"><span class="mono subtle" style="font-size:12px">12:00–14:00</span> · Baze de date</div>
+            <div style="padding:10px 12px;font-size:13px;color:var(--free)"><span class="mono" style="font-size:12px">14:00–16:00</span> · Liberă</div>
+          </div>
+        </div>
+        <div class="sticky"><div style="font-size:12px" class="muted">Check-in durează<br>până la 12:00</div><span class="btn p" style="height:42px;padding:0 22px">Sunt aici</span></div>
+        <div class="bnav"><a class="on"><i></i>Săli</a><a><i></i>Plan</a><a><i style="border-radius:50%"></i>Check-in</a></div>
+      </div></div></div>
+
+      <div><div class="lbl">Filtre (bottom sheet)</div><div class="fm"><div class="in">
+        <div class="sb num"><span>10:45</span><span>●●●</span></div>
+        <div class="mpad" style="opacity:.5"><div style="font-size:22px;font-weight:650;margin:4px 0 12px">Săli</div><div class="search" style="min-width:0">⌕ Caută o sală</div></div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">Filtre</b><span class="muted" style="font-size:13px;text-decoration:underline;text-underline-offset:3px">Resetează</span></div>
+          <div class="flbl">Clădire</div><div class="field">Toate <span class="subtle">▾</span></div>
+          <div class="flbl">Capacitate minimă</div><div class="field"><span class="subtle">Oricât</span></div>
+          <div class="flbl">Liberă cel puțin</div>
+          <div class="seg2"><span>Oricât</span><span class="on">1 oră</span><span>2 ore</span><span>3 ore</span></div>
+          <div class="flbl">Dotări</div>
+          <div class="toolbar"><span class="chip on">Libere acum</span><span class="chip on">Prize</span><span class="chip">Proiector</span></div>
+          <span class="btn p" style="width:100%;height:44px;margin-top:20px">Arată 4 săli</span>
+        </div>
+      </div></div></div>
+    </div>
+  </section>
+
+  <!-- D -->
+  <section class="opt" id="D">
+    <h2>D · Week grid <small>for /rooms/[id]/week</small></h2>
+    <div class="why">
+      <div><b>Time on the axis</b>Classes sit at their real hour, so the empty space <i>is</i> the free time; no "Liberă 08:00–10:00" lines to read.</div>
+      <div><b>Today highlighted</b>Today's column header gets the white top bar, plus a "now" line.</div>
+      <div><b>Phones</b>Below ~700px it falls back to today's list with a day switcher (Lu Ma Mi Jo Vi).</div>
+    </div>
+    <div class="fd" style="width:960px"><div class="chrome"><i></i><i></i><i></i></div>
+      <div class="top"><div class="brand"><div class="logo">U</div>StudyRoom Finder</div>
+        <div class="tabs"><a class="on">Săli</a><a>Plan</a><div class="seg"><b class="on">RO</b><b>EN</b></div></div></div>
+      <div style="padding:22px">
+        <div class="muted" style="font-size:13px;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--line-strong)">← Înapoi la sală</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:8px 0 14px">
+          <div><div style="font-size:22px;font-weight:650;letter-spacing:-.02em">Săptămâna — sala <span class="mono">C512</span></div><div class="subtle" style="font-size:13px">Clădirea Centrală</div></div>
+          <div class="seg"><b class="on">Impară</b><b>Pară</b></div>
+        </div>
+        <div class="wk" id="wkD"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const H0 = 8, H1 = 20, NOW = 10.75;
+const pct = h => ((h - H0) / (H1 - H0) * 100).toFixed(2) + "%";
+const fmt = h => String(Math.floor(h)).padStart(2,"0") + ":" + (h % 1 ? "30" : "00");
+const ROOMS = [
+  { code:"5/I",   b:"Clădirea Centrală", f:"Etaj 1", cap:80,  am:"Prize · Proiector", busy:[], s:"free" },
+  { code:"S10",   b:"FSEGA",             f:"Etaj 1", cap:20,  am:"Prize",             busy:[], s:"free" },
+  { code:"S12",   b:"FSEGA",             f:"Etaj 1", cap:35,  am:"Prize · Proiector", busy:[[16,18]], s:"free" },
+  { code:"Gamma", b:"Clădirea Centrală", f:"Parter", cap:150, am:"Prize · Proiector", busy:[[8,10],[14,16]], s:"free", ppl:3 },
+  { code:"C512",  b:"Clădirea Centrală", f:"Etaj 5", cap:30,  am:"Prize",             busy:[[8,10],[12,14],[16,18]], s:"free", ppl:2 },
+  { code:"A101",  b:"FSEGA",             f:"Etaj 1", cap:120, am:"Proiector",         busy:[[12,14]], s:"free" },
+  { code:"2/I",   b:"Clădirea Centrală", f:"Etaj 1", cap:100, am:"Proiector",         busy:[[10,12]], s:"busy" },
+  { code:"C510",  b:"Clădirea Centrală", f:"Etaj 5", cap:40,  am:"Prize · Proiector", busy:[[8,16]], s:"busy" },
+  { code:"L001",  b:"Clădirea Centrală", f:"Parter", cap:24,  am:"Prize",             busy:[], s:"unk" },
+];
+function until(r){ const nb=r.busy.find(([a])=>a>NOW); const cur=r.busy.find(([a,b])=>a<=NOW&&NOW<b);
+  if(r.s==="unk") return null; if(r.s==="busy") return cur?cur[1]:null; return nb?nb[0]:null; }
+function label(r){ const u=until(r);
+  if(r.s==="unk") return '<span class="st unk">Stare necunoscută</span>';
+  if(r.s==="busy") return `<span class="st busy num">Ocupată până la ${fmt(u)}</span>`;
+  return `<span class="st free num">${u?`Liberă până la ${fmt(u)}`:"Liberă toată ziua"}</span>`; }
+function strip(r, h){ if(r.s==="unk") return `<div class="strip" style="${h?`height:${h}px`:""}"><div class="n" style="left:${pct(NOW)}"></div></div>`;
+  const u = r.s==="free" ? (until(r)||H1) : null;
+  return `<div class="strip" style="${h?`height:${h}px`:""}">${r.busy.map(([a,b])=>`<div class="b" style="left:${pct(a)};width:calc(${pct(b)} - ${pct(a)})"></div>`).join("")}
+    ${u?`<div class="w" style="left:${pct(NOW)};width:calc(${pct(u)} - ${pct(NOW)})"></div>`:""}<div class="n" style="left:${pct(NOW)}"></div></div>`; }
+const free = ROOMS.filter(r=>r.s==="free").sort((a,b)=>(until(b)||99)-(until(a)||99));
+const other = ROOMS.filter(r=>r.s!=="free");
+
+// A
+const rowA = (r, dim) => `<div class="ra ${dim?"dim":""}"><span class="code">${r.code}</span><span class="muted">${r.b} · ${r.f}</span><span class="num muted">${r.cap}</span>
+  <div><div class="axis" style="display:none"></div>${strip(r)}</div><div style="display:flex;flex-direction:column;gap:1px">${label(r)}${r.ppl?`<span class="subtle" style="font-size:11.5px">${r.ppl} persoane aici</span>`:""}</div></div>`;
+document.getElementById("boardA").innerHTML =
+  `<div class="ra hdr"><span>Sală</span><span>Clădire</span><span>Locuri</span><div class="axis"><span>08</span><span>11</span><span>14</span><span>17</span><span>20</span></div><span>Stare</span></div>`+
+  `<div class="grp" style="border-top:1px solid var(--line)"><span>Libere acum · ${free.length}</span><span style="text-transform:none;letter-spacing:0;font-weight:500">sortate după cât rămân libere</span></div>` + free.map(r=>rowA(r)).join("") +
+  `<div class="grp" style="border-top:1px solid var(--line)"><span>Ocupate sau necunoscute · ${other.length}</span><span style="text-transform:none;letter-spacing:0;font-weight:500">▾ ascunde</span></div>` + other.map(r=>rowA(r,true)).join("");
+
+// B
+document.getElementById("listB").innerHTML = free.concat(other).slice(0,8).map(r=>`
+  <div class="rb ${r.code==="C512"?"sel":""}" style="${r.s!=="free"?"opacity:.6":""}"><div class="l1"><span class="code">${r.code}</span>${label(r)}</div>
+  ${strip(r,6)}<div class="meta">${r.b} · ${r.f} · ${r.cap} locuri</div></div>`).join("");
+const tl = document.getElementById("tlB"); const HS=[8,9,10,11,12,13,14,15,16,17], PX=34;
+tl.innerHTML = HS.map(h=>`<div class="h"><span>${String(h).padStart(2,"0")}</span><div></div></div>`).join("")
+ + [[8,10,"Algebră liniară","Seminar 111"],[12,14,"Baze de date","Seminar 212"],[16,18,"Sisteme de operare","Seminar 213"]].map(([a,b,t,g])=>
+   `<div class="ev" style="top:${(a-8)*PX+3}px;height:${(b-a)*PX-6}px;${b<=NOW?"opacity:.45":""}"><div class="t">${t}</div><div class="g">${g} · ${fmt(a)}–${fmt(b)}</div></div>`).join("")
+ + [[10,12],[14,16]].map(([a,b])=>`<div class="fw" style="top:${(a-8)*PX+3}px;height:${(b-a)*PX-6}px">Liberă ${fmt(a)}–${fmt(b)}</div>`).join("")
+ + `<div class="nowl" style="top:${(NOW-8)*PX}px"></div>`;
+
+// C
+document.getElementById("listC").innerHTML = free.slice(0,5).map(r=>`<div class="rm"><div class="l1"><span class="mono" style="font-weight:600;font-size:15px">${r.code}</span>${label(r)}</div>
+  ${strip(r,6)}<div class="subtle" style="font-size:12px">${r.b} · ${r.f} · ${r.cap} locuri</div></div>`).join("");
+document.getElementById("stripC").outerHTML = strip(ROOMS[4],10).replace('class="strip"','class="strip" style="height:10px;margin-bottom:12px"');
+
+// D
+const W = { 1:[[8,10,"SDA","Sem. 211"],[12,14,"Baze de date","Sem. 212"]], 2:[[10,12,"POO","Lab. 214"],[14,16,"SDA","Sem. 213"]],
+            3:[[8,10,"Algebră liniară","Sem. 111"],[12,14,"Baze de date","Sem. 212"],[16,18,"Sisteme de operare","Sem. 213"]], 4:[], 5:[[10,12,"Analiză","Sem. 112"]] };
+const DN = ["","Luni","Marți","Miercuri","Joi","Vineri"], RH=40, TODAY=3;
+let wk = `<div class="dh" style="border-left:0"></div>` + [1,2,3,4,5].map(d=>`<div class="dh ${d===TODAY?"today":""}">${DN[d]}${d===TODAY?' <span class="subtle" style="font-weight:500">· Azi</span>':""}</div>`).join("");
+wk += `<div class="hrs">${[8,9,10,11,12,13,14,15,16,17,18,19].map(h=>`<div>${String(h).padStart(2,"0")}</div>`).join("")}</div>`;
+wk += [1,2,3,4,5].map(d=>`<div class="col ${d===TODAY?"today":""}" style="height:${12*RH}px">${W[d].map(([a,b,t,g])=>
+  `<div class="we" style="top:${(a-8)*RH+2}px;height:${(b-a)*RH-4}px"><b>${t}</b><span>${fmt(a)}–${fmt(b)}</span><br><span style="font-family:inherit">${g}</span></div>`).join("")}
+  ${d===TODAY?`<div class="nowl" style="left:0;top:${(NOW-8)*RH}px"></div>`:""}</div>`).join("");
+document.getElementById("wkD").innerHTML = wk;
+</script>
+</body>
+</html>

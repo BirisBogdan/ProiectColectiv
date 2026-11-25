@@ -37,6 +37,17 @@ export interface RoomWithStatus extends Room, StatusResult {
   activeCheckins: number; // câte check-in-uri neexpirate are sala acum
 }
 
+/** A start–end pair, "HH:MM" in Romanian time. */
+export interface TimeRange {
+  start: string;
+  end: string;
+}
+
+/** A row of GET /api/rooms: the room plus when it has classes today, for the day strip. */
+export interface RoomListItem extends RoomWithStatus {
+  today: TimeRange[]; // sorted by start
+}
+
 export interface RoomDetail {
   room: RoomWithStatus;
   today: ScheduleEntry[]; // sortate după start

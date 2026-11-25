@@ -3,12 +3,40 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ROOM_ROW_COLUMNS, RoomCard } from "@/features/rooms/components/RoomCard";
-import type { RoomWithStatus } from "@/features/rooms/types";
+import { DayStripAxis } from "@/features/rooms/components/DayStrip";
+import { bucharestNow } from "@/features/rooms/server/time";
+import type { RoomWithStatus, TimeRange } from "@/features/rooms/types";
 import { useMessages } from "@/lib/i18n/use-locale";
 
 type LoadState = "loading" | "success" | "error";
+type ListedRoom = RoomWithStatus & { today?: TimeRange[] };
 
-export function isRoomList(value: unknown): value is RoomWithStatus[] {
+function isTimeRanges(value: unknown): value is TimeRange[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (range: unknown) =>
+        typeof range === "object" &&
+        range !== null &&
+        "start" in range &&
+        typeof range.start === "string" &&
+        "end" in range &&
+        typeof range.end === "string",
+    )
+  );
+}
+
+/** The search box filters on this side: by room code or building name, ignoring case. */
+export function matchesSearch(room: RoomWithStatus, search: string): boolean {
+  const needle = search.trim().toLocaleLowerCase("ro");
+  if (!needle) return true;
+  return (
+    room.code.toLocaleLowerCase("ro").includes(needle) ||
+    room.buildingName.toLocaleLowerCase("ro").includes(needle)
+  );
+}
+
+export function isRoomList(value: unknown): value is ListedRoom[] {
   return (
     Array.isArray(value) &&
     value.every(
@@ -39,16 +67,24 @@ export function isRoomList(value: unknown): value is RoomWithStatus[] {
         "status" in room &&
         (room.status === "free" || room.status === "occupied" || room.status === "unknown") &&
         "until" in room &&
-        (room.until === null || typeof room.until === "string"),
+        (room.until === null || typeof room.until === "string") &&
+        // Optional, so older responses still pass; when present it must be well formed.
+        (!("today" in room) || isTimeRanges(room.today)),
     )
   );
 }
 
-export function RoomList() {
+export function RoomList({ selectedId = null }: { selectedId?: string | null }) {
   const t = useMessages();
   const searchParams = useSearchParams();
-  const query = searchParams.toString();
-  const [rooms, setRooms] = useState<RoomWithStatus[]>([]);
+  const listQuery = searchParams.toString();
+  // "q" is filtered here, so typing in the search box does not refetch.
+  const apiParams = new URLSearchParams(searchParams);
+  apiParams.delete("q");
+  const query = apiParams.toString();
+  const search = searchParams.get("q") ?? "";
+  const [rooms, setRooms] = useState<ListedRoom[]>([]);
+  const [loadedAt, setLoadedAt] = useState<Date | null>(null);
   const [state, setState] = useState<LoadState>("loading");
   const [retry, setRetry] = useState(0);
   const [refreshFailed, setRefreshFailed] = useState(false);
@@ -84,6 +120,7 @@ export function RoomList() {
 
         hasLoaded = true;
         setRooms(loaded);
+        setLoadedAt(new Date());
         setState("success");
         setRefreshFailed(false);
       } catch {
@@ -121,14 +158,24 @@ export function RoomList() {
 
   if (state === "error") {
     return (
-      <div role="alert" className="panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+      <div
+        role="alert"
+        className="panel flex flex-wrap items-center justify-between gap-3 px-4 py-3"
+      >
         <p className="text-sm text-fg-muted">{t.rooms.error}</p>
-        <button type="button" onClick={() => setRetry((value) => value + 1)} className="btn-secondary">
+        <button
+          type="button"
+          onClick={() => setRetry((value) => value + 1)}
+          className="btn-secondary"
+        >
           {t.rooms.retry}
         </button>
       </div>
     );
   }
+
+  const visible = rooms.filter((room) => matchesSearch(room, search));
+  const now = loadedAt ? bucharestNow(loadedAt).time : undefined;
 
   return (
     <>
@@ -137,24 +184,37 @@ export function RoomList() {
           {t.rooms.refreshError}
         </p>
       )}
-      {rooms.length === 0 ? (
+      {visible.length === 0 ? (
         <p className="panel px-4 py-8 text-center text-sm text-fg-muted">{t.rooms.empty}</p>
       ) : (
         <div className="panel overflow-hidden">
           <div
             aria-hidden
-            className={`hidden gap-x-4 border-b border-line px-4 py-2 text-xs font-medium text-fg-subtle sm:grid ${ROOM_ROW_COLUMNS}`}
+            className={`hidden items-end gap-x-5 border-b border-line px-4 py-2 text-xs font-medium text-fg-subtle ${
+              selectedId === null ? `lg:grid ${ROOM_ROW_COLUMNS}` : ""
+            }`}
           >
             <span>{t.rooms.columns.room}</span>
             <span>{t.rooms.columns.location}</span>
             <span>{t.rooms.columns.capacity}</span>
             <span>{t.rooms.columns.amenities}</span>
+            <div className="space-y-0.5">
+              <span>{t.rooms.columns.today}</span>
+              <DayStripAxis />
+            </div>
             <span>{t.rooms.columns.status}</span>
           </div>
           <ul className="divide-y divide-line">
-            {rooms.map((room) => (
+            {visible.map((room) => (
               <li key={room.id}>
-                <RoomCard room={room} />
+                <RoomCard
+                  room={room}
+                  query={listQuery}
+                  now={now}
+                  selected={room.id === selectedId}
+                  replace={selectedId !== null}
+                  compact={selectedId !== null}
+                />
               </li>
             ))}
           </ul>
