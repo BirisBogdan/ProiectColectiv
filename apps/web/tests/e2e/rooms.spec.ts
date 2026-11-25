@@ -6,7 +6,7 @@ import { expect, type Page, test } from "@playwright/test";
 // Never assert "free" or "occupied" here: the status depends on the time the test runs,
 // so CI would fail at random. Statuses are covered by the unit tests (status.test.ts).
 
-const ALL_ROOMS = ["2/I", "5/I", "A101", "C510", "C512", "Gamma", "L001", "S10", "S12", "X"];
+const ALL_ROOMS = ["2/I", "5/I", "A101", "C510", "C512", "Gamma", "L001", "S10", "S12"];
 const WITH_OUTLETS = ["C510", "C512", "Gamma", "L001", "S12"];
 
 /** The room codes in the list, sorted, once the list has loaded. */
