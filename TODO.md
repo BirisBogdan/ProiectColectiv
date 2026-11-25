@@ -39,7 +39,7 @@
 | TODO-21 | `[DONE]` | Frontend | Pagina `/rooms/[id]/week`: orarul pe săptămână | Raul           |
 | TODO-22 | `[DONE]` | Frontend | Bazele traducerilor RO / EN | Tudor          |
 | TODO-23 | `[DONE]` | Frontend | Aplicație instalabilă: manifest, iconițe și pagină offline | Buruian Bogdan |
-| TODO-24 | `[ ]`    | Frontend | Teste end-to-end cu Playwright | _(liber)_      |
+| TODO-24 | `[DONE]` | Frontend | Teste end-to-end cu Playwright | Tudor          |
 | TODO-25 | `[DONE]` | Frontend | Restul textelor pe `lib/i18n` | Raul           |
 | TODO-26 | `[ ]`    | Backend | Importerul FMI descarcă singur orarul | _(liber)_      |
 | TODO-27 | `[ ]`    | Backend | Importerul scrie orarul în Supabase, cu loturi și verificări | _(liber)_      |
@@ -1835,9 +1835,11 @@ Nimic. Citește întâi ghidul pentru PWA din `apps/web/node_modules/next/dist/d
 - [ ] În modul offline, o pagină arată mesajul din `offline.html`, iar în Network/Cache Storage nu apare niciun răspuns de la `/api/`.
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build` trec; screenshot-uri în PR; PR revizuit de un coleg din cealaltă jumătate.
 
-### TODO-24 `[ ]` Teste end-to-end cu Playwright
+### TODO-24 `[DONE]` Teste end-to-end cu Playwright
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe12-playwright`
+**Asignat:** Tudor · **Branch:** `feat/srf-fe12-playwright`
+
+Gata: `pnpm test:e2e` rulează cu Playwright parcursurile din `docs/qa/studyroom-onboarding.md` (desktop și telefon) pe build-ul de producție, iar jobul `e2e` din CI le rulează la fiecare PR. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/25
 
 #### De ce
 Testele unitare nu ne spun dacă paginile merg împreună, iar checklist-ul de QA se rulează de mână. Când intră mulți oameni pe `main` în același weekend, un test automat prinde repede ce s-a stricat.
