@@ -34,3 +34,7 @@ desktop.ini
 .venv/
 __pycache__/
 .pytest_cache/
+
+# Playwright (apps/web)
+playwright-report/
+test-results/
