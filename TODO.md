@@ -52,7 +52,7 @@
 | TODO-34 | `[ ]`    | Backend | Check-in-ul trece pe baza de date | _(liber)_      |
 | TODO-35 | `[ ]`    | Frontend | Check-in-uri live pentru toată lumea | _(liber)_      |
 | TODO-36 | `[ ]`    | Backend | Raportarea problemelor dintr-o sală: tabelul și endpointul | _(liber)_      |
-| TODO-37 | `[ ]`    | Frontend | „Raportează o problemă” pe pagina sălii | _(liber)_      |
+| TODO-37 | `[DONE]` | Frontend | „Raportează o problemă” pe pagina sălii | Tudor          |
 | TODO-38 | `[POSTPONED]` | Extra | Sălile favorite | _(amânat)_      |
 | TODO-39 | `[POSTPONED]` | Extra | Alerta „sala se eliberează în 10 minute” | _(amânat)_      |
 | TODO-40 | `[POSTPONED]` | Extra | „Vin la 14:00”: check-in în avans | _(amânat)_      |
@@ -1923,9 +1923,11 @@ TODO-34. Până e gata, lucrezi pe un mock al canalului Realtime.
 - [ ] Cu Realtime oprit, lista se actualizează în continuare la un minut.
 - [ ] Lint, typecheck, teste verzi. PR revizuit de cine a făcut TODO-34.
 
-### TODO-37 `[ ]` „Raportează o problemă” pe pagina sălii
+### TODO-37 `[DONE]` „Raportează o problemă” pe pagina sălii
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-fe15-report-problem` · **Backlog:** #23 (extins)
+**Asignat:** Tudor · **Branch:** `feat/srf-fe15-report-problem` · **Backlog:** #23 (extins)
+
+Gata: `ReportProblem` și `ReportSignal` pe pagina sălii, pe card și în header, în română și engleză. Butonul apare abia când API-ul trimite `recentReports`, adică după TODO-36; verificarea cap-coadă (raport real pe `/rooms/c-510`, apoi pe card) se face în PR-ul lui TODO-36. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/26
 
 #### De ce
 Raportul trebuie să coste un student două atingeri, altfel nu-l face nimeni. Iar ceilalți trebuie să-l vadă înainte să meargă până la sală.

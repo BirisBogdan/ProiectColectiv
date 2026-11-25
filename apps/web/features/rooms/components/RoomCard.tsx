@@ -4,6 +4,7 @@ import Link from "next/link";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckinSignal } from "@/features/rooms/components/CheckinSignal";
 import { DayStrip } from "@/features/rooms/components/DayStrip";
+import { ReportSignal } from "@/features/rooms/components/ReportSignal";
 import { sheetHistory } from "@/features/rooms/room-route";
 import type { RoomWithStatus, TimeRange } from "@/features/rooms/types";
 import { useMessages } from "@/lib/i18n/use-locale";
@@ -68,6 +69,7 @@ export function RoomCard({
         >
           <StatusBadge status={room.status} until={room.until} />
           <CheckinSignal count={room.activeCheckins} />
+          <ReportSignal room={room} />
         </div>
 
         {/* Compact rows: one muted line. Wide rows put the same facts in their own columns. */}

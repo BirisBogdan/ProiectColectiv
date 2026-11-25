@@ -87,6 +87,19 @@ Pornește de fiecare dată de la `/rooms`.
 - [ ] `/rooms?minFreeHours=abc` arată „Oricât” și toate sălile, fără eroare.
 - [ ] „Resetează” scoate și `minFreeHours`.
 
+## Etapa a 4-a: raportarea problemelor
+
+Butonul apare doar după ce endpointul din TODO-36 e pe `main` (API-ul trimite `recentReports`). Fără el, pe `/rooms/c-510` nu există „Raportează o problemă”.
+
+- [ ] Pe `/rooms/c-510`, „Raportează o problemă” deschide lista: Sala e ocupată, Proiectorul nu merge, Nu sunt prize, Orarul e greșit, Altceva, plus nota opțională; focusul trece pe prima opțiune.
+- [ ] „Trimite raportul” e inactiv până alegi un tip și cât nota are peste 500 de caractere („Nota poate avea cel mult 500 de caractere.”).
+- [ ] După trimitere: „Mulțumim! Raportul a fost trimis.”, iar în header apare de ex. „Proiector raportat defect (1)”; `StatusBadge` rămâne la fel.
+- [ ] Același raport încă o dată, în 30 de minute: „Ai raportat deja asta.”
+- [ ] `Esc` închide doar lista, nu și sala; focusul revine pe „Raportează o problemă”.
+- [ ] În `/rooms`, cardul sălii arată semnalul în cel mult 60 de secunde (sau după refresh), lângă stare.
+- [ ] Cu „EN” ales, toate textele de mai sus sunt în engleză.
+- [ ] La 375px, butoanele au cel puțin 44px și nu apare scroll orizontal.
+
 ## Telefon
 
 - [ ] Lățime 375px (DevTools): fără scroll orizontal pe `/`, `/rooms`, `/rooms/c-510`, `/rooms/plan`.

@@ -2,6 +2,7 @@
 
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckinSignal } from "@/features/rooms/components/CheckinSignal";
+import { ReportSignal } from "@/features/rooms/components/ReportSignal";
 import type { RoomWithStatus } from "@/features/rooms/types";
 import { useMessages } from "@/lib/i18n/use-locale";
 
@@ -21,6 +22,7 @@ export function RoomHeader({ room }: { room: RoomWithStatus }) {
         <div className="flex min-w-0 flex-col items-start gap-1 sm:items-end">
           <StatusBadge status={room.status} until={room.until} />
           <CheckinSignal count={room.activeCheckins} />
+          <ReportSignal room={room} />
         </div>
       </div>
       <dl className="grid grid-cols-2 border-t border-line sm:grid-cols-4">

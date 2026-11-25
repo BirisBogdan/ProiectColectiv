@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import RoomNotFound from "@/app/(app)/rooms/not-found";
 import { CheckinButton } from "@/features/rooms/components/CheckinButton";
 import { DayStrip, DayStripAxis } from "@/features/rooms/components/DayStrip";
+import { ReportProblem } from "@/features/rooms/components/ReportProblem";
+import { recentReportsOf } from "@/features/rooms/components/ReportSignal";
 import { RoomHeader } from "@/features/rooms/components/RoomHeader";
 import { RoomSchedule } from "@/features/rooms/components/RoomSchedule";
 import { bucharestNow } from "@/features/rooms/server/time";
@@ -107,6 +109,11 @@ function RoomDetailContent({ id }: { id: string }) {
             />
           </div>
           <CheckinButton roomId={id} onChange={() => setAttempt((value) => value + 1)} />
+          {/* Shown once the API sends recentReports, i.e. when TODO-36's endpoint exists.
+              Before that a report could only fail, so the button stays hidden. */}
+          {recentReportsOf(state.detail.room) !== null && (
+            <ReportProblem roomId={id} onReported={() => setAttempt((value) => value + 1)} />
+          )}
           <RoomSchedule entries={state.detail.today} now={state.now} />
           <Link href={`/rooms/${encodeURIComponent(id)}/week`} className="link inline-block text-sm">
             {t.room.viewWeek}
