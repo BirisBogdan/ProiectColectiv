@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { RoomCard } from "@/features/rooms/components/RoomCard";
+import { ROOM_ROW_COLUMNS, RoomCard } from "@/features/rooms/components/RoomCard";
 import type { RoomWithStatus } from "@/features/rooms/types";
 import { useMessages } from "@/lib/i18n/use-locale";
 
@@ -106,10 +106,13 @@ export function RoomList() {
   if (state === "loading") {
     return (
       <div aria-live="polite" className="space-y-3">
-        <p>{t.rooms.loading}</p>
-        <div aria-hidden className="grid gap-4 sm:grid-cols-2">
-          {[1, 2, 3].map((skeleton) => (
-            <div key={skeleton} className="h-36 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800" />
+        <p className="note">{t.rooms.loading}</p>
+        <div aria-hidden className="panel divide-y divide-line overflow-hidden">
+          {[1, 2, 3, 4].map((skeleton) => (
+            <div key={skeleton} className="flex items-center gap-4 px-4 py-3.5">
+              <div className="h-4 w-16 animate-pulse rounded bg-surface-3" />
+              <div className="h-3 w-40 animate-pulse rounded bg-surface-2" />
+            </div>
           ))}
         </div>
       </div>
@@ -118,13 +121,9 @@ export function RoomList() {
 
   if (state === "error") {
     return (
-      <div role="alert" className="space-y-3">
-        <p>{t.rooms.error}</p>
-        <button
-          type="button"
-          onClick={() => setRetry((value) => value + 1)}
-          className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        >
+      <div role="alert" className="panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <p className="text-sm text-fg-muted">{t.rooms.error}</p>
+        <button type="button" onClick={() => setRetry((value) => value + 1)} className="btn-secondary">
           {t.rooms.retry}
         </button>
       </div>
@@ -134,17 +133,31 @@ export function RoomList() {
   return (
     <>
       {refreshFailed && (
-        <p role="status" className="text-sm text-red-700 dark:text-red-400">
+        <p role="status" className="error-text mb-3">
           {t.rooms.refreshError}
         </p>
       )}
       {rooms.length === 0 ? (
-        <p>{t.rooms.empty}</p>
+        <p className="panel px-4 py-8 text-center text-sm text-fg-muted">{t.rooms.empty}</p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {rooms.map((room) => (
-            <RoomCard key={room.id} room={room} />
-          ))}
+        <div className="panel overflow-hidden">
+          <div
+            aria-hidden
+            className={`hidden gap-x-4 border-b border-line px-4 py-2 text-xs font-medium text-fg-subtle sm:grid ${ROOM_ROW_COLUMNS}`}
+          >
+            <span>{t.rooms.columns.room}</span>
+            <span>{t.rooms.columns.location}</span>
+            <span>{t.rooms.columns.capacity}</span>
+            <span>{t.rooms.columns.amenities}</span>
+            <span>{t.rooms.columns.status}</span>
+          </div>
+          <ul className="divide-y divide-line">
+            {rooms.map((room) => (
+              <li key={room.id}>
+                <RoomCard room={room} />
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </>

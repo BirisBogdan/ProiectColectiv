@@ -35,6 +35,13 @@ const ro = {
     refreshError: "Nu am putut actualiza lista.",
     empty: "Nicio sală nu se potrivește filtrelor.",
     retry: "Reîncearcă",
+    columns: {
+      room: "Sală",
+      location: "Clădire",
+      capacity: "Locuri",
+      amenities: "Dotări",
+      status: "Stare",
+    },
   },
   filters: {
     title: "Filtre",
@@ -153,6 +160,13 @@ const en: Messages = {
     refreshError: "We could not refresh the list.",
     empty: "No room matches the filters.",
     retry: "Try again",
+    columns: {
+      room: "Room",
+      location: "Building",
+      capacity: "Seats",
+      amenities: "Amenities",
+      status: "Status",
+    },
   },
   filters: {
     title: "Filters",

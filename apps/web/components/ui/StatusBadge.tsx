@@ -4,10 +4,11 @@ import type { RoomStatus } from "@/features/rooms/types";
 import type { Messages } from "@/lib/i18n/messages";
 import { useMessages } from "@/lib/i18n/use-locale";
 
+// Graphite keeps colour for status only: a dot and coloured text, no filled pill.
 const STYLES: Record<RoomStatus, string> = {
-  free: "bg-green-100 text-green-900 dark:bg-green-950 dark:text-green-200",
-  occupied: "bg-red-100 text-red-900 dark:bg-red-950 dark:text-red-200",
-  unknown: "bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+  free: "text-free",
+  occupied: "text-busy",
+  unknown: "text-unknown",
 };
 
 function label(t: Messages["status"], status: RoomStatus, until: string | null): string {
@@ -21,9 +22,10 @@ export function StatusBadge({ status, until }: { status: RoomStatus; until: stri
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${STYLES[status]}`}
+      className={`inline-flex items-center gap-1.5 text-xs font-semibold tabular-nums ${STYLES[status]}`}
     >
-      {label(t.status, status, until)}
+      <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-current" />
+      <span>{label(t.status, status, until)}</span>
     </span>
   );
 }

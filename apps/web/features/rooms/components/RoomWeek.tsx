@@ -30,51 +30,53 @@ export function RoomWeek({ week, today }: RoomWeekProps) {
   );
 
   return (
-    <section aria-labelledby="room-week-heading" className="space-y-4">
-      <div>
-        <h1 id="room-week-heading" className="text-2xl font-semibold">
+    <section aria-labelledby="room-week-heading" className="space-y-5">
+      <div className="space-y-1">
+        <h1 id="room-week-heading" className="text-2xl font-semibold tracking-tight">
           {t.week.title(week.code)}
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">{week.buildingName}</p>
+        <p className="text-sm text-fg-muted">{week.buildingName}</p>
         {week.weeks && (
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          <p className="inline-flex rounded-sm border border-line-strong px-1.5 py-px text-xs font-medium text-fg-muted">
             {t.week.week} {week.weeks === "odd" ? t.week.odd : t.week.even}
           </p>
         )}
       </div>
 
-      <div className="space-y-4">
+      {/* One column per day on wide screens, like a calendar; stacked on phones. */}
+      <div className="grid gap-3 lg:auto-cols-fr lg:grid-flow-col">
         {visibleDays.map((day) => {
           const isToday = day.day === today;
           return (
             <section
               key={day.day}
               aria-labelledby={`room-week-day-${day.day}`}
-              className={`rounded-lg border p-4 ${
-                isToday
-                  ? "border-blue-600 bg-blue-50 dark:border-blue-400 dark:bg-blue-950"
-                  : "border-gray-200 dark:border-gray-800"
+              className={`min-w-0 overflow-hidden rounded-lg border bg-surface ${
+                isToday ? "border-line-strong shadow-[inset_0_2px_0_var(--fg)]" : "border-line"
               }`}
             >
-              <h2 id={`room-week-day-${day.day}`} className="font-semibold">
+              <h2
+                id={`room-week-day-${day.day}`}
+                className={`border-b border-line px-3 py-2.5 text-sm font-semibold ${
+                  isToday ? "bg-surface-2 text-fg" : "text-fg-muted"
+                }`}
+              >
                 {t.days[day.day]}
                 {isToday && <span className="ml-2 text-sm font-normal">({t.week.today})</span>}
               </h2>
-              <ul className="mt-3 space-y-2">
+              <ul className="divide-y divide-line">
                 {dayItems(day).map((item) => (
                   <li
                     key={`${item.kind}-${item.start}-${item.end}-${item.kind === "entry" ? item.group : ""}`}
-                    className={
-                      item.kind === "free"
-                        ? "text-sm text-gray-600 dark:text-gray-400"
-                        : undefined
-                    }
+                    className={`px-3 py-2.5 text-[13px] leading-snug break-words ${
+                      item.kind === "free" ? "text-free" : "text-fg"
+                    }`}
                   >
                     {item.kind === "free" ? (
                       <>{t.week.free(item.start, item.end)}</>
                     ) : (
                       <>
-                        <span className="whitespace-nowrap font-medium">
+                        <span className="font-mono text-xs whitespace-nowrap text-fg-subtle">
                           {item.start}–{item.end}
                         </span>
                         {" · "}

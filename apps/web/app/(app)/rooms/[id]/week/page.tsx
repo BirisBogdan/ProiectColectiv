@@ -55,23 +55,23 @@ export default function RoomWeekPage() {
   if (state.status === "not-found") return <RoomNotFound />;
 
   return (
-    <div className="space-y-6">
-      <Link href={`/rooms/${encodeURIComponent(id)}`} className="inline-block font-medium underline">
+    <div className="space-y-5">
+      <Link href={`/rooms/${encodeURIComponent(id)}`} className="link inline-block text-sm">
         {t.week.back}
       </Link>
 
-      {state.status === "loading" && <p role="status">{t.week.loading}</p>}
+      {state.status === "loading" && <p role="status" className="note">{t.week.loading}</p>}
 
       {state.status === "error" && (
-        <div className="space-y-3">
-          <p role="alert">{t.week.error}</p>
+        <div className="panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <p role="alert" className="text-sm text-fg-muted">{t.week.error}</p>
           <button
             type="button"
             onClick={() => {
               setState({ status: "loading" });
               setAttempt((value) => value + 1);
             }}
-            className="rounded-lg bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            className="btn-secondary"
           >
             {t.rooms.retry}
           </button>
@@ -81,7 +81,7 @@ export default function RoomWeekPage() {
       {state.status === "ready" && (
         <>
           <RoomWeek week={state.week} today={bucharestNow(new Date()).day} />
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="note">
             Date demonstrative, nu orarul real.
           </p>
         </>

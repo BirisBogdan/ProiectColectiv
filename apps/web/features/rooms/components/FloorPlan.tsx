@@ -39,24 +39,26 @@ export function isBuildingPlan(value: unknown): value is BuildingPlan {
 export function FloorPlan({ plan }: { plan: BuildingPlan }) {
   const t = useMessages();
   if (plan.floors.length === 0) {
-    return <p>{t.plan.empty}</p>;
+    return <p className="panel px-4 py-6 text-center text-sm text-fg-muted">{t.plan.empty}</p>;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {plan.floors.map(({ floor, rooms }) => (
         <section key={floor} aria-labelledby={`floor-${floor}`} className="space-y-2">
-          <h2 id={`floor-${floor}`} className="text-lg font-semibold">
+          <h2 id={`floor-${floor}`} className="text-xs font-medium tracking-wide text-fg-subtle uppercase">
             {floorTitle(floor, { ground: t.room.groundFloor, floor: t.room.floor })}
           </h2>
-          <ul className="grid grid-cols-3 gap-2 rounded-xl border border-dashed border-gray-300 p-2 dark:border-gray-700">
+          <ul className="grid grid-cols-3 gap-1.5 rounded-lg border border-line bg-surface p-1.5">
             {rooms.map((room) => (
               <li key={room.id} className="min-w-0" style={{ gridRow: room.row, gridColumn: room.col }}>
                 <Link
                   href={`/rooms/${room.id}`}
-                  className="flex h-full min-w-0 flex-col items-start gap-1 rounded-lg border border-gray-200 p-2 break-words transition hover:border-blue-500 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-gray-800"
+                  className={`flex h-full min-h-20 min-w-0 flex-col items-start justify-between gap-1.5 rounded-md border bg-surface-2 p-2.5 break-words transition-colors hover:border-fg-subtle hover:bg-surface-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fg ${
+                    room.status === "free" ? "border-free/30" : "border-line"
+                  }`}
                 >
-                  <span className="max-w-full font-bold break-words">{room.code}</span>
+                  <span className="max-w-full font-mono text-sm font-semibold break-words">{room.code}</span>
                   <StatusBadge status={room.status} until={room.until} />
                   <CheckinSignal count={room.activeCheckins} />
                 </Link>

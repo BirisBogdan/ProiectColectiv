@@ -17,8 +17,7 @@ type PlanState =
 
 type BuildingsState = Building[] | "loading" | "error";
 
-const RETRY_CLASS =
-  "rounded-lg bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600";
+const RETRY_CLASS = "btn-secondary";
 
 function PlanContent() {
   const t = useMessages();
@@ -52,11 +51,11 @@ function PlanContent() {
   const buildingId = requestedId || (Array.isArray(buildings) ? (buildings[0]?.id ?? "") : "");
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{t.plan.title}</h1>
+    <div className="space-y-5">
+      <h1 className="text-2xl font-semibold tracking-tight">{t.plan.title}</h1>
 
-      <label className="block max-w-xs space-y-1 text-sm font-medium">
-        <span className="block">{t.plan.building}</span>
+      <label className="block max-w-xs space-y-1.5">
+        <span className="field-label">{t.plan.building}</span>
         <select
           value={buildingId}
           disabled={!Array.isArray(buildings)}
@@ -65,7 +64,7 @@ function PlanContent() {
             params.set("buildingId", event.target.value);
             router.replace(`${pathname}?${params.toString()}`, { scroll: false });
           }}
-          className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900"
+          className="field"
         >
           {buildingId && !(Array.isArray(buildings) && buildings.some(({ id }) => id === buildingId)) && (
             <option value={buildingId}>
@@ -81,13 +80,13 @@ function PlanContent() {
         </select>
       </label>
 
-      <p className="text-sm text-gray-600 dark:text-gray-400">
+      <p className="note">
         {t.plan.schematic}
       </p>
 
       {buildings === "error" && !requestedId && (
-        <div role="alert" className="space-y-3">
-          <p>{t.filters.buildingsError}</p>
+        <div role="alert" className="panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <p className="text-sm text-fg-muted">{t.filters.buildingsError}</p>
           <button
             type="button"
             onClick={() => {
@@ -105,7 +104,7 @@ function PlanContent() {
         // Keyed by building so switching resets to "loading" instead of showing the old plan.
         <BuildingPlanView key={buildingId} buildingId={buildingId} />
       ) : (
-        buildings === "loading" && <p role="status">{t.plan.loading}</p>
+        buildings === "loading" && <p role="status" className="note">{t.plan.loading}</p>
       )}
     </div>
   );
@@ -166,15 +165,15 @@ function BuildingPlanView({ buildingId }: { buildingId: string }) {
     };
   }, [buildingId, attempt]);
 
-  if (state.status === "loading") return <p role="status">{t.plan.loading}</p>;
+  if (state.status === "loading") return <p role="status" className="note">{t.plan.loading}</p>;
 
   if (state.status === "not-found") {
     return (
       <div className="space-y-3">
-        <p role="alert" className="font-semibold">
+        <p role="alert" className="text-sm font-semibold">
           {t.plan.notFound}
         </p>
-        <Link href="/rooms/plan" className="font-medium underline">
+        <Link href="/rooms/plan" className="link text-sm">
           {t.plan.first}
         </Link>
       </div>
@@ -183,8 +182,8 @@ function BuildingPlanView({ buildingId }: { buildingId: string }) {
 
   if (state.status === "error") {
     return (
-      <div role="alert" className="space-y-3">
-        <p>{t.plan.error}</p>
+      <div role="alert" className="panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <p className="text-sm text-fg-muted">{t.plan.error}</p>
         <button
           type="button"
           onClick={() => {
@@ -202,12 +201,12 @@ function BuildingPlanView({ buildingId }: { buildingId: string }) {
   return (
     <div className="space-y-3">
       {refreshFailed && (
-        <p role="status" className="text-sm text-red-700 dark:text-red-400">
+        <p role="status" className="error-text">
           {t.plan.refreshError}
         </p>
       )}
       <FloorPlan plan={state.plan} />
-      <p className="text-sm text-gray-600 dark:text-gray-400">
+      <p className="note">
         {t.plan.updated}
       </p>
     </div>
@@ -217,7 +216,7 @@ function BuildingPlanView({ buildingId }: { buildingId: string }) {
 export default function RoomsPlanPage() {
   const t = useMessages();
   return (
-    <Suspense fallback={<p role="status">{t.plan.loading}</p>}>
+    <Suspense fallback={<p role="status" className="note">{t.plan.loading}</p>}>
       <PlanContent />
     </Suspense>
   );

@@ -66,23 +66,23 @@ function RoomDetailContent({ id }: { id: string }) {
   if (state.status === "not-found") return <RoomNotFound />;
 
   return (
-    <div className="space-y-6">
-      <Link href="/rooms" className="inline-block font-medium underline">
+    <div className="space-y-4">
+      <Link href="/rooms" className="link inline-block text-sm">
         {t.room.back}
       </Link>
 
-      {state.status === "loading" && <p role="status">{t.room.loading}</p>}
+      {state.status === "loading" && <p role="status" className="note">{t.room.loading}</p>}
 
       {state.status === "error" && (
-        <div className="space-y-3">
-          <p role="alert">{t.room.error}</p>
+        <div className="panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <p role="alert" className="text-sm text-fg-muted">{t.room.error}</p>
           <button
             type="button"
             onClick={() => {
               setState({ status: "loading" });
               setAttempt((value) => value + 1);
             }}
-            className="rounded-lg bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            className="btn-secondary"
           >
             {t.rooms.retry}
           </button>
@@ -94,10 +94,10 @@ function RoomDetailContent({ id }: { id: string }) {
           <RoomHeader room={state.detail.room} />
           <CheckinButton roomId={id} onChange={() => setAttempt((value) => value + 1)} />
           <RoomSchedule entries={state.detail.today} now={state.now} />
-          <Link href={`/rooms/${encodeURIComponent(id)}/week`} className="inline-block font-medium underline">
+          <Link href={`/rooms/${encodeURIComponent(id)}/week`} className="link inline-block text-sm">
             {t.room.viewWeek}
           </Link>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="note">
             {t.room.updated}
           </p>
         </>

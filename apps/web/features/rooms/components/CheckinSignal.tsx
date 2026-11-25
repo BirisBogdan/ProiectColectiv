@@ -10,5 +10,5 @@ export function CheckinSignal({ count }: { count: number }) {
   const t = useMessages();
   if (count === 0) return null;
 
-  return <span className="text-sm text-gray-700 dark:text-gray-300">{checkinLabel(count, t.checkin)}</span>;
+  return <span className="text-xs text-fg-muted tabular-nums">{checkinLabel(count, t.checkin)}</span>;
 }

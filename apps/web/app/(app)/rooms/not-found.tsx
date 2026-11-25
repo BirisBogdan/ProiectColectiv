@@ -7,9 +7,9 @@ export default function RoomNotFound() {
   const t = useMessages();
 
   return (
-    <div className="flex flex-col items-start gap-3">
-      <h1 className="text-2xl font-semibold">{t.roomNotFound.title}</h1>
-      <Link href="/rooms" className="font-medium underline">
+    <div className="panel flex flex-col items-start gap-3 px-5 py-6">
+      <h1 className="text-xl font-semibold tracking-tight">{t.roomNotFound.title}</h1>
+      <Link href="/rooms" className="link text-sm">
         {t.roomNotFound.back}
       </Link>
     </div>

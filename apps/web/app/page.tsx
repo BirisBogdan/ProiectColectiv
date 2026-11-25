@@ -8,13 +8,15 @@ export default function Home() {
   const t = useMessages();
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-      <h1 className="text-3xl font-bold">{t.home.title}</h1>
-      <p className="text-lg">{t.home.tagline}</p>
-      <Link
-        href="/rooms?freeOnly=1"
-        className="rounded-lg bg-blue-700 px-5 py-3 font-medium text-white hover:bg-blue-800"
-      >
+    <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-16 text-center">
+      <span aria-hidden className="grid size-10 place-items-center rounded-lg bg-fg text-base font-bold text-canvas">
+        U
+      </span>
+      <div className="space-y-3">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{t.home.title}</h1>
+        <p className="mx-auto max-w-md text-fg-muted">{t.home.tagline}</p>
+      </div>
+      <Link href="/rooms?freeOnly=1" className="btn-primary h-11 px-6">
         {t.home.cta}
       </Link>
       <LanguageSwitcher />

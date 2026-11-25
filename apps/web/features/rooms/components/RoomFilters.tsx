@@ -18,8 +18,7 @@ export const MIN_FREE_HOURS_OPTIONS = [
   { value: "3" },
 ] as const;
 
-const FIELD_CLASS =
-  "w-full min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-gray-700 dark:bg-gray-900";
+const FIELD_CLASS = "field";
 
 /** Returns the query with `name` set to `value`; an empty value removes the parameter. */
 export function withParam(query: string, name: string, value: string): string {
@@ -106,21 +105,17 @@ function RoomFiltersForm() {
   return (
     <section aria-labelledby="room-filters-title" className="space-y-3">
       <div className="flex items-center justify-between gap-3">
-        <h2 id="room-filters-title" className="font-semibold">
+        <h2 id="room-filters-title" className="text-xs font-medium tracking-wide text-fg-subtle uppercase">
           {t.filters.title}
         </h2>
-        <button
-          type="button"
-          onClick={() => navigate("")}
-          className="rounded-lg px-2 py-1 text-sm font-medium underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        >
+        <button type="button" onClick={() => navigate("")} className="link text-xs">
           {t.filters.reset}
         </button>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <label className="min-w-0 space-y-1 text-sm font-medium">
-          <span className="block">{t.filters.building}</span>
+        <label className="min-w-0 space-y-1.5">
+          <span className="field-label">{t.filters.building}</span>
           <select
             value={buildingId}
             onChange={(event) => setParam("buildingId", event.target.value)}
@@ -140,8 +135,8 @@ function RoomFiltersForm() {
           </select>
         </label>
 
-        <label className="min-w-0 space-y-1 text-sm font-medium">
-          <span className="block">{t.filters.minCapacity}</span>
+        <label className="min-w-0 space-y-1.5">
+          <span className="field-label">{t.filters.minCapacity}</span>
           <input
             type="number"
             min={1}
@@ -152,8 +147,8 @@ function RoomFiltersForm() {
           />
         </label>
 
-        <label className="min-w-0 space-y-1 text-sm font-medium">
-          <span className="block">{t.filters.minFreeHours}</span>
+        <label className="min-w-0 space-y-1.5">
+          <span className="field-label">{t.filters.minFreeHours}</span>
           <select
             value={minFreeHours}
             onChange={(event) => setParam("minFreeHours", appliedMinFreeHours(event.target.value))}
@@ -171,14 +166,24 @@ function RoomFiltersForm() {
         </label>
       </div>
 
-      <div className="flex flex-wrap gap-x-3 gap-y-2">
+      <div className="flex flex-wrap gap-2">
         {FLAG_FILTERS.map(({ param, key }) => (
-          <label key={param} className="flex items-center gap-1.5 text-sm">
+          // A toggle chip: the checkbox stays in the DOM for keyboards and screen readers.
+          <label
+            key={param}
+            className="group inline-flex h-8 cursor-pointer items-center gap-2 rounded-md border border-line bg-surface px-3 text-sm font-medium text-fg-muted transition-colors select-none hover:border-line-strong hover:text-fg has-checked:border-line-strong has-checked:bg-surface-3 has-checked:text-fg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-fg"
+          >
+            <span
+              aria-hidden
+              className="grid size-3.5 place-items-center rounded-[3px] border border-line-strong text-[9px] leading-none text-transparent group-has-checked:border-fg group-has-checked:bg-fg group-has-checked:text-canvas"
+            >
+              ✓
+            </span>
             <input
               type="checkbox"
               checked={params.get(param) === "1"}
               onChange={(event) => setParam(param, event.target.checked ? "1" : "")}
-              className="size-4"
+              className="sr-only"
             />
             {t.filters[key]}
           </label>
@@ -186,7 +191,7 @@ function RoomFiltersForm() {
       </div>
 
       {buildingsFailed && (
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="error-text">
           {t.filters.buildingsError}
         </p>
       )}

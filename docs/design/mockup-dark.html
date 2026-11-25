@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UBB Campus · Mockup temă dark</title>
+<style>
+  /* ===== Design tokens (propunere) ===== */
+  :root {
+    --bg:        #0d1015;
+    --surface:   #141820;
+    --surface-2: #1a1f29;
+    --surface-3: #212734;
+    --border:    #252b37;
+    --border-2:  #313948;
+    --text:      #e7eaf0;
+    --text-2:    #a3acbb;
+    --text-3:    #6f7a8c;
+    --accent:    #6b9bff;
+    --accent-strong: #4f86f7;
+    --accent-soft: rgba(107,155,255,.12);
+    --free:      #4cc38a;
+    --free-soft: rgba(76,195,138,.12);
+    --busy:      #f07171;
+    --busy-soft: rgba(240,113,113,.12);
+    --unk:       #8a94a6;
+    --unk-soft:  rgba(138,148,166,.14);
+    --radius-sm: 8px;
+    --radius:    12px;
+    --radius-lg: 16px;
+    --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: #07090c;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ===== Pagina de prezentare ===== */
+  .doc { max-width: 1240px; margin: 0 auto; padding: 48px 32px 96px; }
+  .doc > header h1 { font-size: 28px; font-weight: 650; letter-spacing: -.02em; margin: 0 0 6px; }
+  .doc > header p { color: var(--text-2); margin: 0; max-width: 720px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 28px 0 36px; position: sticky; top: 0; padding: 12px 0; background: #07090c; z-index: 5; border-bottom: 1px solid var(--border); }
+  .tabs a { color: var(--text-2); text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); font-size: 13px; }
+  .tabs a:hover { color: var(--text); border-color: var(--border-2); }
+  section.screen { margin-bottom: 72px; scroll-margin-top: 80px; }
+  section.screen > h2 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+  section.screen > p.note { color: var(--text-3); margin: 0 0 20px; max-width: 760px; }
+  .row { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); margin-bottom: 8px; }
+
+  /* Rame */
+  .frame-desktop { width: 820px; max-width: 100%; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--bg); }
+  .frame-desktop .chrome { height: 34px; background: #0a0c10; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; padding: 0 12px; }
+  .frame-desktop .chrome i { width: 10px; height: 10px; border-radius: 50%; background: #2a303b; display: block; }
+  .frame-desktop .chrome span { margin-left: 14px; font-size: 12px; color: var(--text-3); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 2px 10px; }
+  .frame-mobile { width: 375px; border: 1px solid var(--border-2); border-radius: 36px; padding: 10px; background: #0a0c10; }
+  .frame-mobile .screen-inner { border-radius: 28px; overflow: hidden; background: var(--bg); min-height: 740px; position: relative; }
+  .statusbar { height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; font-size: 13px; font-weight: 600; }
+
+  /* ===== Componente app ===== */
+  .appbar { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 20px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -.01em; }
+  .logo { width: 26px; height: 26px; border-radius: 7px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+  .nav { display: flex; align-items: center; gap: 4px; }
+  .nav a { color: var(--text-2); text-decoration: none; padding: 6px 12px; border-radius: var(--radius-sm); font-weight: 500; }
+  .nav a.active { color: var(--text); background: var(--surface-2); }
+  .seg { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 2px; }
+  .seg button { all: unset; cursor: pointer; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 6px; color: var(--text-3); }
+  .seg button.on { background: var(--surface-3); color: var(--text); }
+
+  .page { padding: 28px 28px 36px; }
+  .page-m { padding: 16px 16px 96px; }
+  h1.title { font-size: 24px; font-weight: 650; letter-spacing: -.02em; margin: 0; }
+  .subtitle { color: var(--text-2); margin: 4px 0 0; }
+  .page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
+  .muted { color: var(--text-2); }
+  .faint { color: var(--text-3); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .card-hover { transition: border-color .15s, background .15s; cursor: pointer; }
+  .card-hover:hover { border-color: var(--border-2); background: var(--surface-2); }
+
+  .btn { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 10px; font-weight: 600; font-size: 14px; white-space: nowrap; flex-shrink: 0; }
+  .btn-primary { background: var(--accent-strong); color: #fff; }
+  .btn-primary:hover { background: #5d90f8; }
+  .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border-2); }
+  .btn-ghost { color: var(--text-2); }
+  .btn-block { width: 100%; height: 46px; }
+  .btn-sm { height: 32px; padding: 0 12px; font-size: 13px; border-radius: 8px; }
+
+  .badge { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .b-free { color: var(--free); background: var(--free-soft); }
+  .b-busy { color: var(--busy); background: var(--busy-soft); }
+  .b-unk  { color: var(--unk);  background: var(--unk-soft); }
+
+  .chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; }
+  .chip.on { border-color: rgba(107,155,255,.45); background: var(--accent-soft); color: var(--accent); }
+  .select { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; height: 32px; padding: 0 10px 0 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; min-width: 130px; }
+  .select small { color: var(--text-3); font-size: 12px; }
+
+  .meta { display: flex; flex-wrap: wrap; gap: 14px; color: var(--text-2); font-size: 13px; }
+  .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .meta svg { color: var(--text-3); }
+  .people { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); }
+
+  .room-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .room { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .room-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .room-code { font-size: 18px; font-weight: 650; letter-spacing: -.01em; }
+  .room-loc { color: var(--text-3); font-size: 13px; }
+  .divider { height: 1px; background: var(--border); }
+
+  .list-m { display: flex; flex-direction: column; gap: 10px; }
+  .room-m { padding: 14px; display: flex; gap: 12px; align-items: center; }
+  .room-m .bar { width: 3px; align-self: stretch; border-radius: 3px; }
+
+  .bottomnav { position: absolute; left: 0; right: 0; bottom: 0; height: 68px; border-top: 1px solid var(--border); background: rgba(13,16,21,.96); display: flex; justify-content: space-around; align-items: center; padding-bottom: 8px; }
+  .bottomnav a { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; color: var(--text-3); text-decoration: none; font-weight: 500; }
+  .bottomnav a.on { color: var(--text); }
+  .bottomnav a.on svg { color: var(--accent); }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--border); }
+  .stat-grid > div { padding: 14px 16px; border-right: 1px solid var(--border); }
+  .stat-grid > div:last-child { border-right: 0; }
+  .stat-grid dt { font-size: 12px; color: var(--text-3); margin-bottom: 2px; }
+  .stat-grid dd { margin: 0; font-weight: 600; }
+  .stat-grid-m { grid-template-columns: 1fr 1fr; }
+  .stat-grid-m > div:nth-child(2) { border-right: 0; }
+  .stat-grid-m > div:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+
+  .timeline { display: flex; flex-direction: column; }
+  .slot { display: grid; grid-template-columns: 56px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .slot:last-child { border-bottom: 0; }
+  .slot time { color: var(--text-3); font-size: 13px; padding-top: 1px; }
+  .slot .t { font-weight: 550; }
+  .slot .g { color: var(--text-3); font-size: 13px; }
+  .slot.now { position: relative; }
+  .slot.now .t { color: var(--text); }
+  .slot.now time { color: var(--accent); font-weight: 600; }
+  .slot.free .t { color: var(--free); font-weight: 500; }
+  .slot.past { opacity: .45; }
+  .pill-now { font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 1px 7px; border-radius: 999px; margin-left: 8px; }
+
+  .checkin { padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+  /* Saptamana */
+  .week { display: grid; grid-template-columns: 52px repeat(5, 1fr); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+  .week .wh { padding: 10px 10px; font-size: 12px; font-weight: 600; color: var(--text-2); border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
+  .week .wh.today { color: var(--accent); }
+  .week .wh small { display: block; font-weight: 400; color: var(--text-3); }
+  .week .hours { display: flex; flex-direction: column; }
+  .week .hours div { height: 44px; font-size: 11px; color: var(--text-3); text-align: right; padding: 2px 8px 0 0; }
+  .week .col { position: relative; border-left: 1px solid var(--border); background-image: linear-gradient(var(--border) 1px, transparent 1px); background-size: 100% 44px; }
+  .week .col.today { background-color: rgba(107,155,255,.035); }
+  .ev { position: absolute; left: 4px; right: 4px; border-radius: 7px; padding: 6px 8px; font-size: 11.5px; line-height: 1.3; background: var(--surface-3); border-left: 2px solid var(--border-2); overflow: hidden; }
+  .ev b { display: block; font-weight: 600; color: var(--text); font-size: 12px; }
+  .ev span { color: var(--text-3); }
+  .ev.alt { border-left-color: var(--accent); }
+  .ev.parity::after { content: "impară"; position: absolute; top: 6px; right: 6px; font-size: 10px; color: var(--text-3); }
+
+  /* Plan */
+  .floor { margin-bottom: 18px; }
+  .floor h3 { font-size: 13px; font-weight: 600; color: var(--text-2); margin: 0 0 8px; display: flex; justify-content: space-between; }
+  .plan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+  .cell { border-radius: 9px; padding: 10px; background: var(--surface-2); border: 1px solid var(--border); min-height: 66px; display: flex; flex-direction: column; justify-content: space-between; }
+  .cell b { font-weight: 650; }
+  .cell .st { display: flex; align-items: center; gap: 5px; white-space: nowrap; font-size: 11px; font-weight: 600; }
+  .cell .st i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: block; }
+  .cell.free { box-shadow: inset 0 0 0 1px rgba(76,195,138,.30); }
+  .cell.free .st { color: var(--free); }
+  .cell.busy .st { color: var(--busy); }
+  .cell.unk .st { color: var(--unk); }
+  .cell.corridor { background: transparent; border: 1px dashed var(--border); min-height: 24px; grid-column: 1 / -1; color: var(--text-3); font-size: 11px; display: grid; place-items: center; }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--text-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+
+  /* Tokens */
+  .tokens { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .tok { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface); }
+  .tok .sw { height: 54px; border-bottom: 1px solid var(--border); }
+  .tok div:last-child { padding: 8px 10px; font-size: 12px; }
+  .tok code { color: var(--text-3); font-size: 11px; }
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .principles .card { padding: 16px; }
+  .principles h4 { margin: 0 0 4px; font-size: 14px; }
+  .principles p { margin: 0; color: var(--text-2); font-size: 13px; }
+
+  /* Home */
+  .hero { padding: 40px 24px 24px; }
+  .hero h1 { font-size: 30px; line-height: 1.15; font-weight: 700; letter-spacing: -.025em; margin: 18px 0 10px; }
+  .hero p { color: var(--text-2); margin: 0 0 24px; font-size: 15px; }
+  .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 24px; }
+  .kpis .card { padding: 14px; }
+  .kpis .v { font-size: 22px; font-weight: 650; letter-spacing: -.02em; }
+  .section-title { display: flex; justify-content: space-between; align-items: baseline; margin: 26px 24px 10px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+  .section-title a { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+  svg { flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- Icon sprite (stil lucide, linie 1.75) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-door" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.51-1.94l4-1A2 2 0 0 1 13 4.56Z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
+    <symbol id="i-proj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></symbol>
+  </defs>
+</svg>
+
+<div class="doc">
+  <header>
+    <h1>UBB Campus — restilizare temă dark</h1>
+    <p>Mockup static pentru StudyRoom Finder. Păstrează tema dark, fără gradienturi: suprafețe în trepte de gri-albastru, un singur accent albastru, culori de stare discrete și o tipografie mai strânsă. Textele și datele sunt cele din aplicație (date demonstrative).</p>
+  </header>
+
+  <nav class="tabs">
+    <a href="#tokens">Paletă și principii</a>
+    <a href="#home">Acasă</a>
+    <a href="#rooms">Listă săli</a>
+    <a href="#room">Detaliu sală</a>
+    <a href="#week">Orarul săptămânii</a>
+    <a href="#plan">Planul clădirii</a>
+  </nav>
+
+  <!-- ================= TOKENS ================= -->
+  <section class="screen" id="tokens">
+    <h2>Paletă și principii</h2>
+    <p class="note">Patru niveluri de suprafață în loc de negru pur (#0a0a0a) cu chenare gri. Accentul albastru rămâne din tema actuală (theme_color #1e40af), dar mai deschis ca să aibă contrast pe fundal închis.</p>
+    <div class="tokens">
+      <div class="tok"><div class="sw" style="background:var(--bg)"></div><div>Fundal<br><code>#0d1015</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--surface)"></div><div>Suprafață<br><code>#141820</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--surface-2)"></div><div>Suprafață 2<br><code>#1a1f29</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--border)"></div><div>Chenar<br><code>#252b37</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--text)"></div><div>Text<br><code>#e7eaf0</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--text-2)"></div><div>Text secundar<br><code>#a3acbb</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--accent-strong)"></div><div>Accent<br><code>#4f86f7</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--free)"></div><div>Liberă<br><code>#4cc38a</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--busy)"></div><div>Ocupată<br><code>#f07171</code></div></div>
+      <div class="tok"><div class="sw" style="background:var(--unk)"></div><div>Necunoscută<br><code>#8a94a6</code></div></div>
+    </div>
+    <div class="principles">
+      <div class="card"><h4>Starea, nu decorul</h4><p>Singurele culori puternice sunt starea sălii (verde / roșu / gri) și accentul. Restul e neutru.</p></div>
+      <div class="card"><h4>Ierarhie prin spațiu</h4><p>Mai puține chenare, mai mult spațiu. Codul sălii mare, detaliile mici și estompate, cu iconițe.</p></div>
+      <div class="card"><h4>Mobil întâi</h4><p>E un PWA: pe telefon navigarea trece jos (bară cu 3 taburi), butoanele au cel puțin 44px.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= HOME ================= -->
+  <section class="screen" id="home">
+    <h2>Acasă</h2>
+    <p class="note">Acum e doar un titlu și un buton centrat. Propunerea: un răspuns imediat la „unde învăț acum?”, cu câteva săli libere direct pe prima pagină.</p>
+    <div class="row">
+      <div>
+        <div class="label">Mobil</div>
+        <div class="frame-mobile"><div class="screen-inner">
+          <div class="statusbar num"><span>9:41</span><span>●●●</span></div>
+          <div class="appbar" style="border:0">
+            <div class="brand"><div class="logo"><svg width="15" height="15"><use href="#i-door"/></svg></div>UBB Campus</div>
+            <div class="seg"><button class="on">RO</button><button>EN</button></div>
+          </div>
+          <div class="hero">
+            <span class="badge b-free"><span class="dot"></span>4 săli libere acum</span>
+            <h1>Găsește o sală liberă în FMI pentru a învăța.</h1>
+            <p>Disponibilitate din orarul facultății și din check-in-urile colegilor.</p>
+            <a class="btn btn-primary btn-block">Vezi sălile libere</a>
+          </div>
+          <div class="section-title"><span>Libere acum în Clădirea Centrală</span><a>Toate</a></div>
+          <div class="list-m" style="padding:0 24px">
+            <div class="card room-m card-hover">
+              <div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:center"><b class="num">5/I</b><span class="badge b-free"><span class="dot"></span>Liberă</span></div><div class="room-loc">Etaj 1 · 80 locuri</div></div>
+            </div>
+            <div class="card room-m card-hover">
+              <div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:center"><b class="num">Gamma</b><span class="badge b-free num"><span class="dot"></span>Până la 14:00</span></div><div class="room-loc">Parter · 150 locuri · 3 persoane aici</div></div>
+            </div>
+          </div>
+          <div class="bottomnav">
+            <a class="on"><svg width="20" height="20"><use href="#i-home"/></svg>Acasă</a>
+            <a><svg width="20" height="20"><use href="#i-door"/></svg>Săli</a>
+            <a><svg width="20" height="20"><use href="#i-map"/></svg>Plan</a>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ROOMS ================= -->
+  <section class="screen" id="rooms">
+    <h2>Listă săli</h2>
+    <p class="note">Filtrele trec dintr-un formular într-o bară compactă cu chip-uri. Cardurile au starea sus-dreapta, detaliile cu iconițe jos. Pe mobil, lista e pe un rând per sală, cu o linie colorată de stare.</p>
+    <div class="row">
+      <div>
+        <div class="label">Desktop</div>
+        <div class="frame-desktop">
+          <div class="chrome"><i></i><i></i><i></i><span>ubb-campus.app/rooms</span></div>
+          <div class="appbar">
+            <div class="brand"><div class="logo"><svg width="15" height="15"><use href="#i-door"/></svg></div>StudyRoom Finder</div>
+            <div class="nav"><a class="active">Săli</a><a>Plan</a><span style="width:12px"></span><div class="seg"><button class="on">RO</button><button>EN</button></div></div>
+          </div>
+          <div class="page">
+            <div class="page-head">
+              <div><h1 class="title">Săli</h1><p class="subtitle">9 săli · 4 libere acum</p></div>
+              <span class="faint" style="font-size:12px;display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13"><use href="#i-refresh"/></svg>Actualizat acum 12 s</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:18px">
+              <span class="select">Clădire: Toate <svg width="14" height="14" class="faint"><use href="#i-down"/></svg></span>
+              <span class="select">Capacitate minimă <small>Oricât</small><svg width="14" height="14" class="faint"><use href="#i-down"/></svg></span>
+              <span class="select">Liberă cel puțin <small>2 ore</small><svg width="14" height="14" class="faint"><use href="#i-down"/></svg></span>
+              <span class="chip on"><svg width="13" height="13"><use href="#i-check"/></svg>Doar libere acum</span>
+              <span class="chip"><svg width="13" height="13"><use href="#i-plug"/></svg>Prize</span>
+              <span class="chip"><svg width="13" height="13"><use href="#i-proj"/></svg>Proiector</span>
+              <a class="btn btn-ghost btn-sm" style="margin-left:auto">Resetează</a>
+            </div>
+            <div class="room-grid">
+              <div class="card card-hover room">
+                <div class="room-top"><div><div class="room-code">5/I</div><div class="room-loc">Clădirea Centrală · Etaj 1</div></div><span class="badge b-free"><span class="dot"></span>Liberă</span></div>
+                <div class="meta"><span><svg width="14" height="14"><use href="#i-users"/></svg>80 locuri</span><span><svg width="14" height="14"><use href="#i-plug"/></svg>Prize</span><span><svg width="14" height="14"><use href="#i-proj"/></svg>Proiector</span></div>
+              </div>
+              <div class="card card-hover room">
+                <div class="room-top"><div><div class="room-code">Gamma</div><div class="room-loc">Clădirea Centrală · Parter</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><span class="badge b-free num"><span class="dot"></span>Liberă până la 14:00</span><span class="people"><svg width="13" height="13"><use href="#i-users"/></svg>3 persoane aici</span></div></div>
+                <div class="meta"><span><svg width="14" height="14"><use href="#i-users"/></svg>150 locuri</span><span><svg width="14" height="14"><use href="#i-proj"/></svg>Proiector</span></div>
+              </div>
+              <div class="card card-hover room">
+                <div class="room-top"><div><div class="room-code">C512</div><div class="room-loc">Clădirea Centrală · Etaj 5</div></div><span class="badge b-free num"><span class="dot"></span>Liberă până la 12:00</span></div>
+                <div class="meta"><span><svg width="14" height="14"><use href="#i-users"/></svg>30 locuri</span><span><svg width="14" height="14"><use href="#i-plug"/></svg>Prize</span></div>
+              </div>
+              <div class="card card-hover room">
+                <div class="room-top"><div><div class="room-code">S10</div><div class="room-loc">FSEGA · Etaj 1</div></div><span class="badge b-free"><span class="dot"></span>Liberă</span></div>
+                <div class="meta"><span><svg width="14" height="14"><use href="#i-users"/></svg>20 locuri</span><span><svg width="14" height="14"><use href="#i-plug"/></svg>Prize</span></div>
+              </div>
+              <div class="card card-hover room" style="opacity:.75">
+                <div class="room-top"><div><div class="room-code">C510</div><div class="room-loc">Clădirea Centrală · Etaj 5</div></div><span class="badge b-busy num"><span class="dot"></span>Ocupată până la 16:00</span></div>
+                <div class="meta"><span><svg width="14" height="14"><use href="#i-users"/></svg>40 locuri</span><span><svg width="14" height="14"><use href="#i-plug"/></svg>Prize</span><span><svg width="14" height="14"><use href="#i-proj"/></svg>Proiector</span></div>
+              </div>
+              <div class="card card-hover room" style="opacity:.75">
+                <div class="room-top"><div><div class="room-code">L001</div><div class="room-loc">Clădirea Centrală · Parter</div></div><span class="badge b-unk"><span class="dot"></span>Stare necunoscută</span></div>
+                <div class="meta"><span><svg width="14" height="14"><use href="#i-users"/></svg>24 locuri</span><span><svg width="14" height="14"><use href="#i-plug"/></svg>Prize</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="label">Mobil</div>
+        <div class="frame-mobile"><div class="screen-inner">
+          <div class="statusbar num"><span>9:41</span><span>●●●</span></div>
+          <div class="page-m" style="padding-top:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <div><h1 class="title">Săli</h1><div class="faint" style="font-size:13px">4 libere acum</div></div>
+              <a class="btn btn-secondary btn-sm"><svg width="14" height="14"><use href="#i-filter"/></svg>Filtre · 2</a>
+            </div>
+            <div style="display:flex;gap:8px;overflow:hidden;margin-bottom:14px">
+              <span class="chip on"><svg width="13" height="13"><use href="#i-check"/></svg>Doar libere</span>
+              <span class="chip">Clădirea Centrală</span>
+              <span class="chip">Prize</span>
+              <span class="chip">Proiector</span>
+            </div>
+            <div class="list-m">
+              <div class="card room-m"><div class="bar" style="background:var(--free)"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:16px">5/I</b><span style="color:var(--free);font-size:12px;font-weight:600">Liberă</span></div><div class="room-loc">Etaj 1 · 80 locuri · Prize · Proiector</div></div><svg width="16" height="16" class="faint"><use href="#i-right"/></svg></div>
+              <div class="card room-m"><div class="bar" style="background:var(--free)"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:16px">Gamma</b><span class="num" style="color:var(--free);font-size:12px;font-weight:600">până la 14:00</span></div><div class="room-loc">Parter · 150 locuri · 3 persoane aici</div></div><svg width="16" height="16" class="faint"><use href="#i-right"/></svg></div>
+              <div class="card room-m"><div class="bar" style="background:var(--free)"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:16px">C512</b><span class="num" style="color:var(--free);font-size:12px;font-weight:600">până la 12:00</span></div><div class="room-loc">Etaj 5 · 30 locuri · Prize</div></div><svg width="16" height="16" class="faint"><use href="#i-right"/></svg></div>
+              <div class="card room-m"><div class="bar" style="background:var(--free)"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:16px">S10</b><span style="color:var(--free);font-size:12px;font-weight:600">Liberă</span></div><div class="room-loc">FSEGA · Etaj 1 · 20 locuri</div></div><svg width="16" height="16" class="faint"><use href="#i-right"/></svg></div>
+              <div class="faint" style="font-size:12px;margin:8px 2px 0">Ocupate</div>
+              <div class="card room-m" style="opacity:.7"><div class="bar" style="background:var(--busy)"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:16px">C510</b><span class="num" style="color:var(--busy);font-size:12px;font-weight:600">până la 16:00</span></div><div class="room-loc">Etaj 5 · 40 locuri</div></div><svg width="16" height="16" class="faint"><use href="#i-right"/></svg></div>
+            </div>
+          </div>
+          <div class="bottomnav">
+            <a><svg width="20" height="20"><use href="#i-home"/></svg>Acasă</a>
+            <a class="on"><svg width="20" height="20"><use href="#i-door"/></svg>Săli</a>
+            <a><svg width="20" height="20"><use href="#i-map"/></svg>Plan</a>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ROOM DETAIL ================= -->
+  <section class="screen" id="room">
+    <h2>Detaliu sală</h2>
+    <p class="note">Antet cu starea mare și un rând de detalii în grilă. Check-in-ul devine o acțiune clară, într-un card separat. Orarul de azi e o listă tip timeline, cu ora curentă marcată și golurile libere afișate explicit.</p>
+    <div class="row">
+      <div>
+        <div class="label">Mobil</div>
+        <div class="frame-mobile"><div class="screen-inner">
+          <div class="statusbar num"><span>9:41</span><span>●●●</span></div>
+          <div class="page-m" style="padding-top:4px">
+            <a class="btn btn-ghost btn-sm" style="padding-left:0;margin-bottom:6px"><svg width="16" height="16"><use href="#i-back"/></svg>Săli</a>
+            <div class="card" style="overflow:hidden">
+              <div style="padding:16px">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+                  <div><h1 class="title" style="font-size:26px">Sala C512</h1><div class="muted" style="font-size:13px;display:flex;align-items:center;gap:5px;margin-top:2px"><svg width="13" height="13"><use href="#i-pin"/></svg>Clădirea Centrală</div></div>
+                  <span class="badge b-free num"><span class="dot"></span>Până la 12:00</span>
+                </div>
+                <div class="people" style="margin-top:10px"><svg width="13" height="13"><use href="#i-users"/></svg>2 persoane aici</div>
+              </div>
+              <dl class="stat-grid stat-grid-m" style="margin:0">
+                <div><dt>Etaj</dt><dd>5</dd></div>
+                <div><dt>Capacitate</dt><dd class="num">30 locuri</dd></div>
+                <div><dt>Prize</dt><dd>Da</dd></div>
+                <div><dt>Proiector</dt><dd class="faint">Nu</dd></div>
+              </dl>
+            </div>
+
+            <div class="card checkin" style="margin-top:10px">
+              <div><div style="font-weight:600">Ești aici?</div><div class="faint" style="font-size:12px">Ajută-i pe colegi să vadă cât e de plină.</div></div>
+              <a class="btn btn-primary btn-sm" style="height:38px">Sunt aici</a>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 4px">
+              <div style="font-weight:600">Orarul de azi</div>
+              <a style="color:var(--accent);font-size:13px">Toată săptămâna</a>
+            </div>
+            <div class="timeline">
+              <div class="slot past num"><time>08:00</time><div><div class="t">Algebră liniară</div><div class="g">Seminar 111 · până la 10:00</div></div></div>
+              <div class="slot now num free"><time>10:00</time><div><div class="t">Liberă până la 12:00 <span class="pill-now">acum</span></div><div class="g">2 ore libere</div></div></div>
+              <div class="slot num"><time>12:00</time><div><div class="t">Baze de date</div><div class="g">Seminar 212 · până la 14:00</div></div></div>
+              <div class="slot num free"><time>14:00</time><div><div class="t">Liberă până la 16:00</div></div></div>
+              <div class="slot num"><time>16:00</time><div><div class="t">Sisteme de operare</div><div class="g">Seminar 213 · până la 18:00</div></div></div>
+            </div>
+            <p class="faint" style="font-size:11.5px;margin:12px 2px 0">Orele sunt afișate în fusul orar al României. Date demonstrative, nu orarul real.</p>
+          </div>
+        </div></div>
+      </div>
+
+      <div>
+        <div class="label">Mobil · după check-in</div>
+        <div class="frame-mobile"><div class="screen-inner">
+          <div class="statusbar num"><span>10:14</span><span>●●●</span></div>
+          <div class="page-m" style="padding-top:4px">
+            <a class="btn btn-ghost btn-sm" style="padding-left:0;margin-bottom:6px"><svg width="16" height="16"><use href="#i-back"/></svg>Săli</a>
+            <div class="card" style="padding:16px">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+                <div><h1 class="title" style="font-size:26px">Sala C512</h1><div class="muted" style="font-size:13px;margin-top:2px">Clădirea Centrală · Etaj 5</div></div>
+                <span class="badge b-free num"><span class="dot"></span>Până la 12:00</span>
+              </div>
+              <div class="people" style="margin-top:10px"><svg width="13" height="13"><use href="#i-users"/></svg>3 persoane aici</div>
+            </div>
+            <div class="card checkin" style="margin-top:10px;border-color:rgba(76,195,138,.35);background:rgba(76,195,138,.06)">
+              <div style="display:flex;gap:10px;align-items:center">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--free-soft);color:var(--free);display:grid;place-items:center"><svg width="16" height="16"><use href="#i-check"/></svg></div>
+                <div><div style="font-weight:600" class="num">Ești aici până la 12:00</div><div class="faint" style="font-size:12px">Check-in-ul expiră singur.</div></div>
+              </div>
+              <a class="btn btn-secondary btn-sm">Am plecat</a>
+            </div>
+            <div class="card" style="margin-top:10px;padding:14px 16px">
+              <div class="label" style="margin-bottom:6px">Stări de eroare / încărcare</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="height:14px;width:60%;border-radius:6px;background:var(--surface-3)"></div>
+                <div style="height:14px;width:40%;border-radius:6px;background:var(--surface-3)"></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding:10px 12px;border-radius:10px;background:var(--busy-soft);color:var(--busy);font-size:13px"><span>Nu am putut salva check-in-ul.</span><a style="font-weight:600">Reîncearcă</a></div>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WEEK ================= -->
+  <section class="screen" id="week">
+    <h2>Orarul săptămânii</h2>
+    <p class="note">Grilă tip calendar în loc de liste pe zile: se vede dintr-o privire unde sunt golurile. Ziua curentă e marcată subtil, săptămâna pară/impară e un comutator.</p>
+    <div class="frame-desktop" style="width:960px">
+      <div class="chrome"><i></i><i></i><i></i><span>ubb-campus.app/rooms/c-512/week</span></div>
+      <div class="appbar">
+        <div class="brand"><div class="logo"><svg width="15" height="15"><use href="#i-door"/></svg></div>StudyRoom Finder</div>
+        <div class="nav"><a class="active">Săli</a><a>Plan</a><span style="width:12px"></span><div class="seg"><button class="on">RO</button><button>EN</button></div></div>
+      </div>
+      <div class="page">
+        <a class="btn btn-ghost btn-sm" style="padding-left:0"><svg width="16" height="16"><use href="#i-back"/></svg>Înapoi la sală</a>
+        <div class="page-head" style="margin-top:6px">
+          <div><h1 class="title">Orarul săptămânii — sala C512</h1><p class="subtitle num">Săpt. 9 · 24–28 noiembrie</p></div>
+          <div class="seg"><button class="on">Impară</button><button>Pară</button></div>
+        </div>
+        <div class="week num">
+          <div class="wh" style="border-left:0"></div>
+          <div class="wh">Luni<small>24 nov</small></div>
+          <div class="wh today">Marți · Azi<small>25 nov</small></div>
+          <div class="wh">Miercuri<small>26 nov</small></div>
+          <div class="wh">Joi<small>27 nov</small></div>
+          <div class="wh">Vineri<small>28 nov</small></div>
+          <div class="hours"><div>08</div><div>09</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div></div>
+          <div class="col" style="height:440px">
+            <div class="ev" style="top:2px;height:84px"><b>SDA</b><span>Seminar 211<br>08:00–10:00</span></div>
+            <div class="ev" style="top:178px;height:84px"><b>Baze de date</b><span>Seminar 212<br>12:00–14:00</span></div>
+          </div>
+          <div class="col today">
+            <div class="ev alt" style="top:2px;height:84px"><b>Algebră liniară</b><span>Seminar 111<br>08:00–10:00</span></div>
+            <div class="ev alt" style="top:178px;height:84px"><b>Baze de date</b><span>Seminar 212<br>12:00–14:00</span></div>
+            <div class="ev alt" style="top:354px;height:84px"><b>Sisteme de operare</b><span>Seminar 213<br>16:00–18:00</span></div>
+            <div style="position:absolute;left:0;right:0;top:98px;height:2px;background:var(--accent)"></div>
+            <div style="position:absolute;left:-4px;top:94px;width:10px;height:10px;border-radius:50%;background:var(--accent)"></div>
+          </div>
+          <div class="col">
+            <div class="ev" style="top:90px;height:84px"><b>POO</b><span>Laborator 214<br>10:00–12:00</span></div>
+            <div class="ev" style="top:266px;height:84px"><b>SDA</b><span>Seminar 213<br>14:00–16:00</span></div>
+          </div>
+          <div class="col"></div>
+          <div class="col">
+            <div class="ev parity" style="top:90px;height:84px"><b>Analiză</b><span>Seminar 112<br>10:00–12:00</span></div>
+          </div>
+        </div>
+        <div class="legend" style="margin-top:12px"><span><i style="background:var(--surface-3);border:1px solid var(--border-2)"></i>Oră programată</span><span><i style="background:var(--accent)"></i>Acum</span><span class="faint">Spațiile goale = sala e liberă</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PLAN ================= -->
+  <section class="screen" id="plan">
+    <h2>Planul clădirii</h2>
+    <p class="note">Aceeași schemă pe etaje, dar celulele au fundal de suprafață și starea ca text colorat cu punct, ca în restul aplicației. Sălile libere au un contur verde fin, ca să iasă în evidență fără să țipe.</p>
+    <div class="row">
+      <div>
+        <div class="label">Mobil</div>
+        <div class="frame-mobile"><div class="screen-inner">
+          <div class="statusbar num"><span>9:41</span><span>●●●</span></div>
+          <div class="page-m" style="padding-top:8px">
+            <h1 class="title">Planul clădirii</h1>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 16px">
+              <span class="select" style="min-width:0;flex:1;margin-right:8px">Clădirea Centrală <svg width="14" height="14" class="faint"><use href="#i-down"/></svg></span>
+            </div>
+            <div class="legend" style="margin-bottom:16px"><span><i style="background:var(--free)"></i>Liberă</span><span><i style="background:var(--busy)"></i>Ocupată</span><span><i style="background:var(--unk)"></i>Necunoscută</span></div>
+
+            <div class="floor">
+              <h3><span>Etaj 5</span><span class="faint" style="font-weight:400">1 din 2 libere</span></h3>
+              <div class="plan">
+                <div class="cell busy"><b>C510</b><span class="st num"><i></i>până la 16:00</span></div>
+                <div class="cell free"><b>C512</b><span class="st num"><i></i>până la 12:00</span></div>
+                <div></div>
+              </div>
+            </div>
+            <div class="floor">
+              <h3><span>Etaj 1</span><span class="faint" style="font-weight:400">1 din 2 libere</span></h3>
+              <div class="plan">
+                <div class="cell busy"><b>2/I</b><span class="st num"><i></i>până la 12:00</span></div>
+                <div></div>
+                <div class="cell free"><b>5/I</b><span class="st"><i></i>Liberă</span></div>
+              </div>
+            </div>
+            <div class="floor">
+              <h3><span>Parter</span><span class="faint" style="font-weight:400">1 din 2 libere</span></h3>
+              <div class="plan">
+                <div class="cell unk"><b>L001</b><span class="st"><i></i>Necunoscută</span></div>
+                <div class="cell corridor" style="grid-column:auto;min-height:66px">hol</div>
+                <div class="cell free"><b>Gamma</b><span class="st num"><i></i>până la 14:00</span></div>
+              </div>
+            </div>
+            <p class="faint" style="font-size:11.5px;margin:8px 2px 0">Schemă orientativă, nu planul real al clădirii.</p>
+          </div>
+          <div class="bottomnav">
+            <a><svg width="20" height="20"><use href="#i-home"/></svg>Acasă</a>
+            <a><svg width="20" height="20"><use href="#i-door"/></svg>Săli</a>
+            <a class="on"><svg width="20" height="20"><use href="#i-map"/></svg>Plan</a>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

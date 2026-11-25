@@ -16,18 +16,18 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: "UBB Campus",
-    statusBarStyle: "default",
+    statusBarStyle: "black",
   },
 };
 
 // Same colour as theme_color in public/manifest.webmanifest.
 export const viewport: Viewport = {
-  themeColor: "#1e40af",
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ro" className="h-full antialiased">
+    <html lang="ro" className="h-full antialiased [color-scheme:dark]">
       <body className="min-h-full flex flex-col">
         {children}
         <RegisterServiceWorker />

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UBB Campus · Opțiuni temă dark</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: #060708; color: #e7eaf0; font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .doc { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+  .doc > header h1 { font-size: 28px; font-weight: 650; letter-spacing: -.02em; margin: 0 0 6px; }
+  .doc > header p { color: #9aa3b2; margin: 0; max-width: 760px; }
+  .jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 8px; position: sticky; top: 0; background: #060708; padding: 12px 0; z-index: 9; border-bottom: 1px solid #1d2128; }
+  .jump a { color: #c9cfd9; text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid #262b33; font-size: 13px; }
+  .opt { margin-top: 56px; scroll-margin-top: 70px; }
+  .opt-head { display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 18px; }
+  .opt-head h2 { margin: 0; font-size: 20px; font-weight: 650; }
+  .opt-head h2 small { font-size: 13px; color: #7d8696; font-weight: 500; margin-left: 8px; }
+  .opt-head p { margin: 4px 0 0; color: #9aa3b2; max-width: 640px; }
+  .sw { display: flex; gap: 6px; }
+  .sw i { width: 28px; height: 28px; border-radius: 6px; display: block; border: 1px solid rgba(255,255,255,.08); }
+  .row { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+  .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #6d7584; margin-bottom: 8px; }
+
+  /* ---------- Frames ---------- */
+  .fd { width: 800px; max-width: 100%; border: 1px solid #22262d; border-radius: 14px; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font); }
+  .fd .chrome { height: 32px; background: #08090b; border-bottom: 1px solid #1c1f25; display: flex; align-items: center; gap: 6px; padding: 0 12px; }
+  .fd .chrome i { width: 10px; height: 10px; border-radius: 50%; background: #262a31; }
+  .fm { width: 360px; border: 1px solid #2a2f37; border-radius: 34px; padding: 9px; background: #08090b; }
+  .fm .in { border-radius: 26px; overflow: hidden; background: var(--bg); color: var(--text); min-height: 720px; font-family: var(--font); }
+  .sb { height: 38px; display: flex; justify-content: space-between; align-items: center; padding: 0 22px; font-size: 13px; font-weight: 600; }
+
+  /* ---------- Shared app components (driven by variables) ---------- */
+  .num { font-variant-numeric: tabular-nums; }
+  .ic { flex-shrink: 0; }
+  .appbar { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 22px; border-bottom: 1px solid var(--border); background: var(--bar, var(--bg)); }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .logo { width: 26px; height: 26px; border-radius: var(--r-sm); background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+  .nav { display: flex; align-items: center; gap: 4px; }
+  .nav a { color: var(--text-2); padding: 6px 12px; border-radius: var(--r-sm); font-weight: 500; }
+  .nav a.on { color: var(--text); background: var(--nav-on); }
+  .seg { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 2px; }
+  .seg b { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: calc(var(--r-sm) - 2px); color: var(--text-3); }
+  .seg b.on { background: var(--surface-3); color: var(--text); }
+  .page { padding: 26px; }
+  .h1 { font-size: 24px; font-weight: 650; letter-spacing: -.02em; margin: 0; }
+  .sub { color: var(--text-2); margin: 2px 0 0; font-size: 13px; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; align-items: center; }
+  .sel { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px 0 12px; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface); font-size: 13px; }
+  .sel small { color: var(--text-3); }
+  .chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: var(--r-chip); border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .chip.on { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: var(--r-btn); font-weight: 600; white-space: nowrap; flex-shrink: 0; font-size: 14px; }
+  .btn.p { background: var(--btn-bg); color: var(--btn-fg); }
+  .btn.s { background: var(--surface-2); border: 1px solid var(--border-2); color: var(--text); }
+  .btn.g { color: var(--text-2); padding: 0 4px; height: 30px; }
+  .muted { color: var(--text-2); }
+  .faint { color: var(--text-3); }
+  .free { color: var(--free); } .busy { color: var(--busy); } .unk { color: var(--unk); }
+
+  .st { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .st i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: block; }
+  .st.pill { height: 24px; padding: 0 9px; border-radius: 999px; }
+  .st.pill.free { background: var(--free-soft); } .st.pill.busy { background: var(--busy-soft); } .st.pill.unk { background: var(--unk-soft); }
+
+  .card { background: var(--surface); border: var(--card-border); border-radius: var(--r); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap, 12px); }
+  .room { padding: var(--pad, 16px); display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden; }
+  .room .top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .code { font-size: 18px; font-weight: 650; letter-spacing: -.01em; font-family: var(--font-code, inherit); }
+  .loc { color: var(--text-3); font-size: 13px; }
+  .meta { display: flex; gap: 14px; flex-wrap: wrap; color: var(--text-2); font-size: 13px; }
+  .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .meta svg { color: var(--text-3); }
+  .people { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); }
+  .dim { opacity: .7; }
+
+  /* table (option B) */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th { text-align: left; font-weight: 500; color: var(--text-3); font-size: 12px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .tbl td { padding: 11px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .tbl tr:last-child td { border-bottom: 0; }
+  .tbl td.c { font-weight: 600; color: var(--text); }
+  .tbl .yes { color: var(--text-2); } .tbl .no { color: var(--text-3); }
+
+  /* mobile detail */
+  .pm { padding: 6px 16px 24px; }
+  .dhead { padding: 16px; }
+  .dhead .t { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); }
+  .stats div { padding: 12px 16px; }
+  .stats div:nth-child(odd) { border-right: 1px solid var(--border); }
+  .stats div:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .stats dt { font-size: 12px; color: var(--text-3); }
+  .stats dd { margin: 0; font-weight: 600; }
+  .ci { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; }
+  .sec { display: flex; justify-content: space-between; align-items: baseline; margin: 20px 2px 4px; font-weight: 600; }
+  .sec a { color: var(--accent); font-size: 13px; font-weight: 500; }
+  .slot { display: grid; grid-template-columns: 52px 1fr; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  .slot:last-child { border-bottom: 0; }
+  .slot time { color: var(--text-3); font-family: var(--font-code, inherit); font-size: 13px; }
+  .slot .g { color: var(--text-3); font-size: 12.5px; }
+  .slot.past { opacity: .45; }
+  .slot.now time { color: var(--accent); font-weight: 600; }
+  .slot.fr .t { color: var(--free); }
+  .now-pill { font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 1px 7px; border-radius: 999px; margin-left: 6px; }
+
+  /* ===================== OPTION A · Slate ===================== */
+  .va { --bg:#0d1015; --surface:#141820; --surface-2:#1a1f29; --surface-3:#232a36; --border:#252b37; --border-2:#313948;
+        --text:#e7eaf0; --text-2:#a3acbb; --text-3:#6f7a8c; --accent:#6b9bff; --accent-soft:rgba(107,155,255,.12); --accent-line:rgba(107,155,255,.45);
+        --btn-bg:#4f86f7; --btn-fg:#fff; --nav-on:#1a1f29;
+        --free:#4cc38a; --free-soft:rgba(76,195,138,.12); --busy:#f07171; --busy-soft:rgba(240,113,113,.12); --unk:#8a94a6; --unk-soft:rgba(138,148,166,.14);
+        --r:12px; --r-sm:8px; --r-btn:10px; --r-chip:999px; --card-border:1px solid var(--border); --font:inherit; }
+
+  /* ===================== OPTION B · Graphite ===================== */
+  .vb { --bg:#0a0a0a; --surface:#111111; --surface-2:#171717; --surface-3:#222222; --border:#1f1f1f; --border-2:#2e2e2e;
+        --text:#ededed; --text-2:#a1a1a1; --text-3:#6b6b6b; --accent:#ededed; --accent-soft:rgba(255,255,255,.08); --accent-line:#3a3a3a;
+        --btn-bg:#ededed; --btn-fg:#0a0a0a; --nav-on:transparent;
+        --free:#3ecf8e; --free-soft:transparent; --busy:#ef6461; --busy-soft:transparent; --unk:#7a7a7a; --unk-soft:transparent;
+        --r:8px; --r-sm:6px; --r-btn:6px; --r-chip:6px; --card-border:1px solid var(--border); --font:inherit; --font-code: ui-monospace, "JetBrains Mono", "Cascadia Code", Consolas, monospace; }
+  .vb .nav a.on { box-shadow: inset 0 -2px 0 #ededed; border-radius: 0; padding-bottom: 14px; padding-top: 16px; }
+  .vb .h1 { font-size: 20px; }
+  .vb .logo { background: #ededed; color: #0a0a0a; }
+  .vb .code { font-size: 16px; }
+  .vb .slot.now time { color: var(--text); }
+  .vb .now-pill { background: #ededed; color: #0a0a0a; }
+  .vb .sec a { color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ===================== OPTION C · Midnight soft ===================== */
+  .vc { --bg:#0b0d17; --surface:#141827; --surface-2:#1b2033; --surface-3:#252b42; --border:#1d2236; --border-2:#2b3150; --bar:#0b0d17;
+        --text:#eceefa; --text-2:#a6abc8; --text-3:#6e7493; --accent:#a5a8ff; --accent-soft:rgba(140,145,255,.14); --accent-line:transparent;
+        --btn-bg:#8b8ff8; --btn-fg:#0b0d17; --nav-on:#1b2033;
+        --free:#6ee7b7; --free-soft:rgba(110,231,183,.12); --busy:#fda4af; --busy-soft:rgba(253,164,175,.12); --unk:#9aa0bd; --unk-soft:rgba(154,160,189,.12);
+        --r:18px; --r-sm:12px; --r-btn:999px; --r-chip:999px; --card-border:0; --pad:20px; --gap:14px; --font:inherit; }
+  .vc .appbar { border-bottom: 0; }
+  .vc .sel, .vc .chip { border-color: transparent; background: var(--surface); }
+  .vc .chip.on { background: var(--accent-soft); }
+  .vc .seg { border: 0; border-radius: 999px; } .vc .seg b { border-radius: 999px; }
+  .vc .stats, .vc .stats div { border-color: var(--bg) !important; }
+  .vc .stats { border-top: 2px solid var(--bg); }
+  .vc .stats div:nth-child(odd) { border-right-width: 2px; } .vc .stats div:nth-child(-n+2) { border-bottom-width: 2px; }
+  .vc .slot { border-bottom: 0; background: var(--surface); border-radius: 14px; padding: 12px 14px; margin-bottom: 6px; grid-template-columns: 48px 1fr; }
+  .vc .slot.fr { background: var(--free-soft); }
+  .vc .code { font-size: 20px; }
+
+  /* ===================== OPTION D · Warm ink + teal ===================== */
+  .vd { --bg:#121110; --surface:#1a1917; --surface-2:#22201d; --surface-3:#2c2a26; --border:#2a2825; --border-2:#3a3732;
+        --text:#ece8e1; --text-2:#aaa49a; --text-3:#756f66; --accent:#45c7b1; --accent-soft:rgba(69,199,177,.12); --accent-line:rgba(69,199,177,.45);
+        --btn-bg:#45c7b1; --btn-fg:#0f1513; --nav-on:#22201d;
+        --free:#7bc96f; --free-soft:rgba(123,201,111,.12); --busy:#e8775d; --busy-soft:rgba(232,119,93,.12); --unk:#8f897f; --unk-soft:rgba(143,137,127,.14);
+        --r:10px; --r-sm:7px; --r-btn:8px; --r-chip:7px; --card-border:1px solid var(--border); --font:inherit; --font-code: ui-monospace, "JetBrains Mono", "Cascadia Code", Consolas, monospace; }
+  .vd .room { padding-left: 20px; }
+  .vd .room::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background: var(--rail, var(--unk)); }
+  .vd .room.s-free { --rail: var(--free); } .vd .room.s-busy { --rail: var(--busy); }
+  .vd .loc, .vd .stats dt, .vd .lbl-up { text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
+  .vd .dhead { border-left: 4px solid var(--free); }
+  .vd .slot { grid-template-columns: 52px 1fr; position: relative; }
+  .vd .slot.fr { box-shadow: inset 3px 0 0 var(--free); padding-left: 10px; margin-left: -10px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="i-door" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.51-1.94l4-1A2 2 0 0 1 13 4.56Z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
+  <symbol id="i-proj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+</defs></svg>
+
+<div class="doc">
+  <header>
+    <h1>UBB Campus — opțiuni de temă dark</h1>
+    <p>Patru direcții pentru aceleași două ecrane (lista de săli pe desktop și detaliul unei săli pe mobil), ca să le poți compara direct. Toate sunt fără gradienturi. Diferă prin paletă, colțuri, chenare și modul în care e afișată starea sălii.</p>
+  </header>
+  <nav class="jump">
+    <a href="#A">A · Slate</a><a href="#B">B · Graphite</a><a href="#C">C · Midnight</a><a href="#D">D · Ink &amp; Teal</a>
+  </nav>
+  <div id="opts"></div>
+</div>
+
+<script>
+const OPTS = [
+  { id: "A", cls: "va", name: "Slate", tag: "prima propunere",
+    desc: "Gri-albastru rece, accent albastru (continuă tema actuală). Carduri cu chenar fin, stare în pastilă colorată. Echilibrat, sigur.",
+    sw: ["#0d1015","#141820","#252b37","#4f86f7","#4cc38a","#f07171"], list: "cards", pill: true },
+  { id: "B", cls: "vb", name: "Graphite", tag: "minimal, monocrom",
+    desc: "Negru neutru, fără nicio nuanță. Accentul e alb, singura culoare e starea sălii. Lista de săli devine un tabel dens, coduri și ore în font monospace. Stil de unealtă (Vercel / Linear).",
+    sw: ["#0a0a0a","#111111","#1f1f1f","#ededed","#3ecf8e","#ef6461"], list: "table", pill: false },
+  { id: "C", cls: "vc", name: "Midnight", tag: "moale, prietenos",
+    desc: "Albastru-noapte foarte închis, accent lavandă pastel. Fără chenare: cardurile se separă doar prin nuanța fundalului. Colțuri mari, butoane rotunde, mai mult spațiu. Cel mai „de aplicație de telefon”.",
+    sw: ["#0b0d17","#141827","#1b2033","#8b8ff8","#6ee7b7","#fda4af"], list: "cards", pill: true },
+  { id: "D", cls: "vd", name: "Ink & Teal", tag: "cald, cu caracter",
+    desc: "Negru cald (spre maro), text crem, accent turcoaz. Starea sălii e o bandă colorată pe marginea cardului, etichete mici cu majuscule și ore în monospace. Arată ca un panou de plecări.",
+    sw: ["#121110","#1a1917","#2a2825","#45c7b1","#7bc96f","#e8775d"], list: "cards", pill: false },
+];
+
+const ROOMS = [
+  { code: "5/I", b: "Clădirea Centrală", f: "Etaj 1", cap: 80, out: true, proj: true, s: "free", until: null, ppl: 0 },
+  { code: "Gamma", b: "Clădirea Centrală", f: "Parter", cap: 150, out: false, proj: true, s: "free", until: "14:00", ppl: 3 },
+  { code: "C512", b: "Clădirea Centrală", f: "Etaj 5", cap: 30, out: true, proj: false, s: "free", until: "12:00", ppl: 2 },
+  { code: "S10", b: "FSEGA", f: "Etaj 1", cap: 20, out: true, proj: false, s: "free", until: null, ppl: 0 },
+  { code: "C510", b: "Clădirea Centrală", f: "Etaj 5", cap: 40, out: true, proj: true, s: "busy", until: "16:00", ppl: 0 },
+  { code: "L001", b: "Clădirea Centrală", f: "Parter", cap: 24, out: true, proj: false, s: "unk", until: null, ppl: 0 },
+];
+
+const ic = (id, s = 14) => `<svg class="ic" width="${s}" height="${s}"><use href="#i-${id}"/></svg>`;
+function stText(r, short) {
+  if (r.s === "unk") return short ? "Necunoscută" : "Stare necunoscută";
+  const w = r.s === "free" ? "Liberă" : "Ocupată";
+  if (!r.until) return w;
+  return short ? `până la ${r.until}` : `${w} până la ${r.until}`;
+}
+const st = (r, o, short) => `<span class="st ${o.pill ? "pill" : ""} ${r.s} num"><i></i>${stText(r, short)}</span>`;
+
+function appbar() {
+  return `<div class="appbar"><div class="brand"><div class="logo">${ic("door",15)}</div>StudyRoom Finder</div>
+    <div class="nav"><a class="on">Săli</a><a>Plan</a><span style="width:10px"></span><div class="seg"><b class="on">RO</b><b>EN</b></div></div></div>`;
+}
+function filters() {
+  return `<div class="filters">
+    <span class="sel">Clădire: Toate ${ic("down")}</span>
+    <span class="sel">Capacitate <small>Oricât</small> ${ic("down")}</span>
+    <span class="sel">Liberă cel puțin <small>2 ore</small> ${ic("down")}</span>
+    <span class="chip on">${ic("check",13)}Doar libere acum</span>
+    <span class="chip">${ic("plug",13)}Prize</span>
+    <span class="chip">${ic("proj",13)}Proiector</span></div>`;
+}
+function cards(o) {
+  return `<div class="grid2">` + ROOMS.map(r => `
+    <div class="card room s-${r.s} ${r.s !== "free" ? "dim" : ""}">
+      <div class="top"><div><div class="code">${r.code}</div><div class="loc">${r.b} · ${r.f}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">${st(r, o)}${r.ppl ? `<span class="people">${ic("users",13)}${r.ppl} persoane aici</span>` : ""}</div></div>
+      <div class="meta"><span>${ic("users")}${r.cap} locuri</span>${r.out ? `<span>${ic("plug")}Prize</span>` : ""}${r.proj ? `<span>${ic("proj")}Proiector</span>` : ""}</div>
+    </div>`).join("") + `</div>`;
+}
+function table(o) {
+  return `<div class="card" style="overflow:hidden"><table class="tbl"><thead><tr><th>Sală</th><th>Clădire</th><th>Etaj</th><th>Locuri</th><th>Prize</th><th>Proiector</th><th>Stare</th><th></th></tr></thead><tbody>` +
+    ROOMS.map(r => `<tr class="${r.s !== "free" ? "dim" : ""}"><td class="c" style="font-family:var(--font-code)">${r.code}</td><td class="muted">${r.b}</td><td class="muted">${r.f}</td>
+      <td class="num muted">${r.cap}</td><td class="${r.out ? "yes" : "no"}">${r.out ? "Da" : "—"}</td><td class="${r.proj ? "yes" : "no"}">${r.proj ? "Da" : "—"}</td>
+      <td>${st(r, o)}</td><td class="faint num" style="text-align:right">${r.ppl ? r.ppl + " aici" : ""}</td></tr>`).join("") + `</tbody></table></div>`;
+}
+function desktop(o) {
+  return `<div class="fd"><div class="chrome"><i></i><i></i><i></i></div>${appbar()}
+    <div class="page"><div class="head"><div><h1 class="h1">Săli</h1><p class="sub">9 săli · 4 libere acum</p></div><span class="faint" style="font-size:12px">Actualizat acum 12 s</span></div>
+    ${filters()}${o.list === "table" ? table(o) : cards(o)}</div></div>`;
+}
+function mobile(o) {
+  const r = ROOMS[2];
+  return `<div class="fm"><div class="in"><div class="sb num"><span>10:14</span><span>●●●</span></div><div class="pm">
+    <span class="btn g">${ic("back",16)}Săli</span>
+    <div class="card" style="overflow:hidden;margin-top:6px">
+      <div class="dhead"><div class="t"><div><div class="h1" style="font-size:26px;font-family:var(--font-code,inherit)">C512</div>
+        <div class="muted" style="font-size:13px;display:flex;align-items:center;gap:5px">${ic("pin",13)}Clădirea Centrală</div></div>${st(r, o)}</div>
+        <div class="people" style="margin-top:10px">${ic("users",13)}2 persoane aici</div></div>
+      <dl class="stats" style="margin:0"><div><dt>Etaj</dt><dd>5</dd></div><div><dt>Capacitate</dt><dd class="num">30 locuri</dd></div><div><dt>Prize</dt><dd>Da</dd></div><div><dt>Proiector</dt><dd class="faint">Nu</dd></div></dl>
+    </div>
+    <div class="card ci"><div><div style="font-weight:600">Ești aici?</div><div class="faint" style="font-size:12px">Ajută-i pe colegi să vadă cât e de plină.</div></div><span class="btn p">Sunt aici</span></div>
+    <div class="sec"><span>Orarul de azi</span><a>Toată săptămâna</a></div>
+    <div>
+      <div class="slot past num"><time>08:00</time><div><div class="t">Algebră liniară</div><div class="g">Seminar 111 · până la 10:00</div></div></div>
+      <div class="slot now fr num"><time>10:00</time><div><div class="t">Liberă până la 12:00<span class="now-pill">acum</span></div><div class="g">2 ore libere</div></div></div>
+      <div class="slot num"><time>12:00</time><div><div class="t">Baze de date</div><div class="g">Seminar 212 · până la 14:00</div></div></div>
+      <div class="slot fr num"><time>14:00</time><div><div class="t">Liberă până la 16:00</div></div></div>
+      <div class="slot num"><time>16:00</time><div><div class="t">Sisteme de operare</div><div class="g">Seminar 213 · până la 18:00</div></div></div>
+    </div></div></div></div>`;
+}
+
+document.getElementById("opts").innerHTML = OPTS.map(o => `
+  <section class="opt" id="${o.id}">
+    <div class="opt-head"><div><h2>${o.id} · ${o.name}<small>${o.tag}</small></h2><p>${o.desc}</p></div>
+      <div class="sw">${o.sw.map(c => `<i style="background:${c}" title="${c}"></i>`).join("")}</div></div>
+    <div class="row ${o.cls}">
+      <div><div class="lbl">Desktop · listă săli</div>${desktop(o)}</div>
+      <div><div class="lbl">Mobil · detaliu sală</div>${mobile(o)}</div>
+    </div>
+  </section>`).join("");
+</script>
+</body>
+</html>

@@ -86,9 +86,6 @@ function writeStored(checkin: Checkin | null) {
 // The server never sees localStorage, so it always renders "no check-in".
 const serverSnapshot = () => null;
 
-const buttonClass =
-  "rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-60";
-
 export function CheckinButton({ roomId, onChange }: { roomId: string; onChange: () => void }) {
   const t = useMessages();
   const stored = useSyncExternalStore(subscribe, readStored, serverSnapshot);
@@ -144,28 +141,24 @@ export function CheckinButton({ roomId, onChange }: { roomId: string; onChange: 
   }
 
   return (
-    <section className="space-y-2" aria-label={t.checkin.ariaLabel}>
+    <section className="panel space-y-2 px-4 py-3 sm:px-5" aria-label={t.checkin.ariaLabel}>
       {state === "none" && (
-        <button
-          type="button"
-          onClick={() => void checkIn()}
-          disabled={pending}
-          className={`${buttonClass} bg-blue-700 hover:bg-blue-800`}
-        >
+        <button type="button" onClick={() => void checkIn()} disabled={pending} className="btn-primary">
           {t.checkin.here}
         </button>
       )}
 
       {state === "here" && checkin && (
-        <div className="flex flex-wrap items-center gap-3">
-          <p className="font-medium">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="flex items-center gap-2 text-sm font-medium tabular-nums">
+            <span aria-hidden className="size-1.5 rounded-full bg-free" />
             {t.checkin.until(bucharestNow(new Date(checkin.expiresAt)).time)}
           </p>
           <button
             type="button"
             onClick={() => void leave(checkin)}
             disabled={pending}
-            className={`${buttonClass} bg-gray-700 hover:bg-gray-800`}
+            className="btn-secondary"
           >
             {t.checkin.left}
           </button>
@@ -173,19 +166,16 @@ export function CheckinButton({ roomId, onChange }: { roomId: string; onChange: 
       )}
 
       {state === "elsewhere" && checkin && (
-        <p>
+        <p className="text-sm text-fg-muted">
           {t.checkin.elsewhere}{" "}
-          <Link
-            href={`/rooms/${encodeURIComponent(checkin.roomId)}`}
-            className="font-medium underline"
-          >
+          <Link href={`/rooms/${encodeURIComponent(checkin.roomId)}`} className="link">
             {t.checkin.viewRoom}
           </Link>
         </p>
       )}
 
       {failed && (
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="error-text">
           {t.checkin.saveError}
         </p>
       )}
