@@ -1839,7 +1839,7 @@ Nimic. Citește întâi ghidul pentru PWA din `apps/web/node_modules/next/dist/d
 
 **Asignat:** Tudor · **Branch:** `feat/srf-fe12-playwright`
 
-Gata: `pnpm test:e2e` rulează cu Playwright parcursurile din `docs/qa/studyroom-onboarding.md` (desktop și telefon) pe build-ul de producție, iar jobul `e2e` din CI le rulează la fiecare PR. Branch: `feat/srf-fe12-playwright`.
+Gata: `pnpm test:e2e` rulează cu Playwright parcursurile din `docs/qa/studyroom-onboarding.md` (desktop și telefon) pe build-ul de producție, iar jobul `e2e` din CI le rulează la fiecare PR. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/25
 
 #### De ce
 Testele unitare nu ne spun dacă paginile merg împreună, iar checklist-ul de QA se rulează de mână. Când intră mulți oameni pe `main` în același weekend, un test automat prinde repede ce s-a stricat.
