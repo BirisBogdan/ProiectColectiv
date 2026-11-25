@@ -1925,7 +1925,7 @@ TODO-34. Până e gata, lucrezi pe un mock al canalului Realtime.
 
 **Asignat:** Tudor · **Branch:** `feat/srf-fe15-report-problem` · **Backlog:** #23 (extins)
 
-Gata: `ReportProblem` și `ReportSignal` pe pagina sălii, pe card și în header, în română și engleză. Butonul apare abia când API-ul trimite `recentReports`, adică după TODO-36; verificarea cap-coadă (raport real pe `/rooms/c-510`, apoi pe card) se face în PR-ul lui TODO-36. Branch: `feat/srf-fe15-report-problem`.
+Gata: `ReportProblem` și `ReportSignal` pe pagina sălii, pe card și în header, în română și engleză. Butonul apare abia când API-ul trimite `recentReports`, adică după TODO-36; verificarea cap-coadă (raport real pe `/rooms/c-510`, apoi pe card) se face în PR-ul lui TODO-36. PR: https://github.com/BirisBogdan/ProiectColectiv/pull/26
 
 #### De ce
 Raportul trebuie să coste un student două atingeri, altfel nu-l face nimeni. Iar ceilalți trebuie să-l vadă înainte să meargă până la sală.
