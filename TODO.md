@@ -45,7 +45,7 @@
 | TODO-27 | `[ ]`    | Backend | Importerul scrie orarul în Supabase, cu loturi și verificări | _(liber)_      |
 | TODO-28 | `[ ]`    | Backend | Catalogul real al sălilor FMI | _(liber)_      |
 | TODO-29 | `[ ]`    | Backend | Importul automat pe GitHub Actions | _(liber)_      |
-| TODO-30 | `[ ]`    | Backend | `room_status` în SQL: săptămâni pare/impare și perioada de cursuri | _(liber)_      |
+| TODO-30 | `[~]`    | Backend | `room_status` în SQL: săptămâni pare/impare și perioada de cursuri | Buruian Bogdan |
 | TODO-31 | `[ ]`    | Backend | Aplicația citește sălile și orarul din Supabase | _(liber)_      |
 | TODO-32 | `[ ]`    | Backend | Adaptorul FSEGA și sălile FSEGA | _(liber)_      |
 | TODO-33 | `[ ]`    | Backend | Tabelul `room_checkins`: check-in-uri care rămân după restart | _(liber)_      |
@@ -1056,9 +1056,9 @@ TODO-26, TODO-27 și proiectul Supabase `dev` (backlog #04). Fără `dev`, nu ar
 - [ ] Un run cu un prag forțat să pice e roșu, iar orarul din `dev` rămâne neschimbat.
 - [ ] PR revizuit de cine a făcut TODO-27.
 
-### TODO-30 `[ ]` `room_status` în SQL: săptămâni pare/impare și perioada de cursuri
+### TODO-30 `[~]` `room_status` în SQL: săptămâni pare/impare și perioada de cursuri
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be17-room-status-parity` · **Backlog:** #19
+**Asignat:** Buruian Bogdan · **Branch:** `feat/srf-be17-room-status-parity` · **Backlog:** #19
 
 #### De ce
 TODO-18 a lăsat `parity` nefolosit, iar TODO-19 a pus săptămânile și vacanțele doar în TypeScript. Când aplicația trece pe baza de date (TODO-31), funcția SQL trebuie să dea exact aceeași stare, altfel o oră din două în două săptămâni ocupă sala mereu și în vacanță totul apare liber.
