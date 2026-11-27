@@ -1,11 +1,12 @@
 -- TODO-18: pgTAP tests for room_schedule RLS, constraints and room_status(p_room_id, p_at)
--- mirroring every test case in apps/web/tests/unit/status.test.ts.
+-- mirroring every test case in apps/web/tests/unit/status.test.ts, plus (TODO-30) the
+-- teaching periods, teaching_week and parity cases of apps/web/tests/unit/calendar.test.ts.
 
 begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(32);
+select plan(60);
 
 -- 1-5: RLS on room_schedule (anon cannot read/write; authenticated can read, cannot insert/update/delete)
 set local role anon;
@@ -293,7 +294,8 @@ select results_eq(
   'merges overlapping and back-to-back entries (08-10 + 09-11 + 11-12 -> until 12:00) without crossing the 12-14 gap'
 );
 
--- Case 19: parity (odd/even) is accepted and not filtered out yet in room_status (connected in next stage)
+-- Case 19 (changed by TODO-30): parity is filtered now. 2026-11-02 is in teaching week 6
+-- (even), so the odd 10:00-12:00 row is skipped and the even 12:00-14:00 row is next.
 delete from public.room_schedule;
 insert into public.room_schedule (room_id, day, start_time, end_time, subject, group_name, parity) values
   ('c-510', 1, '10:00', '12:00', 'SDA', 'Seminar 211', 'odd'),
@@ -301,8 +303,8 @@ insert into public.room_schedule (room_id, day, start_time, end_time, subject, g
 
 select results_eq(
   $$select status, until from public.room_status('c-510', '2026-11-02T10:30:00+02:00'::timestamptz)$$,
-  $$values ('occupied'::text, '14:00'::text)$$,
-  'treats odd and even parity rows as occupying the room (parity filtering deferred per TODO-18)'
+  $$values ('free'::text, '12:00'::text)$$,
+  'skips the odd-week row in an even week and is free until the even-week row'
 );
 
 -- Case 20: timestamps with non-zero seconds truncate to HH:MM just like TypeScript bucharestNow
@@ -314,6 +316,162 @@ select results_eq(
   $$select status, until from public.room_status('c-510', '2026-11-02T12:00:45+02:00'::timestamptz)$$,
   $$values ('free'::text, null::text)$$,
   'truncates seconds to minute precision matching TypeScript bucharestNow (12:00:45 -> 12:00)'
+);
+
+-- TODO-30 ------------------------------------------------------------------------------
+-- Demo periods (seed.sql, same as data/calendar.ts): 2026-09-28 .. 2026-12-20 and
+-- 2027-01-04 .. 2027-01-17. Romania is on summer time (UTC+3) until 2026-10-25, then on
+-- winter time (UTC+2).
+
+-- teaching_periods: RLS and constraints (like TODO-17)
+set local role anon;
+
+select is_empty(
+  'select * from public.teaching_periods',
+  'anon cannot read teaching_periods'
+);
+
+select throws_ok(
+  $$insert into public.teaching_periods (start_date, end_date) values ('2027-02-01', '2027-02-28')$$,
+  '42501',
+  null,
+  'anon cannot insert into teaching_periods'
+);
+
+set local role authenticated;
+
+select results_eq(
+  'select start_date, end_date from public.teaching_periods order by start_date',
+  $$values ('2026-09-28'::date, '2026-12-20'::date), ('2027-01-04'::date, '2027-01-17'::date)$$,
+  'authenticated can read the seeded demo periods (same as calendar.ts)'
+);
+
+select throws_ok(
+  $$insert into public.teaching_periods (start_date, end_date) values ('2027-02-01', '2027-02-28')$$,
+  '42501',
+  null,
+  'authenticated cannot insert into teaching_periods'
+);
+
+set local role postgres;
+
+select throws_ok(
+  $$insert into public.teaching_periods (start_date, end_date) values ('2027-02-28', '2027-02-01')$$,
+  '23514',
+  null,
+  'a period that ends before it starts is rejected'
+);
+
+-- teaching_week: every case of teachingWeek in tests/unit/calendar.test.ts
+
+select is(public.teaching_week('2026-09-28T07:00:00Z'), 1,
+  'counts the first day of the first period as week 1');
+
+select is(public.teaching_week('2026-10-04T10:00:00Z'), 1,
+  'counts weeks from Monday to Sunday (Sunday is still week 1)');
+select is(public.teaching_week('2026-10-05T10:00:00Z'), 2,
+  'counts weeks from Monday to Sunday (Monday starts week 2)');
+
+select is(public.teaching_week('2026-12-20T10:00:00Z'), 12,
+  'includes the last day of the period');
+
+select is(public.teaching_week('2026-09-27T10:00:00Z'), null,
+  'is null before the first period');
+select is(public.teaching_week('2026-12-21T10:00:00Z'), null,
+  'is null during the holiday (21 Dec)');
+select is(public.teaching_week('2026-12-24T10:00:00Z'), null,
+  'is null during the holiday (24 Dec)');
+select is(public.teaching_week('2027-01-03T10:00:00Z'), null,
+  'is null during the holiday (3 Jan)');
+
+select is(public.teaching_week('2027-01-04T10:00:00Z'), 15,
+  'keeps counting after the holiday instead of restarting (4 Jan is week 15)');
+select is(public.teaching_week('2027-01-17T10:00:00Z'), 16,
+  'keeps counting after the holiday instead of restarting (17 Jan is week 16)');
+
+select is(public.teaching_week('2027-01-18T10:00:00Z'), null,
+  'is null after the last period');
+
+-- 21:30 UTC on Sunday 27 Sept is already 00:30 on Monday 28 Sept in Romania.
+select is(public.teaching_week('2026-09-27T21:30:00Z'), 1,
+  'uses the date in Romania, not the UTC date (start of the period)');
+
+-- 22:30 UTC on 20 Dec is already 00:30 on 21 Dec in Romania: the period is over.
+select is(public.teaching_week('2026-12-20T22:30:00Z'), null,
+  'uses the date in Romania, not the UTC date (end of the period, already 21 Dec)');
+-- 21:30 UTC on 20 Dec is still 23:30 on 20 Dec in Romania.
+select is(public.teaching_week('2026-12-20T21:30:00Z'), 12,
+  'uses the date in Romania, not the UTC date (end of the period, still 20 Dec)');
+
+-- room_status and parity: the entriesToday cases of calendar.test.ts.
+-- Mondays: 5 Oct 2026 is week 2 (even), 12 Oct 2026 is week 3 (odd).
+-- 10:30 UTC is 13:30 in Romania on both days (summer time).
+
+delete from public.room_schedule;
+insert into public.room_schedule (room_id, day, start_time, end_time, subject, group_name, parity)
+values ('c-510', 1, '13:00', '15:00', 'Baze de date', 'Seminar 211', 'odd');
+
+select results_eq(
+  $$select status, until from public.room_status('c-510', '2026-10-12T10:30:00Z')$$,
+  $$values ('occupied'::text, '15:00'::text)$$,
+  'an odd-week class occupies the room in an odd week'
+);
+select results_eq(
+  $$select status, until from public.room_status('c-510', '2026-10-05T10:30:00Z')$$,
+  $$values ('free'::text, null::text)$$,
+  'an odd-week class is gone in the next (even) week'
+);
+
+update public.room_schedule set parity = 'even';
+
+select results_eq(
+  $$select status, until from public.room_status('c-510', '2026-10-05T10:30:00Z')$$,
+  $$values ('occupied'::text, '15:00'::text)$$,
+  'an even-week class occupies the room in an even week'
+);
+select results_eq(
+  $$select status, until from public.room_status('c-510', '2026-10-12T10:30:00Z')$$,
+  $$values ('free'::text, null::text)$$,
+  'an even-week class is gone in the odd week'
+);
+
+update public.room_schedule set parity = 'all';
+
+select results_eq(
+  $$select status, until from public.room_status('c-510', '2026-10-05T10:30:00Z')$$,
+  $$values ('occupied'::text, '15:00'::text)$$,
+  'a class without parity is there in an even week'
+);
+select results_eq(
+  $$select status, until from public.room_status('c-510', '2026-10-12T10:30:00Z')$$,
+  $$values ('occupied'::text, '15:00'::text)$$,
+  'a class without parity is there in an odd week'
+);
+
+-- 24 December 2026 (holiday, a Thursday): every room is unknown, even one with a class
+-- on Thursdays at that time.
+delete from public.room_schedule;
+insert into public.room_schedule (room_id, day, start_time, end_time, subject, group_name)
+values ('c-510', 4, '12:00', '14:00', 'Baze de date', 'Seminar 211');
+
+select results_eq(
+  $$select status, until from public.room_status('c-510', '2026-12-24T10:30:00Z')$$,
+  $$values ('unknown'::text, null::text)$$,
+  'is unknown on 24 December even when the timetable has a class then'
+);
+
+select results_eq(
+  $$select count(*)::int from public.rooms r, lateral public.room_status(r.id, '2026-12-24T10:30:00Z') s
+    where s.status <> 'unknown'$$,
+  array[0],
+  'every room is unknown on 24 December 2026'
+);
+
+select results_eq(
+  $$select count(*)::int from public.rooms r, lateral public.room_status(r.id, '2026-12-24T10:30:00Z') s
+    where s.status = 'free'$$,
+  array[0],
+  'no room is free on 24 December 2026 (unknown is never free)'
 );
 
 select * from finish();

@@ -129,6 +129,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"teaching_periods": {
+                  Row: {
+                    "end_date": string,"id": number,"start_date": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "end_date": string,"id"?: number,"start_date": string
+                  }
+                  Update: {
+                    "end_date"?: string,"id"?: number,"start_date"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 }
           }
           Views: {
@@ -155,6 +169,9 @@ isOneToOne: false
 { Args: { "p_at": string,"p_room_id": string }; Returns: {
               "status": string,"until": string
             }[]
+                           },
+"teaching_week":
+{ Args: { "p_at": string }; Returns: number
                            }
           }
           Enums: {
