@@ -48,7 +48,7 @@
 | TODO-30 | `[ ]`    | Backend | `room_status` în SQL: săptămâni pare/impare și perioada de cursuri | _(liber)_      |
 | TODO-31 | `[ ]`    | Backend | Aplicația citește sălile și orarul din Supabase | _(liber)_      |
 | TODO-32 | `[ ]`    | Backend | Adaptorul FSEGA și sălile FSEGA | _(liber)_      |
-| TODO-33 | `[ ]`    | Backend | Tabelul `room_checkins`: check-in-uri care rămân după restart | _(liber)_      |
+| TODO-33 | `[~]`    | Backend | Tabelul `room_checkins`: check-in-uri care rămân după restart | Buruian Bogdan |
 | TODO-34 | `[ ]`    | Backend | Check-in-ul trece pe baza de date | _(liber)_      |
 | TODO-35 | `[ ]`    | Frontend | Check-in-uri live pentru toată lumea | _(liber)_      |
 | TODO-36 | `[ ]`    | Backend | Raportarea problemelor dintr-o sală: tabelul și endpointul | _(liber)_      |
@@ -1125,9 +1125,9 @@ TODO-27 (încărcarea pe loturi) și **sursa orarului FSEGA**: unde e publicat, 
 - [ ] După import, sălile FSEGA au stare calculată, iar cele fără orar rămân `unknown`.
 - [ ] PR revizuit de cine a făcut TODO-27.
 
-### TODO-33 `[ ]` Tabelul `room_checkins`: check-in-uri care rămân după restart
+### TODO-33 `[~]` Tabelul `room_checkins`: check-in-uri care rămân după restart
 
-**Asignat:** _(liber, scrie-ți numele aici)_ · **Branch:** `feat/srf-be20-checkins-table` · **Backlog:** #22
+**Asignat:** Buruian Bogdan · **Branch:** `feat/srf-be20-checkins-table` · **Backlog:** #22
 
 #### De ce
 Check-in-urile din TODO-09 stau în memorie: se pierd la restart, iar pe Vercel fiecare instanță vede alt număr. Le mutăm în baza de date, cu aceleași reguli (expiră după 2 ore, nu schimbă `status`).
