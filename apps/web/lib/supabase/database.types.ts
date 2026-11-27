@@ -1,4 +1,4 @@
-﻿
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
@@ -57,6 +57,32 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"room_checkins": {
+                  Row: {
+                    "created_at": string,"ended_at": string | null,"expires_at": string,"id": string,"room_id": string,"user_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"ended_at"?: string | null,"expires_at": string,"id"?: string,"room_id": string,"user_id"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"ended_at"?: string | null,"expires_at"?: string,"id"?: string,"room_id"?: string,"user_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "room_checkins_room_id_fkey"
+      columns: ["room_id"]
+isOneToOne: false
+      referencedRelation: "room_checkin_counts"
+      referencedColumns: ["room_id"]
+    },{
+      foreignKeyName: "room_checkins_room_id_fkey"
+      columns: ["room_id"]
+isOneToOne: false
+      referencedRelation: "rooms"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"room_schedule": {
                   Row: {
                     "day": number,"end_time": string,"group_name": string,"id": number,"parity": string,"room_id": string,"start_time": string,"subject": string
@@ -70,6 +96,12 @@ isOneToOne: false
                   }
                   Relationships: [
                     {
+      foreignKeyName: "room_schedule_room_id_fkey"
+      columns: ["room_id"]
+isOneToOne: false
+      referencedRelation: "room_checkin_counts"
+      referencedColumns: ["room_id"]
+    },{
       foreignKeyName: "room_schedule_room_id_fkey"
       columns: ["room_id"]
 isOneToOne: false
@@ -100,10 +132,26 @@ isOneToOne: false
                 }
           }
           Views: {
-            [_ in never]: never
+            "room_checkin_counts": {
+                  Row: {
+                    "active_count": number | null,"room_id": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                }
           }
           Functions: {
-            "room_status":
+            "checkin_room":
+{ Args: { "p_room_id": string }; Returns: {
+              "created_at": string,"expires_at": string,"id": string,"room_id": string
+            }[]
+                           },
+"checkout":
+{ Args: { "p_checkin_id": string }; Returns: boolean
+                           },
+"room_status":
 { Args: { "p_at": string,"p_room_id": string }; Returns: {
               "status": string,"until": string
             }[]
