@@ -32,3 +32,9 @@ insert into public.room_schedule (room_id, day, start_time, end_time, subject, g
   ('gamma', 4, '12:00', '14:00', 'Analiză matematică', 'Curs anul 1', 'even'),
   ('a-101', 5, '10:00', '12:00', 'Programare orientată pe obiecte', 'Curs anul 2', 'odd'),
   ('a-101', 5, '12:00', '14:00', 'Structuri de date și algoritmi', 'Curs anul 2', 'even');
+
+-- Demo teaching periods, the same as apps/web/features/rooms/data/calendar.ts
+-- (not the official academic calendar). Both ends included.
+insert into public.teaching_periods (start_date, end_date) values
+  ('2026-09-28', '2026-12-20'),
+  ('2027-01-04', '2027-01-17');
